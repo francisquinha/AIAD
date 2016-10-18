@@ -1,3 +1,4 @@
-.metadata/**/*
-.recommenders/**/*
-mars/bin/*
+Mars/*
+!Mars/src
+.metadata
+.recommenders
