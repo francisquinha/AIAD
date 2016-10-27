@@ -1,0 +1,250 @@
+% 	
+%	
+%
+\documentclass[a4paper, 12pt, twoside]{scrreprt}
+
+% Encoding, islands characters.
+%\usepackage{ucs}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage{t1enc}
+%\usepackage{csquotes} % Problemas com aspas na biblioteca.
+
+\usepackage[intoc]{nomencl}
+\usepackage{enumerate,color}
+\usepackage{url}
+\usepackage[pdfborder={0 0 0}]{hyperref}
+\usepackage{appendix}
+\usepackage{eso-pic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[nottoc]{tocbibind}
+
+
+
+\usepackage[format=plain,labelformat=simple,labelsep=colon]{caption}
+\usepackage{placeins}
+
+% comprimidos
+\usepackage{tabularx}
+
+% Desenhos e fotos.
+\usepackage{graphicx}
+\usepackage[sf,normalsize]{subfigure}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{circuitikz}
+\usepackage{tikz,pgffor}
+\usetikzlibrary{calc,through,intersections, matrix}
+\usepackage{tkz-euclide}
+\usetkzobj{all}
+\usepackage{geometry}
+
+% units package
+\usepackage{siunitx}
+\usepackage{cancel}
+
+% Suplemento Bibliográfico.
+\usepackage[style=ieee, backend=biber]{biblatex} 
+\addbibresource{heimildaskra.bib} % Fontes são baixadas a partir desta lista.
+
+% Configurations
+%\graphicspath{{figs/}}
+
+%\usepackage{fancyhdr}
+ 
+%\pagestyle{fancy}
+%\fancyhf{}
+%\rhead{Share\LaTeX}
+%\lhead{Guides and tutorials}
+%\rfoot{Page \thepage}
+
+
+\setlength{\parskip}{\baselineskip}
+\setlength{\parindent}{0cm}
+\raggedbottom
+% \setkomafont{subsection}{\normalfont\sffamily}
+
+% Como modificação de fios para ser
+% \setkomafont{captionlabel}{\itshape}
+% \setkomafont{caption}{\itshape}
+
+% Mais bela solução << esta é uma escolha vergonhosa
+ \setkomafont{captionlabel}{\itshape}
+ \setkomafont{caption}{\itshape}
+ \setkomafont{section}{\FloatBarrier\Large}
+ \setcapwidth[l]{\textwidth}
+%\setcapindent{1em}
+
+
+% Times new roman
+%\usepackage[T1]{fontenc}
+%\usepackage{mathptmx}
+
+%
+%	Preencha Informações sobre o titulo, departamento e autor.
+%
+\def\thesisyear{2016}       				% Ano Projecto Entrega
+\def\thesismonth{Novembro}					% Mês do Projecto final
+\def\theisnrofauthors{3}
+\def\thesisauthors{Marina Camilo - up201307722 - up201307722@fe.up.pt
+				\\ Diogo Ferreira - up201502853 - diogoff@fe.up.pt
+                \\ Ângela Cardoso - up200204375 - angela.cardoso@fe.up.pt}						% Authors
+\def\thesistitle{T05: Exploração de Marte} 		% Titulo
+\def\thesisshorttitle{Sistemas Distribuidos} 	% Tiulo Curto
+
+\def\thesisnroftutors{2}						% 1 = singular, >1 plural
+\def\thesistutors{Eugénio da Costa Oliveira \\
+				  Henrique Daniel de Avelar Lopes Cardoso }	% Formador
+
+\begin{document}
+
+\begin{titlepage}
+\thispagestyle{empty}
+
+\begin{tikzpicture}[remember picture,overlay]
+  \coordinate [above=0cm] (toppoint) at (current page.north);
+  % Logo Universidade.
+  \node[anchor=north] (logonator) at ($(toppoint)+(0cm,-4.2cm)$) {
+
+
+\includegraphics[width=8cm]{./FEUP_Logo.png}
+    };
+
+  % Titulo
+  \node[anchor=north, align=center] (titlenator) at ($(logonator.south)+(0cm,-2.0cm)$) {
+    \huge \sffamily \bfseries \thesistitle
+    };
+
+  \coordinate [above=0cm] (bottompoint) at (current page.south);
+
+  % Promoçao de texto localização e atribuições
+  \node[anchor=base, 
+  		minimum width=\paperwidth, 
+        align=center] at ($(bottompoint)+(0cm,5cm)$)  
+    {
+    \parbox{
+      1\paperwidth
+      }{
+      \centering
+      \bfseries\sffamily \Large 
+	  4ºAno - Sistemas Distribuidos \\
+	  \thesismonth~\thesisyear
+      }
+    };
+
+  % nome do autor
+  \node[anchor=north, align=center] (authornator) at ($(titlenator.south)+(0cm,-1.0cm)$) {
+  	\parbox{
+      1\paperwidth
+      }{
+      \centering
+      \normalfont \Large \sffamily \thesisauthors
+      }
+    };
+    
+    %\normalfont \Large \sffamily \thesisauthors
+	%};
+    
+  % nomes dos Supervisores
+  \node[anchor=north, align=center] (advisornator) at ($(authornator.south)+(0cm,-1.0cm)$) {
+	\parbox{
+      1\paperwidth
+      }{
+      \centering
+      \sffamily \Large Professores\\
+      \thesistutors
+      }
+    };
+    
+\end{tikzpicture}
+
+\end{titlepage}
+\pagenumbering{arabic}
+
+\setcounter{page}{2}
+\newpage
+
+\tableofcontents
+%\listoffigures
+%\listoftables
+
+\clearpage
+\chapter{Enunciado}
+\pagenumbering{arabic}
+\setcounter{page}{3}
+%escrever aqui
+\section{Descrição do cenário}
+%escrever aqui
+\section{Objectivos do trabalho}
+%escrever aqui 
+\section{Resultados esperados e forma de avaliação}
+%escrever aqui
+ 
+\chapter{Plataforma/Ferramenta}
+%escrever aqui
+\section{Para que serve}
+%escrever aqui
+\section{Descrição das características principais}
+%escrever aqui
+\section{Realce das funcionalidades relevantes para o trabalho}
+%escrever aqui
+
+\chapter{Especificação}
+%escrever aqui
+\section{Identificação e caracterização dos agentes (arquitectura, comportamento, estratégias)}
+%escrever aqui
+\section{Protocolos de interacção}
+%escrever aqui
+\section{Faseamento do projecto}
+%escrever aqui
+
+\chapter{Recursos}
+%escrever aqui
+\section{Bibliografia}
+%escrever aqui
+\section{Software}
+%escrever aqui
+
+
+\chapter{Exemplo Figura e tabela}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.60\textwidth]{FEUP_Logo}
+\caption[alguma coisa.]{Mais aluguma coisa} \label{fig:Array}
+\end{figure}
+
+\begin{table}[htb]
+\centering
+\caption{Alguma coisa.}
+     \sffamily \begin{tabularx}{1.0\textwidth}{ p{5cm}  p{5cm}  p{5cm} }
+    \hline
+   \textbf{nome1} \hfill & \textbf{nome2} \hfill & \textbf{nome3} \\ \hline
+    1.1 & 1.2 & 1.3\\
+    2.1 & 2.2 & 2.3\\ \hline
+    \end{tabularx} \normalfont
+\label{table:Emissivity}
+\end{table}
+
+\section{Baixando a partir de outro documento}
+Exemplos de autorizado~\cite{dirac} e tambem~\cite{einstein}.
+\input{YtraEfniFyrirInclude}
+
+
+%
+% Fontes
+%
+\printbibliography[heading=bibintoc] % Adiciona fontes e traz uma tabela de conteudos
+%escrever aqui
+
+
+%
+% Anexos
+%
+\appendix
+\renewcommand{\chaptername}{Anexos}
+\chapter{Anexos}
+Dicas úteis e waypoints
+
+\end{document}
