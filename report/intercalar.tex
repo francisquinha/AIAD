@@ -91,7 +91,7 @@
 				\\ Diogo Ferreira - up201502853 - diogoff@fe.up.pt
                 \\ Ângela Cardoso - up200204375 - angela.cardoso@fe.up.pt}						% Authors
 \def\thesistitle{T05: Exploração de Marte} 		% Titulo
-\def\thesisshorttitle{Sistemas Distribuidos} 	% Tiulo Curto
+\def\thesisshorttitle{Agentes e Inteligência Artificial Distribuida} 	% Tiulo Curto
 
 \def\thesisnroftutors{2}						% 1 = singular, >1 plural
 \def\thesistutors{Eugénio da Costa Oliveira \\
@@ -173,13 +173,30 @@
 \chapter{Enunciado}
 \pagenumbering{arabic}
 \setcounter{page}{3}
-%escrever aqui
+
 \section{Descrição do cenário}
-%escrever aqui
+No âmbito da unidade Curricular de Agentes e Inteligência Artificial Distribuída o grupo propôs-se a implementar um Sistema Multi-Agente para simulação de um cenário de extração de minérios em Marte.
+Sendo assim, é necessário um conjunto de agentes com a tarefa de explorar o planeta Marte em busca de minérios, e de transportar a maior quantidade possível para a base. Para tal, existem três tipos de Agentes:
+
+\begin{itemize}
+	\item {\textbackslash}\textit{Spotter}– Procura fontes de minérios e inspeciona-los para determinar se podem ser explorados. 
+	\item {\textbackslash}\textit{Producer}– É chamado a uma fonte de minério por um \textit{Spotter} para extrair o máximo de minério possível nessa fonte. 
+	\item {\textbackslash}\textit{Transporter}– É alocado pelo \textit{Producer} para carregar o minério obtido para a base.
+\end{itemize}
+
+De forma a facilitar a procura, todos os agentes podem localizar fontes de minérios e enviar a sua localização para os \textit{Spotter} que os analisarão. A escolha do \textit{Producer} por parte do \textit{Spotter} segue um protocolo de negociação. A alocação dos \textit{Transporters} a uma determinada fonte segue também um protocolo de negociação, iniciado pelo \textit{Producer}. Esta alocação, terá em conta a quantidade de minério a transportar, de modo a determinar mais corretamente o número necessário de \textit{Transporters}.
+
 \section{Objectivos do trabalho}
-%escrever aqui 
+Um dos objetivos deste trabalho é implementar os agentes de forma a que a simulação da exploração do cenário de Marte se torne o mail eficiente possível. 
+No caso do \textit{Spotter} será implementado um algoritmo que dividirá a área explorada pelos \textit{Spotter} existentes. Será também implementado um protocolo de negociação que irá determinar que \textit{Producer} será melhor para se deslocar para o local do minério encontrado.
+No caso do \textit{Producer} será implementado um protocolo de negociação que irá determinar que ou quais \textit{Transporters} serão mais eficientes a recolher o minério.
+
 \section{Resultados esperados e forma de avaliação}
-%escrever aqui
+Inicialmente serão implementadas apenas as funcionalidades básicas de cada Agente como tal:
+A 1º fase de avaliação será verificar o sucesso da implementação do comportamento de cada agente. Após se garantir que todos os agentes realizam o seu papel corretamente passamos para a fase seguinte, a fase de implementação de restrições. 
+Nesta 2º fase, irá avaliar–se se os \textit{Transporters} chamados não ultrapassam a sua capacidade, se o \textit{Transporters} chamados conseguem recolher todo o minério presente. 
+Após estas fases, implementaremos algoritmos de forma a tornar mais eficiente esta demanda, avaliando se as alocações dos demais agentes correspondem ao mais disponível na altura. Se o mapa fica corretamente dividido entre os \textit{Spotters} e se o tempo de simulação foi o mínimo para o caso em questão.
+
  
 \chapter{Plataforma/Ferramenta}
 %escrever aqui
@@ -197,7 +214,21 @@
 \section{Protocolos de interacção}
 %escrever aqui
 \section{Faseamento do projecto}
-%escrever aqui
+
+\begin{table}[htb]
+\centering
+\caption{Fases previstas para o projecto}
+    \sffamily \begin{tabularx}{1.0\textwidth}{ p{3cm}  p{10,5cm} }
+    \hline
+    \textbf{1º Ponto} \hfill & Construir ambiente de simulação na tecnologia \textit{Repast} \\ \hline
+    \textbf{2º Ponto} \hfill & Criação do \textit{Spotter} com as função de explorar e dividir território a explorar. \\ \hline
+    \textbf{3º Ponto} \hfill & Criação do \textit{Producer} com a função básica de produzir. Melhoramento do \textit{Spotter} para chamar \textit{Producers}. \\ \hline
+    \textbf{4º Ponto} \hfill & Criação do \textit{Transporter} sem limite de capacidade e apenas com a função básica de transportar. Melhoramento do \textit{Producer} para chamar \textit{Transporters}. \\ \hline
+    \textbf{5º Ponto} \hfill & Melhoria dos Agentes \textit{Spotter}, \textit{Producer} e \textit{Transporter}. \\ \hline
+    \textbf{6º Ponto} \hfill & Defenir estratégias de forma a tornar a exploração de Marte o mais eficiente possível. \\ \hline
+    \end{tabularx} \normalfont
+\label{table:Emissivity}
+\end{table}
 
 \chapter{Recursos}
 %escrever aqui
