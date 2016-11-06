@@ -8,6 +8,8 @@
 \usepackage{hyperref}
 \usepackage{xspace}
 
+\usepackage{geometry}
+\geometry{a4paper, total={150mm,230mm}, left=30mm, top=30mm}
 \pagenumbering{arabic}
 
 \begin{document}
@@ -30,48 +32,40 @@
 \newcommand{\transporters}{\emph{transporters}\xspace}
 
 
-  \begin{titlepage}
-    \begin{center}
-        \vspace*{1cm}
-        
+\begin{titlepage}
+	\begin{center}
+		\vspace*{1cm}
         \Huge
         \textbf{T05: Exploração de Marte}
         \vspace{0.5cm} \ \\
         \LARGE
         Agentes e Inteligência Artificial Distribuída
-        
         \vfill
-        
-	\includegraphics[width=0.6\textwidth]{FEUP_Logo}
-	\break
+		\includegraphics[width=0.6\textwidth]{FEUP_Logo}
+		\break
         \small
         Novembro 2016
-        
         \vfill
-        
-	\vspace{1.5cm}
+		\vspace{1.5cm}
         \normalsize{
-	  Marina Camilo - up201307722 - up201307722@fe.up.pt \\
-	  Diogo Ferreira - up201502853 - diogoff@fe.up.pt \\
-	  Ângela Cardoso - up200204375 - angela.cardoso@fe.up.pt
+		Marina Camilo - up201307722 - up201307722@fe.up.pt \\
+		Diogo Ferreira - up201502853 - diogoff@fe.up.pt \\
+		Ângela Cardoso - up200204375 - angela.cardoso@fe.up.pt
         }
-        
-    \end{center}
-  \end{titlepage}
+	\end{center}
+\end{titlepage}
 
-\newpage
 \tableofcontents
 
-\clearpage
 \chapter{Enunciado}
 
 \section{Descrição do cenário}
 No âmbito da unidade curricular de Agentes e Inteligência Artificial Distribuída, o nosso grupo propôs-se a implementar um Sistema Multi-Agente para simulação de um cenário de extração de minérios em Marte. Para tal, é necessário descobrir os minérios, extraí-los e transportá-los para a base. Sendo assim, no nosso sistema existem três tipos de Agentes:
 
 \begin{itemize}
-  \item \Spotter – Procura fontes de minérios e inspeciona-as para determinar se podem ser explorados. 
-  \item \Producer – É chamado a uma fonte de minério por um \spotter para extrair o máximo de minério possível nessa fonte. 
-  \item \Transporter – É alocado pelo \producer para carregar o minério obtido para a base.
+	\item \Spotter – Procura fontes de minérios e inspeciona-as para determinar se podem ser explorados. 
+	\item \Producer – É chamado a uma fonte de minério por um \spotter para extrair o máximo de minério possível nessa fonte. 
+	\item \Transporter – É alocado pelo \producer para carregar o minério obtido para a base.
 \end{itemize}
 
 De forma a facilitar a procura, todos os agentes podem localizar fontes de minérios e enviar a sua localização para os \spotters que os analisarão. A escolha do \producer por parte do \spotter segue um protocolo de negociação. A alocação dos \transporters a uma determinada fonte segue também um protocolo de negociação, iniciado pelo \producer. Esta alocação, terá em conta a quantidade de minério a transportar, de modo a determinar mais corretamente o número necessário de \transporters.
@@ -95,34 +89,34 @@ Com as métricas obtidas após a segunda fase de implementação, analisaremos d
 
 \section{Para que serve}
 
-  \subsection{\jade}
-  O \jade, \emph{Java Agent DEvelopment Framework}, é um software que permite desenvolver sistemas baseados em agentes. Os agentes são distribuídos por \emph{containers} que podem estar em máquinas diferentes, cada um utiliza uma \emph{thread}. 
+\subsection{\jade}
+O \jade, \emph{Java Agent DEvelopment Framework}, é um software que permite desenvolver sistemas baseados em agentes. Os agentes são distribuídos por \emph{containers} que podem estar em máquinas diferentes, cada um utiliza uma \emph{thread}. 
 
-  \subsection{\repast}
-  O \repast, \emph{Recursive Porous Agent Simulation Toolkit}, é uma ferramenta de simulação baseada em agentes, que permite construir simulações locais à máquina com diversos agentes. O processamento de cada agente é distribuído por \emph{threads}.
+\subsection{\repast}
+O \repast, \emph{Recursive Porous Agent Simulation Toolkit}, é uma ferramenta de simulação baseada em agentes, que permite construir simulações locais à máquina com diversos agentes. O processamento de cada agente é distribuído por \emph{threads}.
 
-  \subsection{\sajas}
-  O \sajas, \emph{Simple API for JADE-based Simulations}, é uma ferramenta que se propõe servir de ponte entre o desenvolvimento e a simulação de Sistemas Multi-Agente. Desta forma, através do \sajas, podemos tomar vantagem dos benefícios do \jade e do \repast.
+\subsection{\sajas}
+O \sajas, \emph{Simple API for JADE-based Simulations}, é uma ferramenta que se propõe servir de ponte entre o desenvolvimento e a simulação de Sistemas Multi-Agente. Desta forma, através do \sajas, podemos tomar vantagem dos benefícios do \jade e do \repast.
 
 \section{Descrição das características principais}
 
-  \subsection{\jade}
-  O \jade é uma ferramenta totalmente escrita em \java, que suporta troca de mensagens \acl, seguindo a especificação \fipa. Além disso, possui um sistema de gestão de agentes e um sistema de páginas amarelas. Como os agentes estão distribuídos por contentores que podem estar em máquinas diferentes, permite ter agentes remotos. Os agentes podem migrar entre contentores e ser clonados. Esta plataforma possui ainda uma série de ferramentas que simplificam a administração e o desenvolvimento de aplicações, tais como:
-  \begin{itemize}
+\subsection{\jade}
+O \jade é uma ferramenta totalmente escrita em \java, que suporta troca de mensagens \acl, seguindo a especificação \fipa. Além disso, possui um sistema de gestão de agentes e um sistema de páginas amarelas. Como os agentes estão distribuídos por contentores que podem estar em máquinas diferentes, permite ter agentes remotos. Os agentes podem migrar entre contentores e ser clonados. Esta plataforma possui ainda uma série de ferramentas que simplificam a administração e o desenvolvimento de aplicações, tais como:
+\begin{itemize}
    \item agente de monitorização remota - interface gráfico para monitorizar a atividade dos agentes;
    \item agente pateta - permite trocar mensagens com outros agentes;
    \item agente inspetor - permite inspecionar outros agentes;
    \item agente introspetivo - permite monitorizar o ciclo de vida de um agente.
-  \end{itemize}
-  A implementação de agentes em \jade é feita recorrendo a comportamentos, que determinam as tarefas a executar pelos agentes consoante o contexto. 
+\end{itemize}
+A implementação de agentes em \jade é feita recorrendo a comportamentos, que determinam as tarefas a executar pelos agentes consoante o contexto. 
   
-  \subsection{\repast}
-  O \repast suporta simulação de espaços físicos, representação 2D e 3D e análise em tempo real. Possui uma barra de ferramentas para controlar as simulações, um interface gráfico para manipular os parâmetros. Permite recolher dados em vários formatos, incluindo vários tipos de gráficos. A interação entre os agentes pode ser visualizada graficamente. Os espaços físicos simulados podem ser de variados tipos, como por exemplo, grelhas hexagonais ou retangulares, espaços contínuos ou redes. Além de poderem ser corridas com recurso ao interface gráfico, as simulações podem também ser lançadas em \emph{batch}.
+\subsection{\repast}
+O \repast suporta simulação de espaços físicos, representação 2D e 3D e análise em tempo real. Possui uma barra de ferramentas para controlar as simulações, um interface gráfico para manipular os parâmetros. Permite recolher dados em vários formatos, incluindo vários tipos de gráficos. A interação entre os agentes pode ser visualizada graficamente. Os espaços físicos simulados podem ser de variados tipos, como por exemplo, grelhas hexagonais ou retangulares, espaços contínuos ou redes. Além de poderem ser corridas com recurso ao interface gráfico, as simulações podem também ser lançadas em \emph{batch}.
   
-  O simulador discreto considera unidades de tempo - \emph{ticks} ou passos. Os eventos são planeados para ocorrer em \emph{ticks} específicos e assim é respeitada a ordem dos acontecimentos. Uma simulação considera um conjunto de agentes, cujos comportamentos são controlados recorrendo ao plano.
+O simulador discreto considera unidades de tempo - \emph{ticks} ou passos. Os eventos são planeados para ocorrer em \emph{ticks} específicos e assim é respeitada a ordem dos acontecimentos. Uma simulação considera um conjunto de agentes, cujos comportamentos são controlados recorrendo ao plano.
 
-  \subsection{\sajas}
-  O \sajas permite construir um Sistema Multi-Agente tal como é feito em \jade, existindo até uma ferramenta (\massim) que traduz código \jade para \sajas (e vice-versa), alterando as classes importadas. Ao contrário do \jade, permite ainda, recorrendo para isso ao \repast, a simulação deste tipo de sistemas. Além disso, o \sajas permite ainda obter melhores performances do que numa simulação construída em \jade, que teria que considerar algum tipo de agente representado o `mundo'.
+\subsection{\sajas}
+O \sajas permite construir um Sistema Multi-Agente tal como é feito em \jade, existindo até uma ferramenta (\massim) que traduz código \jade para \sajas (e vice-versa), alterando as classes importadas. Ao contrário do \jade, permite ainda, recorrendo para isso ao \repast, a simulação deste tipo de sistemas. Além disso, o \sajas permite ainda obter melhores performances do que numa simulação construída em \jade, que teria que considerar algum tipo de agente representado o `mundo'.
 
 \section{Realce das funcionalidades relevantes para o trabalho}
 
@@ -132,7 +126,6 @@ fácil simular um espaço físico, popular o espaço com os agentes construídos
 \chapter{Especificação}
 
 \section{Identificação e caracterização dos agentes (arquitetura, comportamento, estratégias)}
-
 Tal como descrito acima, o nosso sistema tem três tipos de agentes. De seguida descrevem-se mais detalhadamente estes agentes e a forma como decidimos implementá-los.
 
 \subsection{\Spotter}
@@ -158,19 +151,19 @@ Quando for considerada a limitação de carga, o \transporter poderá ter vário
 Inicialmente cada \spotter deve acordar com os restantes a região do espaço que será sua para explorar. 
 
 \begin{figure}[h]
-  \centering
-    \includegraphics[width=0.6\textwidth]{spotter-spaces}
-  \caption{\small{Alocação simples por linhas}}
-  \label{spotter-spaces}
+	\centering
+	\includegraphics[width=0.6\textwidth]{spotter-spaces}
+	\caption{Alocação simples por linhas}
+	\label{spotter-spaces}
 \end{figure}
 
 Sendo o espaço uma matriz retangular, numa primeira fase de implementação, assumiremos que o número de \spotters é igual ao número de linhas da matriz, de forma a que cada \spotter fique com uma linha. A Figura~\ref{spotter-spaces} ilustra esta divisão para três \spotters.
 
 \begin{figure}[h]
-  \centering
+	\centering
     \includegraphics[width=0.6\textwidth]{spotter-agreement}
-  \caption{\small{Diagrama temporal das comunicações entre \spotters}}
-  \label{spotter-agreement}
+	\caption{Diagrama temporal das comunicações entre \spotters}
+	\label{spotter-agreement}
 \end{figure}  
 
 Cada \spotter escolhe uma linha e depois comunica aos restantes a sua escolha, que ficam encarregues de confirmar a afetação. Esta comunicação, correspondente ao exemplo acima, é ilustrada na Figura~\ref{spotter-agreement}:
@@ -193,10 +186,10 @@ O \spotter escolhe o \producer com o menor esforço e comunica com ele, pedindo 
 Caso seja recusado, porque o \producer foi afeto a outro minério entretanto, o \spotter repete o processo desde o início.
 
 \begin{figure}[h]
-  \centering
+	\centering
     \includegraphics[width=0.8\textwidth]{producer-scheduling}
-  \caption{Exemplo de afetação de \producers}
-  \label{producer-scheduling}
+	\caption{Exemplo de afetação de \producers}
+	\label{producer-scheduling}
 \end{figure}
 
 A Figura~\ref{producer-scheduling} exemplifica o processo de escolha de \producers para os minérios encontrados pelos \spotters 1 e 2. 
@@ -209,10 +202,10 @@ O \producer que acabou de extrair o minério tem que selecionar um \transporter,
 Cada \transporter comunica o valor do esforço e o minério que consegue transportar possibilitando o \producer de escalonar os diferentes agentes.
 
 \begin{figure}[h]
-  \centering
+	\centering
     \includegraphics[width=0.8\textwidth]{transporter-scheduling}
-  \caption{Exemplo de afetação de \transporters}
-  \label{transporter-scheduling}
+	\caption{Exemplo de afetação de \transporters}
+	\label{transporter-scheduling}
 \end{figure}
 
 A Figura~\ref{transporter-scheduling} exemplifica o processo de escolha de \transporters para os minérios extraídos por dois \producers. Consideramos ainda as quantidades de minério extraídas, a capacidade e carga corrente dos \transporters. Estas restrições irão influenciar a forma como se negoceia a afetação dos \transporters numa fase mais avançada da implementação.
@@ -237,6 +230,23 @@ A forma como decidimos implementar o nosso projeto tem como objetivo principal g
 \chapter{Recursos}
 
 \section{Bibliografia}
+
+\begin{itemize}
+	\item \href{https://paginas.fe.up.pt/~eol/AIAD/1617/trabalhos.html#T05}{Enunciado do trabalho}
+	\item \href{https://paginas.fe.up.pt/~eol/AIAD/aiad1617.html}{Slides das aulas teóricas}
+	\item \href{https://paginas.fe.up.pt/~eol/AIAD/aulas/jade_en.pdf}{Slides sobre \jade}
+	\item \href{https://paginas.fe.up.pt/~eol/AIAD/aulas/REPAST_intro_hlc.pdf}{Slides sobre \repast}
+	\item \href{https://web.fe.up.pt/~hlc/doku.php?id=sajas}{Página do \sajas}
+	\item \href{https://web.fe.up.pt/~hlc/doku.php?id=massim2dev}{Página da ferramenta \massim}
+\end{itemize}
+
 \section{Software}
+
+\begin{itemize}
+	\item \href{http://jade.tilab.com}{\jade}
+	\item \href{http://repast.sourceforge.net/repast_3/index.html}{\repast}
+	\item \href{https://web.fe.up.pt/~hlc/doku.php?id=sajas}{\sajas}
+	\item \href{https://web.fe.up.pt/~hlc/doku.php?id=massim2dev}{\massim}
+\end{itemize}
 
 \end{document}
