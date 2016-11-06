@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{tabularx}
 \usepackage[section]{placeins}
+\usepackage{hyperref}
 
 \pagenumbering{arabic}
 
@@ -60,7 +61,7 @@ De forma a facilitar a procura, todos os agentes podem localizar fontes de miné
 
 Um dos objetivos deste trabalho é implementar os agentes de forma a que a simulação da exploração seja tão eficiente quanto possível. Para tal serão estudadas várias alternativas de implementação, de forma a determinar qual a melhor abordagem. No caso dos agentes do tipo \emph{spotter}, tencionamos usar algoritmos de distribuição do espaço a explorar entre eles, para que cubram toda a região mais rapidamente. Em relação aos \emph{producers} e \emph{transporters}, pretendemos instalar protocolos de negociação que garantam que o melhor agente é escolhido para a tarefa.
 
-O nosso maior objetivo é utilizar este projeto como forma de melhor interiorizar os conceitos dos Sistemas Multi-Agente, nomeadamente ganhando uma maior familieridade com as plataformas que permitem implementar e simular estes sistemas, assim como as teorias que melhor se adequam ao nosso caso.
+O nosso maior objetivo é utilizar este projeto como forma de melhor interiorizar os conceitos dos Sistemas Multi-Agente, nomeadamente ganhando uma maior familiaridade com as plataformas que permitem implementar e simular estes sistemas.
 
 \section{Resultados esperados e forma de avaliação}
 
@@ -70,39 +71,44 @@ Numa segunda fase, introduziremos as restrições pretendidas para a simulação
 
 Com as métricas obtidas após a segunda fase de implementação, analisaremos diferentes algoritmos de forma a tornar mais eficiente esta demanda. Nomeadamente, avaliaremos qual a alocação mais eficiente de agentes, se o mapa fica corretamente dividido entre os \emph{spotters} e se o tempo de simulação foi o mínimo para o caso em questão.
 
- 
+
 \chapter{Plataforma/Ferramenta}
 
 \section{Para que serve}
 
-  \subsection{Jade}
-  Permite desenvolver agentes distruídos por \emph{containers} que podem estar em máquinas diferentes. Cada um destes agentes utiliza uma \emph{thread}. 
+  \subsection{JADE}
+  O JADE, \emph{Java Agent DEvelopment Framework}, é um software que permite desenvolver sistemas baseados em agentes. Os agentes são distribuídos por \emph{containers} que podem estar em máquinas diferentes, cada um utiliza uma \emph{thread}. 
 
   \subsection{Repast 3}
-  Permite construir simulações locais à máquina com diversos agentes. O processamento de cada agente é distribuído pelas \emph{threads}.
+  O Repast, \emph{Recursive Porous Agent Simulation Toolkit}, é uma ferramenta de simulação baseada em agentes, que permite construir simulações locais à máquina com diversos agentes. O processamento de cada agente é distribuído por \emph{threads}.
 
   \subsection{SAJaS}
-  Junta estas duas plataformas e toma vantagem dos benefícios de ambas.
+  O SAJaS, \emph{Simple API for JADE-based Simulations}, é uma ferramenta que se propõe servir de ponte entre o desenvolvimento e a simulação de Sistemas Multi-Agente. Desta forma, através do SAJaS, podemos tomar vantagem dos benefícios do JADE e do Repast.
 
 \section{Descrição das características principais}
 
-  \subsection{Jade}
-  Suporta troca de mensagens ACL que seguem a especificação FIPA e permite ter agentes remotos.
+  \subsection{JADE}
+  O JADE é uma ferramenta totalmente escrita em JAVA, que suporta troca de mensagens ACL, seguindo a especificação FIPA. Além disso, possui um sistema de gestão de agentes e um sistema de páginas amarelas. Como os agentes estão distribuídos por contentores que podem estar em máquinas diferentes, permite ter agentes remotos. Os agentes podem migrar entre contentores e ser clonados. Esta plataforma possui ainda uma série de ferramentas que simplificam a administração e o desenvolvimento de aplicações, tais como:
+  \begin{itemize}
+   \item agente de monitorização remota - interface gráfico para monitorar a atividade dos agentes;
+   \item agente pateta - permite trocar mensagens com outros agentes;
+   \item agente inspetor - permite inspecionar outros agentes;
+   \item agente introspectivo - permite monitorar o ciclo de vida de um agente.
+  \end{itemize}
+  A implementação de agentes em JADE é feita recorrendo a comportamentos, que determinam as tarefas a executar pelos agentes consoante o contexto. 
   
   \subsection{Repast 3}
-  Suporta simulação de espaços físicos, representação 2D e 3D e análise em tempo real.
+  O Repast 3 suporta simulação de espaços físicos, representação 2D e 3D e análise em tempo real. Possui uma barra de ferramentas para controlar as simulações, um interface gráfico para manipular os parâmetros. Permite recolher dados em vários formatos, incluindo vários tipos de gráficos. A interação entre os agentes pode ser visualizada graficamente. Os espaços físicos simulados podem ser de variados tipos, como por exemplo, grelhas hexagonais ou retangulares, espaços contínuos ou redes. Além de poderem ser corridas com recurso ao interface gráfico, as simulações podem também ser lançadas em \emph{batch}.
+  
+  O simulador discreto considera unidades de tempo (\emph{ticks}) ou passos. Os eventos são planeados para ocorrer em \emph{ticks} específicos e assim é respeitada a ordem dos acontecimentos. Uma simulação considera um conjunto de agentes, cujos comportamentos são controlados recorrendo ao plano.
 
   \subsection{SAJaS}
-  Permite manter o código exatamente igual apenas necessitando trocar as \emph{packages} usadas.
+  O SAJaS permite construir um Sistema Multi-Agente tal como é feito em JADE, existindo até uma ferramenta (MASSim2Dev) que traduz código JADE para SAJaS (e vice-versa), alterando as classes importadas. Ao contrário do JADE, permite ainda, recorrendo para isso ao Repast, a simulação deste tipo de sistemas. Além disso, o SAJaS permite ainda obter melhores performances do que numa simulação construída em JADE, que teria que considerar algum tipo de agente representado o `mundo'.
 
 \section{Realce das funcionalidades relevantes para o trabalho}
 
-Com o suporte do Jade são feitos os protocolos de comunicação entre os diferentes agentes utilizando mensagens ACL. Usando o Repast 3 torna-se
-fácil simular um espaço físico, popular o espaço com agentes, desenhá-los e finalmente vê-los em ação.
-A ferramenta \textbf{massim2dev}\footnote{https://web.fe.up.pt/~hlc/doku.php?id=massim2dev} automaticamente adapta as \textit{packages} utilizadas num
-projecto Jade para as disponibilizadas pelo SAJaS de modo a funcionar juntamente com o Repast 3.
-
-%escrever aqui
+Com o suporte do JADE são feitos os protocolos de comunicação entre os diferentes agentes, utilizando mensagens ACL. Usando o Repast 3 torna-se
+fácil simular um espaço físico, popular o espaço com os agentes construídos em JADE, desenhá-los e finalmente vê-los em ação, obtendo gráficos relativos à sua performance. O SAJaS permite-nos recorrer a estas duas ferramentas simultaneamente, construindo e simulando o nosso sistema de forma eficiente.
 
 \chapter{Especificação}
 %escrever aqui
@@ -195,13 +201,5 @@ do esforço e o minério que consegue transportar possibilitando o \emph{produce
 %escrever aqui
 \section{Software}
 %escrever aqui
-
-%
-% Anexos
-%
-\appendix
-\renewcommand{\chaptername}{Anexos}
-\chapter{Anexos}
-Dicas úteis e waypoints
 
 \end{document}
