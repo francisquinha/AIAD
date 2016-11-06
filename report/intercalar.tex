@@ -9,7 +9,7 @@
 \usepackage{xspace}
 
 \usepackage{geometry}
-\geometry{a4paper, total={150mm,230mm}, left=30mm, top=30mm}
+\geometry{a4paper, total={150mm,225mm}, left=30mm, top=30mm}
 \pagenumbering{arabic}
 
 \begin{document}
@@ -63,7 +63,7 @@
 No âmbito da unidade curricular de Agentes e Inteligência Artificial Distribuída, o nosso grupo propôs-se a implementar um Sistema Multi-Agente para simulação de um cenário de extração de minérios em Marte. Para tal, é necessário descobrir os minérios, extraí-los e transportá-los para a base. Sendo assim, no nosso sistema existem três tipos de Agentes:
 
 \begin{itemize}
-	\item \Spotter – Procura fontes de minérios e inspeciona-as para determinar se podem ser explorados. 
+	\item \Spotter – Procura fontes de minérios e inspeciona-as para determinar se podem ser exploradas. 
 	\item \Producer – É chamado a uma fonte de minério por um \spotter para extrair o máximo de minério possível nessa fonte. 
 	\item \Transporter – É alocado pelo \producer para carregar o minério obtido para a base.
 \end{itemize}
@@ -72,7 +72,9 @@ De forma a facilitar a procura, todos os agentes podem localizar fontes de miné
 
 \section{Objetivos do trabalho}
 
-Um dos objetivos deste trabalho é implementar os agentes de forma a que a simulação da exploração seja tão eficiente quanto possível. Para tal serão estudadas várias alternativas de implementação, de forma a determinar qual a melhor abordagem. No caso dos agentes do tipo \spotter, tencionamos usar algoritmos de distribuição do espaço a explorar entre eles, para que cubram toda a região mais rapidamente. Em relação aos \producers e \transporters, pretendemos instalar protocolos de negociação que garantam que o melhor agente é escolhido para a tarefa.
+Um dos objetivos deste trabalho é implementar os agentes de forma a que a simulação da exploração seja tão eficiente quanto possível. Para tal serão estudadas várias alternativas de implementação, de forma a determinar qual a melhor abordagem. 
+
+No caso dos agentes do tipo \spotter, tencionamos usar algoritmos de distribuição do espaço a explorar entre eles, para que cubram toda a região mais rapidamente. Em relação aos \producers e \transporters, pretendemos instalar protocolos de negociação que garantam que o melhor agente é escolhido para a tarefa.
 
 O nosso maior objetivo é utilizar este projeto como forma de melhor interiorizar os conceitos dos Sistemas Multi-Agente, nomeadamente ganhando uma maior familiaridade com as plataformas que permitem implementar e simular estes sistemas.
 
@@ -116,7 +118,7 @@ O \repast suporta simulação de espaços físicos, representação 2D e 3D e an
 O simulador discreto considera unidades de tempo - \emph{ticks} ou passos. Os eventos são planeados para ocorrer em \emph{ticks} específicos e assim é respeitada a ordem dos acontecimentos. Uma simulação considera um conjunto de agentes, cujos comportamentos são controlados recorrendo ao plano.
 
 \subsection{\sajas}
-O \sajas permite construir um Sistema Multi-Agente tal como é feito em \jade, existindo até uma ferramenta (\massim) que traduz código \jade para \sajas (e vice-versa), alterando as classes importadas. Ao contrário do \jade, permite ainda, recorrendo para isso ao \repast, a simulação deste tipo de sistemas. Além disso, o \sajas permite ainda obter melhores performances do que numa simulação construída em \jade, que teria que considerar algum tipo de agente representado o `mundo'.
+O \sajas permite construir um Sistema Multi-Agente tal como é feito em \jade, existindo até uma ferramenta (\massim) que traduz código \jade para \sajas (e vice-versa), alterando as classes importadas. Ao contrário do \jade, permite ainda, recorrendo para isso ao \repast, a simulação deste tipo de sistemas. Além disso, o \sajas permite obter melhores performances do que numa simulação construída em \jade, que teria que considerar algum tipo de agente representado o `mundo'.
 
 \section{Realce das funcionalidades relevantes para o trabalho}
 
@@ -176,7 +178,7 @@ Cada \spotter escolhe uma linha e depois comunica aos restantes a sua escolha, q
     \item \Spotter 2 recebe confirmação dos restantes e fica afeto ao espaço que pretendia.
 \end{enumerate}
 
-Neste exemplo, assumiu-se que não há sobreposição nas escolhas. Nessa caso, alguns dos \spotters terão que desistir das suas escolhas e comunicar novas, aguardando confirmação.
+Neste exemplo, assumiu-se que não há sobreposição nas escolhas. Quando houver sobreposição, alguns dos \spotters terão que desistir das suas escolhas e comunicar novas, aguardando confirmação.
 
 \FloatBarrier
 \subsection{Afetação de \producers}
@@ -223,6 +225,7 @@ A forma como decidimos implementar o nosso projeto tem como objetivo principal g
 	\item Retirar a limitação do número de \spotters ser função do número de linhas da matriz;
 	\item Introduzir as restrições de capacidade e quantidade de minério nos \transporters e na sua negociação com os \producers;
 	\item Permitir que todos os agentes detetem minério nas suas deslocações e comuniquem com os \spotters;
+	\item Considerar diferentes quantidades de minério, diferentes profundidades e, consequentemente, diferentes tempos de extração pelos \producers;
 	\item Estudar formas diferentes de distribuição dos \spotters pelo espaço;
 	\item Estudar outras alternativas de afetação dos \producers e \transporters e determinar a mais eficiente.
 \end{enumerate}
