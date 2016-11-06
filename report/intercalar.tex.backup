@@ -55,7 +55,7 @@ No âmbito da unidade curricular de Agentes e Inteligência Artificial Distribu�
   \item \emph{Transporter} – É alocado pelo \emph{producer} para carregar o minério obtido para a base.
 \end{itemize}
 
-De forma a facilitar a procura, todos os agentes podem localizar fontes de minérios e enviar a sua localização para os \emph{spotters} que os analisarão. A escolha do \emph{producer} por parte do \emph{spotter} segue um protocolo de negociação. A alocação dos \emph{transporters} a uma determinada fonte segue também um protocolo de negociação, iniciado pelo \emph{producer}. Esta alocação, terá em conta a quantidade de minério a transportar, de modo a determinar mais corretamente o número necessário de \emph{transporters}.
+De forma a facilitar a procura, todos os agentes podem localizar fontes de minérios e enviar a sua localização para os \emph{spotter} que os analisarão. A escolha do \emph{producer} por parte do \emph{spotter} segue um protocolo de negociação. A alocação dos \emph{transporters} a uma determinada fonte segue também um protocolo de negociação, iniciado pelo \emph{producer}. Esta alocação, terá em conta a quantidade de minério a transportar, de modo a determinar mais corretamente o número necessário de \emph{transporters}.
 
 \section{Objectivos do trabalho}
 
@@ -90,10 +90,10 @@ Com as métricas obtidas após a segunda fase de implementação, analisaremos d
   \subsection{JADE}
   O JADE é uma ferramenta totalmente escrita em JAVA, que suporta troca de mensagens ACL, seguindo a especificação FIPA. Além disso, possui um sistema de gestão de agentes e um sistema de páginas amarelas. Como os agentes estão distribuídos por contentores que podem estar em máquinas diferentes, permite ter agentes remotos. Os agentes podem migrar entre contentores e ser clonados. Esta plataforma possui ainda uma série de ferramentas que simplificam a administração e o desenvolvimento de aplicações, tais como:
   \begin{itemize}
-   \item agente de monitorização remota - interface gráfico para monitorizar a atividade dos agentes;
+   \item agente de monitorização remota - interface gráfico para monitorar a atividade dos agentes;
    \item agente pateta - permite trocar mensagens com outros agentes;
    \item agente inspetor - permite inspecionar outros agentes;
-   \item agente introspetivo - permite monitorizar o ciclo de vida de um agente.
+   \item agente introspectivo - permite monitorar o ciclo de vida de um agente.
   \end{itemize}
   A implementação de agentes em JADE é feita recorrendo a comportamentos, que determinam as tarefas a executar pelos agentes consoante o contexto. 
   
@@ -115,7 +115,7 @@ fácil simular um espaço físico, popular o espaço com os agentes construídos
 \section{Identificação e caracterização dos agentes (arquitectura, comportamento, estratégias)}
 %escrever aqui
 
-\section{Protocolos de interação}
+\section{Protocolos de interacção}
 
 \subsection{Divisão de espaços}
 Inicialmente cada \emph{spotter} deve comunicar e acordar com os restantes \emph{spotters} o espaço reservado para este explorar.
@@ -137,11 +137,11 @@ afetação com os \emph{spotters} restantes.
   
   \begin{enumerate}
     \item Spotter1 comunica ao restantes \emph{spotters} o espaço que este pretende explorar.
-    \item Spotter1 recebe confirmação dos \emph{spotters} e fica afeto ao espaço que o mesmo pretendia.
+    \item Spotter1 recebe confirmação dos \emph{spotters} e fica afecto ao espaço que o mesmo pretendia.
     \item Spotter3 comunica ao restantes \emph{spotters} o espaço que este pretende explorar.
     \item Spotter2 comunica ao restantes \emph{spotters} o espaço que este pretende explorar.
-    \item Spotter3 recebe confirmação dos \emph{spotters} e fica afeto ao espaço que o mesmo pretendia.
-    \item Spotter2 recebe confirmação dos \emph{spotters} e fica afeto ao espaço que o mesmo pretendia.
+    \item Spotter3 recebe confirmação dos \emph{spotters} e fica afecto ao espaço que o mesmo pretendia.
+    \item Spotter2 recebe confirmação dos \emph{spotters} e fica afecto ao espaço que o mesmo pretendia.
   \end{enumerate}
 \end{figure}
 
@@ -149,7 +149,7 @@ afetação com os \emph{spotters} restantes.
 \newpage
 \subsection{Afetação de Producers}
 Uma vez encontrado minério é necessário chamar um \emph{producer} para o extrair. O \emph{spotter} envia então a posição do 
-minério a todos os \emph{producers} e espera que lhe respondam com um valor indicativo do esforço necessário a cada \emph{producer}.
+minério a todos os \emph{producers} e espera que lhe respondam com um valor indicante do esforço necessário a cada \emph{producer}.
 O \emph{spotter} escolhe o \emph{producer} com o menor esforço e comunica de novo pedindo para confirmar a afetação do mesmo.
 Caso seja recusado, porque o \emph{producer} foi afeto a outro minério entretanto, o \emph{spotter} pede de novo o valor do esforço
 e repete o processo anterior.
@@ -183,7 +183,7 @@ do esforço e o minério que consegue transportar possibilitando o \emph{produce
 
 \begin{table}[htb]
 \centering
-\caption{Fases previstas para o projeto}
+\caption{Fases previstas para o projecto}
     \sffamily \begin{tabularx}{1.0\textwidth}{ p{3cm}  p{10,5cm} }
     \hline
     \textbf{1º Ponto} \hfill & Construir ambiente de simulação na tecnologia \emph{Repast} \\ \hline
@@ -191,7 +191,7 @@ do esforço e o minério que consegue transportar possibilitando o \emph{produce
     \textbf{3º Ponto} \hfill & Criação do \emph{producer} com a função básica de produzir. Melhoramento do \emph{spotter} para chamar \emph{producers}. \\ \hline
     \textbf{4º Ponto} \hfill & Criação do \emph{transporter} sem limite de capacidade e apenas com a função básica de transportar. Melhoramento do \emph{producer} para chamar \emph{transporters}. \\ \hline
     \textbf{5º Ponto} \hfill & Melhoria dos Agentes \emph{spotter}, \emph{producer} e \emph{transporter}. \\ \hline
-    \textbf{6º Ponto} \hfill & Definir estratégias de forma a tornar a exploração de Marte o mais eficiente possível. \\ \hline
+    \textbf{6º Ponto} \hfill & Defenir estratégias de forma a tornar a exploração de Marte o mais eficiente possível. \\ \hline
     \end{tabularx} \normalfont
 \end{table}
 
