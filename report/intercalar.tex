@@ -175,12 +175,12 @@ Sendo o espaço uma matriz retangular, numa primeira fase de implementação, as
 
 Cada \spotter escolhe uma linha e depois comunica aos restantes a sua escolha, que ficam encarregues de confirmar a afetação. Esta comunicação, correspondente ao exemplo acima, é ilustrada na Figura~\ref{spotter-agreement}:
 \begin{enumerate}
-	\item \spotter 1 comunica aos restantes o espaço que pretende explorar;
-    \item \spotter 1 recebe confirmação dos restantes e fica afeto ao espaço que pretendia;
-    \item \spotter 3 comunica aos restantes o espaço que pretende explorar;
-    \item \spotter 2 comunica aos restantes o espaço que este pretende explorar;
-    \item \spotter 3 recebe confirmação dos restantes e fica afeto ao espaço que pretendia;
-    \item \spotter 2 recebe confirmação dos restantes e fica afeto ao espaço que pretendia.
+	\item \Spotter 1 comunica aos restantes o espaço que pretende explorar;
+    \item \Spotter 1 recebe confirmação dos restantes e fica afeto ao espaço que pretendia;
+    \item \Spotter 3 comunica aos restantes o espaço que pretende explorar;
+    \item \Spotter 2 comunica aos restantes o espaço que este pretende explorar;
+    \item \Spotter 3 recebe confirmação dos restantes e fica afeto ao espaço que pretendia;
+    \item \Spotter 2 recebe confirmação dos restantes e fica afeto ao espaço que pretendia.
 \end{enumerate}
 
 Neste exemplo, assumiu-se que não há sobreposição nas escolhas. Nessa caso, alguns dos \spotters terão que desistir das suas escolhas e comunicar novas, aguardando confirmação.
@@ -217,22 +217,21 @@ Cada \transporter comunica o valor do esforço e o minério que consegue transpo
 
 A Figura~\ref{transporter-scheduling} exemplifica o processo de escolha de \transporters para os minérios extraídos por dois \producers. Consideramos ainda as quantidades de minério extraídas, a capacidade e carga corrente dos \transporters. Estas restrições irão influenciar a forma como se negoceia a afetação dos \transporters numa fase mais avançada da implementação.
 
-\newpage
 \section{Faseamento do projeto}
 
 A forma como decidimos implementar o nosso projeto tem como objetivo principal garantir que obtemos resultados e temos um protótipo funcional desde cedo. Sendo assim, o nosso plano é:
 \begin{enumerate}
-	\item construir ambiente de simulação em \repast;
-	\item implementar agente do tipo \spotter apenas com as tarefas de dividir o território, explorar e mapear os seus achados;
-    \item implementar agente do tipo \producer, com a função de se descolar aos locais e extrair o minério; 
-	\item estabelecer a comunicação entre \spotters e \producers;
-	\item implementar agente \transporter sem limite de capacidade e apenas com a função básica de transportar;
-	\item estabelecer a comunicação entre \producers e \transporters;
-	\item retirar a limitação do número de \spotters ser função do número de linhas da matriz;
-	\item introduzir as restrições de capacidade e quantidade de minério nos \transporters e na sua negociação com os \producers;
-	\item permitir que todos os agentes detetem minério nas suas deslocações e comuniquem com os \spotters;
-	\item estudar formas diferentes de distribuição dos \spotters pelo espaço;
-	\item estudar outras alternativas de afetação dos \producers e \transporters e determinar a mais eficiente.
+	\item Construir ambiente de simulação em \repast;
+	\item Implementar agente do tipo \spotter apenas com as tarefas de dividir o território, explorar e mapear os seus achados;
+    \item Implementar agente do tipo \producer, com a função de se descolar aos locais e extrair o minério; 
+	\item Estabelecer a comunicação entre \spotters e \producers;
+	\item Implementar agente \transporter sem limite de capacidade e apenas com a função básica de transportar;
+	\item Estabelecer a comunicação entre \producers e \transporters;
+	\item Retirar a limitação do número de \spotters ser função do número de linhas da matriz;
+	\item Introduzir as restrições de capacidade e quantidade de minério nos \transporters e na sua negociação com os \producers;
+	\item Permitir que todos os agentes detetem minério nas suas deslocações e comuniquem com os \spotters;
+	\item Estudar formas diferentes de distribuição dos \spotters pelo espaço;
+	\item Estudar outras alternativas de afetação dos \producers e \transporters e determinar a mais eficiente.
 \end{enumerate}
 
 \chapter{Recursos}
