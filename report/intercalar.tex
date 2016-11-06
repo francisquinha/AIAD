@@ -175,71 +175,69 @@ Sendo o espaço uma matriz retangular, numa primeira fase de implementação, as
 
 Cada \spotter escolhe uma linha e depois comunica aos restantes a sua escolha, que ficam encarregues de confirmar a afetação. Esta comunicação, correspondente ao exemplo acima, é ilustrada na Figura~\ref{spotter-agreement}:
 \begin{enumerate}
-	\item Spotter1 comunica aos restantes o espaço que pretende explorar.
-    \item Spotter1 recebe confirmação dos restantes e fica afeto ao espaço que pretendia.
-    \item Spotter3 comunica aos restantes o espaço que pretende explorar.
-    \item Spotter2 comunica aos restantes o espaço que este pretende explorar.
-    \item Spotter3 recebe confirmação dos restantes e fica afeto ao espaço que pretendia.
-    \item Spotter2 recebe confirmação dos restantes e fica afeto ao espaço que pretendia.
+	\item \spotter 1 comunica aos restantes o espaço que pretende explorar;
+    \item \spotter 1 recebe confirmação dos restantes e fica afeto ao espaço que pretendia;
+    \item \spotter 3 comunica aos restantes o espaço que pretende explorar;
+    \item \spotter 2 comunica aos restantes o espaço que este pretende explorar;
+    \item \spotter 3 recebe confirmação dos restantes e fica afeto ao espaço que pretendia;
+    \item \spotter 2 recebe confirmação dos restantes e fica afeto ao espaço que pretendia.
 \end{enumerate}
 
 Neste exemplo, assumiu-se que não há sobreposição nas escolhas. Nessa caso, alguns dos \spotters terão que desistir das suas escolhas e comunicar novas, aguardando confirmação.
 
 \FloatBarrier
-\newpage
 \subsection{Afetação de \producers}
-Uma vez encontrado minério é necessário chamar um \producer para o extrair. O \spotter envia então a posição do 
-minério a todos os \producers e espera que lhe respondam com um valor indicativo do esforço necessário a cada \producer.
-O \spotter escolhe o \producer com o menor esforço e comunica de novo pedindo para confirmar a afetação do mesmo.
-Caso seja recusado, porque o \producer foi afeto a outro minério entretanto, o \spotter pede de novo o valor do esforço
-e repete o processo anterior.
+Uma vez encontrado minério é necessário chamar um \producer para o extrair. O \spotter envia então a posição do  minério a todos os \producers. 
+Estes respondem com o valor do esforço de que necessitarão para se deslocar até ao local. 
+O \spotter escolhe o \producer com o menor esforço e comunica com ele, pedindo para confirmar a afetação. 
+Caso seja recusado, porque o \producer foi afeto a outro minério entretanto, o \spotter repete o processo desde o início.
 
 \begin{figure}[h]
   \centering
     \includegraphics[width=0.8\textwidth]{producer-scheduling}
-  \caption{\small{Exemplo de afetação de \textit{Producers}}}
+  \caption{Exemplo de afetação de \producers}
+  \label{producer-scheduling}
 \end{figure}
 
-Os \producers guardam numa \emph{queue} os diferentes minérios que vão extrair. Com esta \emph{queue} o calculo do esforço
-para extrair um minério baseia-se em somar a distância entre cada um dos minérios, a distância do ponto corrente para o primeiro
-minério e a distância do ultimo minério ao potencial minério.
+A Figura~\ref{producer-scheduling} exemplifica o processo de escolha de \producers para os minérios encontrados pelos \spotters 1 e 2. 
+Neste caso, ficou o \producer 2 afeto ao minério do \spotter 1 e o \producer 1 afeto ao minério do \spotter 2.
 
 \FloatBarrier
-\newpage
 \subsection{Afetação de \transporters}
-Após a extração do minério é necessário transportá-lo para a nave-mãe. O \producer que acabou de extrair o minério tem que selecionar 
-um \transporter, do mesmo modo que o \spotter seleciona um \producer. Cada \transporter comunica o valor
-do esforço e o minério que consegue transportar possibilitando o \producer de escalonar os diferentes agentes.
+Após a extração do minério é necessário transportá-lo para a nave-mãe. 
+O \producer que acabou de extrair o minério tem que selecionar um \transporter, do mesmo modo que o \spotter seleciona um \producer. 
+Cada \transporter comunica o valor do esforço e o minério que consegue transportar possibilitando o \producer de escalonar os diferentes agentes.
 
 \begin{figure}[h]
   \centering
     \includegraphics[width=0.8\textwidth]{transporter-scheduling}
-  \caption{\small{Exemplo de afetação de \textit{Transporters}}}
+  \caption{Exemplo de afetação de \transporters}
+  \label{transporter-scheduling}
 \end{figure}
 
-%escrever aqui
+A Figura~\ref{transporter-scheduling} exemplifica o processo de escolha de \transporters para os minérios extraídos por dois \producers. Consideramos ainda as quantidades de minério extraídas, a capacidade e carga corrente dos \transporters. Estas restrições irão influenciar a forma como se negoceia a afetação dos \transporters numa fase mais avançada da implementação.
+
 \newpage
 \section{Faseamento do projeto}
 
-\begin{table}[htb]
-\centering
-\caption{Fases previstas para o projeto}
-    \sffamily \begin{tabularx}{1.0\textwidth}{ p{3cm}  p{10,5cm} }
-    \hline
-    \textbf{1º Ponto} \hfill & Construir ambiente de simulação na tecnologia \emph{\repast} \\ \hline
-    \textbf{2º Ponto} \hfill & Criação do \spotter com as função de explorar e dividir território a explorar. \\ \hline
-    \textbf{3º Ponto} \hfill & Criação do \producer com a função básica de produzir. Melhoramento do \spotter para chamar \producers. \\ \hline
-    \textbf{4º Ponto} \hfill & Criação do \transporter sem limite de capacidade e apenas com a função básica de transportar. Melhoramento do \producer para chamar \transporters. \\ \hline
-    \textbf{5º Ponto} \hfill & Melhoria dos Agentes \spotter, \producer e \transporter. \\ \hline
-    \textbf{6º Ponto} \hfill & Definir estratégias de forma a tornar a exploração de Marte o mais eficiente possível. \\ \hline
-    \end{tabularx} \normalfont
-\end{table}
+A forma como decidimos implementar o nosso projeto tem como objetivo principal garantir que obtemos resultados e temos um protótipo funcional desde cedo. Sendo assim, o nosso plano é:
+\begin{enumerate}
+	\item construir ambiente de simulação em \repast;
+	\item implementar agente do tipo \spotter apenas com as tarefas de dividir o território, explorar e mapear os seus achados;
+    \item implementar agente do tipo \producer, com a função de se descolar aos locais e extrair o minério; 
+	\item estabelecer a comunicação entre \spotters e \producers;
+	\item implementar agente \transporter sem limite de capacidade e apenas com a função básica de transportar;
+	\item estabelecer a comunicação entre \producers e \transporters;
+	\item retirar a limitação do número de \spotters ser função do número de linhas da matriz;
+	\item introduzir as restrições de capacidade e quantidade de minério nos \transporters e na sua negociação com os \producers;
+	\item permitir que todos os agentes detetem minério nas suas deslocações e comuniquem com os \spotters;
+	\item estudar formas diferentes de distribuição dos \spotters pelo espaço;
+	\item estudar outras alternativas de afetação dos \producers e \transporters e determinar a mais eficiente.
+\end{enumerate}
 
 \chapter{Recursos}
-%escrever aqui
+
 \section{Bibliografia}
-%escrever aqui
 \section{Software}
-%escrever aqui
 
 \end{document}
