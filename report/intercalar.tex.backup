@@ -46,21 +46,16 @@
 \chapter{Enunciado}
 
 \section{Descrição do cenário}
-No âmbito da unidade Curricular de Agentes e Inteligência Artificial Distribuída o grupo propôs-se a implementar um Sistema Multi-Agente para 
-simulação de um cenário de extração de minérios em Marte.
-Sendo assim, é necessário um conjunto de agentes com a tarefa de explorar o planeta Marte em busca de minérios, e de transportar a maior
-quantidade possível para a base. Para tal, existem três tipos de Agentes:
+No âmbito da unidade Curricular de Agentes e Inteligência Artificial Distribuída o grupo propôs-se a implementar um Sistema Multi-Agente para simulação de um cenário de extração de minérios em Marte.
+Sendo assim, é necessário um conjunto de agentes com a tarefa de explorar o planeta Marte em busca de minérios, e de transportar a maior quantidade possível para a base. Para tal, existem três tipos de Agentes:
 
 \begin{itemize}
-  \item \textit{Spotter}– Procura fontes de minérios e inspeciona-los para determinar se podem ser explorados. 
-  \item \textit{Producer}– É chamado a uma fonte de minério por um \textit{Spotter} para extrair o máximo de minério possível nessa fonte. 
-  \item \textit{Transporter}– É alocado pelo \textit{Producer} para carregar o minério obtido para a base.
+  \item {\textbackslash}\textit{Spotter}– Procura fontes de minérios e inspeciona-los para determinar se podem ser explorados. 
+  \item {\textbackslash}\textit{Producer}– É chamado a uma fonte de minério por um \textit{Spotter} para extrair o máximo de minério possível nessa fonte. 
+  \item {\textbackslash}\textit{Transporter}– É alocado pelo \textit{Producer} para carregar o minério obtido para a base.
 \end{itemize}
 
-A escolha do \textit{Producer} por parte do \textit{Spotter} segue um protocolo de negociação. 
-A alocação dos \textit{Transporters} a uma determinada fonte segue também um protocolo de negociação, iniciado pelo \textit{Producer}. 
-Esta alocação, terá em conta a quantidade de minério a transportar, de modo a determinar mais corretamente o número necessário de 
-\textit{Transporters}.
+De forma a facilitar a procura, todos os agentes podem localizar fontes de minérios e enviar a sua localização para os \textit{Spotter} que os analisarão. A escolha do \textit{Producer} por parte do \textit{Spotter} segue um protocolo de negociação. A alocação dos \textit{Transporters} a uma determinada fonte segue também um protocolo de negociação, iniciado pelo \textit{Producer}. Esta alocação, terá em conta a quantidade de minério a transportar, de modo a determinar mais corretamente o número necessário de \textit{Transporters}.
 
 \section{Objectivos do trabalho}
 
