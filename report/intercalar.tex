@@ -71,6 +71,7 @@ Após estas fases, implementaremos algoritmos de forma a tornar mais eficiente e
 \chapter{Plataforma/Ferramenta}
 
 \section{Para que serve}
+
   \subsection{Jade}
   Permite desenvolver agentes distruídos por \emph{containers} que podem estar em máquinas diferentes. Cada um destes agentes utiliza uma \emph{thread}. 
 
@@ -81,6 +82,7 @@ Após estas fases, implementaremos algoritmos de forma a tornar mais eficiente e
   Junta estas duas plataformas e toma vantagem dos benefícios de ambas.
 
 \section{Descrição das características principais}
+
   \subsection{Jade}
   Suporta troca de mensagens ACL que seguem a especificação FIPA e permite ter agentes remotos.
   
@@ -91,9 +93,11 @@ Após estas fases, implementaremos algoritmos de forma a tornar mais eficiente e
   Permite manter o código exatamente igual apenas necessitando trocar as \emph{packages} usadas.
 
 \section{Realce das funcionalidades relevantes para o trabalho}
-Troca de mensagens no jade
-Espaços no repast3
-Scheduling no repast3
+
+Com o suporte do Jade são feitos os protocolos de comunicação entre os diferentes agentes utilizando mensagens ACL. Usando o Repast 3 torna-se
+fácil simular um espaço físico, popular o espaço com agentes, desenhá-los e finalmente vê-los em ação.
+A ferramenta \textbf{massim2dev}\footnote{https://web.fe.up.pt/~hlc/doku.php?id=massim2dev} automaticamente adapta as \textit{packages} utilizadas num
+projecto Jade para as disponibilizadas pelo SAJaS de modo a funcionar juntamente com o Repast 3.
 
 %escrever aqui
 
@@ -133,6 +137,7 @@ afetação com os \emph{spotters} restantes.
 \end{figure}
 
 \FloatBarrier
+\newpage
 \subsection{Afetação de Producers}
 Uma vez encontrado minério é necessário chamar um \emph{producer} para o extrair. O \emph{spotter} envia então a posição do 
 minério a todos os \emph{producers} e espera que lhe respondam com um valor indicante do esforço necessário a cada \emph{producer}.
@@ -140,17 +145,31 @@ O \emph{spotter} escolhe o \emph{producer} com o menor esforço e comunica de no
 Caso seja recusado, porque o \emph{producer} foi afeto a outro minério entretanto, o \emph{spotter} pede de novo o valor do esforço
 e repete o processo anterior.
 
-Os \emph{producers} guardam numa \emph{queue} os diferentes minérios que vão extrair. Com esta \emph{queue} o calculo do esforço
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.8\textwidth]{producer-scheduling}
+  \caption{\small{Exemplo de afetação de \textit{Producers}}}
+\end{figure}
+
+Os \emph{Producers} guardam numa \emph{queue} os diferentes minérios que vão extrair. Com esta \emph{queue} o calculo do esforço
 para extrair um minério baseia-se em somar a distância entre cada um dos minérios, a distância do ponto corrente para o primeiro
 minério e a distância do ultimo minério ao potencial minério.
 
 \FloatBarrier
+\newpage
 \subsection{Afetação de Transporters}
 Após a extração do minério é necessário transportá-lo para a nave-mãe. O \emph{producer} que acabou de extrair o minério tem que selecionar 
 um \emph{transporter}, do mesmo modo que o \emph{spotter} seleciona um \emph{producer}. Cada \emph{transporter} comunica o valor
 do esforço e o minério que consegue transportar possibilitando o \emph{producer} de escalonar os diferentes agentes.
 
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.8\textwidth]{transporter-scheduling}
+  \caption{\small{Exemplo de afetação de \textit{Transporters}}}
+\end{figure}
+
 %escrever aqui
+\newpage
 \section{Faseamento do projecto}
 
 \begin{table}[htb]
@@ -173,17 +192,6 @@ do esforço e o minério que consegue transportar possibilitando o \emph{produce
 %escrever aqui
 \section{Software}
 %escrever aqui
-
-
-\chapter{Exemplo Figura e tabela}
-
-\begin{figure}[!htb]
-\centering
-\includegraphics[width=0.60\textwidth]{FEUP_Logo}
-\caption[alguma coisa.]{Mais aluguma coisa} \label{fig:Array}
-\end{figure}
-
-\section{Baixando a partir de outro documento}
 
 %
 % Anexos
