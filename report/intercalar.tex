@@ -58,14 +58,17 @@ De forma a facilitar a procura, todos os agentes podem localizar fontes de miné
 
 \section{Objectivos do trabalho}
 
-Um dos objetivos deste trabalho é implementar os agentes de forma a que a simulação da exploração seja tão eficiente quanto possível. Para tal serão estudadas várias alternativas de implementação, de forma a determinar qual a melhor abordagem. No caso dos agentes do tipo \emph{spotter}, tencionamos usar algoritmos de distribuição do espaço a explorar entre eles, para que cubram toda a região mais rapidamente. Em relação aos \emph{producers} e \emph{transporters}, o objetivo é instalar protocolos de negociação que garantam que o melhor agente é escolhido para a tarefa.
+Um dos objetivos deste trabalho é implementar os agentes de forma a que a simulação da exploração seja tão eficiente quanto possível. Para tal serão estudadas várias alternativas de implementação, de forma a determinar qual a melhor abordagem. No caso dos agentes do tipo \emph{spotter}, tencionamos usar algoritmos de distribuição do espaço a explorar entre eles, para que cubram toda a região mais rapidamente. Em relação aos \emph{producers} e \emph{transporters}, pretendemos instalar protocolos de negociação que garantam que o melhor agente é escolhido para a tarefa.
+
+O nosso maior objetivo é utilizar este projeto como forma de melhor interiorizar os conceitos dos Sistemas Multi-Agente, nomeadamente ganhando uma maior familieridade com as plataformas que permitem implementar e simular estes sistemas, assim como as teorias que melhor se adequam ao nosso caso.
 
 \section{Resultados esperados e forma de avaliação}
 
-Inicialmente serão implementadas apenas as funcionalidades básicas de cada Agente como tal:
-A 1º fase de avaliação será verificar o sucesso da implementação do comportamento de cada agente. Após se garantir que todos os agentes realizam o seu papel corretamente passamos para a fase seguinte, a fase de implementação de restrições. 
-Nesta 2º fase, irá avaliar–se se os \emph{transporters} chamados não ultrapassam a sua capacidade, se o \emph{transporters} chamados conseguem recolher todo o minério presente. 
-Após estas fases, implementaremos algoritmos de forma a tornar mais eficiente esta demanda, avaliando se as alocações dos demais agentes correspondem ao mais disponível na altura. Se o mapa fica corretamente dividido entre os \emph{spotters} e se o tempo de simulação foi o mínimo para o caso em questão.
+Para podermos ver resultados mais rapidamente, inicialmente serão implementadas apenas as funcionalidades mais básicas de cada tipo de agente. Como tal, a primeira fase de avaliação preocupar-se-á essencialmente em garantir que cada agente faz aquilo que é suposto.
+
+Numa segunda fase, introduziremos as restrições pretendidas para a simulação, nomeadamente a capacidade limitada dos \emph{transporters} e o facto de todos os agentes poderem detetar minério nas suas deambulações. Uma vez realizadas estas alterações aos agentes básicos, a avaliação geral levará em conta o tempo que a simulação demora a correr e o número de passos efetuados por todos os agentes. Usando estas métricas, dados vários tamanhos para o espaço inicial a explorar, iremos determinar a complexidade do nosso sistema. Para podermos melhorar cada componente individual, calcularemos também métricas mais finas, como o tempo de espera médio e máximo, quando é invocado um \emph{producer} ou um \emph{transporter}, ou o tempo de exploração do terreno pelos \emph{spotters} consoante o seu número.
+
+Com as métricas obtidas após a segunda fase de implementação, analisaremos diferentes algoritmos de forma a tornar mais eficiente esta demanda. Nomeadamente, avaliaremos qual a alocação mais eficiente de agentes, se o mapa fica corretamente dividido entre os \emph{spotters} e se o tempo de simulação foi o mínimo para o caso em questão.
 
  
 \chapter{Plataforma/Ferramenta}
@@ -151,7 +154,7 @@ e repete o processo anterior.
   \caption{\small{Exemplo de afetação de \textit{Producers}}}
 \end{figure}
 
-Os \emph{Producers} guardam numa \emph{queue} os diferentes minérios que vão extrair. Com esta \emph{queue} o calculo do esforço
+Os \emph{producers} guardam numa \emph{queue} os diferentes minérios que vão extrair. Com esta \emph{queue} o calculo do esforço
 para extrair um minério baseia-se em somar a distância entre cada um dos minérios, a distância do ponto corrente para o primeiro
 minério e a distância do ultimo minério ao potencial minério.
 
