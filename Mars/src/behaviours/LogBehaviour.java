@@ -1,3 +1,5 @@
+package behaviours;
+
 
 import jade.lang.acl.ACLMessage;
 import sajas.core.Agent;

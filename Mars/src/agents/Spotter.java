@@ -1,3 +1,5 @@
+package agents;
+
 
 import jade.lang.acl.ACLMessage;
 import sajas.core.AID;
