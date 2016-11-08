@@ -7,7 +7,8 @@ import sajas.core.behaviours.CyclicBehaviour;
 
 
 /**
- *
+ * Simple example behavior.
+ * 
  * @author diogo
  */
 public class LogBehaviour extends CyclicBehaviour {
