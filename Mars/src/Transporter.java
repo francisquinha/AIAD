@@ -1,5 +1,6 @@
 
-import jade.core.Agent;
+import sajas.core.Agent;
+
 
 /**
  *
