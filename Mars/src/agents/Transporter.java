@@ -2,14 +2,18 @@ package agents;
 
 
 import behaviours.LogBehaviour;
-import sajas.core.Agent;
+import java.awt.Color;
 
 
 /**
  *
  * @author diogo
  */
-public class Transporter extends Agent {
+public class Transporter extends MarsAgent {
+    
+    public Transporter() {
+        super(Color.BLUE);
+    }
     
     @Override
     protected void setup() {

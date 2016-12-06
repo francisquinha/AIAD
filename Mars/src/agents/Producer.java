@@ -5,13 +5,17 @@ import behaviours.LogBehaviour;
 import jade.domain.FIPANames;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
-import sajas.core.Agent;
+import java.awt.Color;
 
 /**
  *
  * @author diogo
  */
-public class Producer extends Agent {
+public class Producer extends MarsAgent {
+    
+    public Producer() {
+        super(Color.GREEN);
+    }
     
     @Override
     protected void setup() {
