@@ -1,15 +1,21 @@
+import agents.MarsAgent;
 import agents.Producer;
 import agents.Spotter;
 import agents.Transporter;
+import jade.core.AID;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAException;
 import jade.wrapper.StaleProxyException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.function.Supplier;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.core.Runtime;
+import sajas.domain.AMSService;
+import sajas.domain.DFService;
 import sajas.wrapper.ContainerController;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.gui.DisplaySurface;
@@ -31,7 +37,7 @@ public class MarsModel extends Repast3Launcher {
     private Object2DDisplay display;
     private List<DefaultDrawableNode> nodes;
     
-    private Environment environment;
+    private final Environment environment;
     private List<Producer> producers;
     private List<Spotter> spotters;
     private List<Transporter> transporters;
@@ -56,38 +62,40 @@ public class MarsModel extends Repast3Launcher {
 
         try {
             buildAgents();
-        } catch(StaleProxyException e) {
+        } catch(StaleProxyException | FIPAException e) {
             System.out.println("Could not launch the agents! " + e.getMessage());
         }
     }
     
-    protected void buildAgents() throws StaleProxyException {
+    protected void buildAgents() throws StaleProxyException, FIPAException {
         this.nodes = new ArrayList<>();
-        this.spotters = new ArrayList(this.environment.spotters);
-        this.producers = new ArrayList(this.environment.producers);
-        this.transporters = new ArrayList(this.environment.transporters);
-        
-        for(int i = 0; i < this.environment.spotters; i++) {
-            Spotter spotter = new Spotter();
-            this.spotters.add(spotter);
-            this.mainContainer.acceptNewAgent("Spotter" + i, spotter).start();
-        }
-        
-        for(int i = 0; i < this.environment.producers; i++) {
-            Producer producer = new Producer();
-            this.producers.add(producer);
-            this.mainContainer.acceptNewAgent("Producer" + i, producer).start();
-        }
+        this.spotters = buildAgents(MarsAgent.Ontologies.SPOTTER, () -> new Spotter());
+        this.producers = buildAgents(MarsAgent.Ontologies.PRODUCER, () -> new Producer());
+        this.transporters = buildAgents(MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter());
+    }
+    
+    protected <T extends MarsAgent> List<T> buildAgents(String ontology, Supplier<T> supplier) throws FIPAException, StaleProxyException {
+        List<T> createdAgents = new LinkedList<>();
         
         for(int i = 0; i < this.environment.transporters; i++) {
-            Transporter transporter = new Transporter();
-            this.transporters.add(transporter);
-            this.mainContainer.acceptNewAgent("Transporter" + i, transporter).start();
+            T agent = supplier.get();
+            String nickname = ontology + i;
+            AID aid = new AID();
+            aid.setName(nickname);
+            agent.setAID(aid);
+            createdAgents.add(agent);
+            
+            DFAgentDescription df = new DFAgentDescription();
+            df.setName(aid);
+            df.addOntologies(ontology);
+            AMSService.register(agent);
+            DFService.register(agent, df);
+            
+            this.nodes.add(agent.node);
+            this.mainContainer.acceptNewAgent(nickname, agent).start();
         }
         
-        this.spotters.forEach(spotter -> this.nodes.add(spotter.node));
-        this.producers.forEach(producer -> this.nodes.add(producer.node));
-        this.transporters.forEach(transporter -> this.nodes.add(transporter.node));
+        return createdAgents;
     }
     
     protected void buildSpace() {

@@ -5,19 +5,27 @@
  */
 package behaviours;
 
+import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import sajas.core.Agent;
 import sajas.proto.AchieveREResponder;
 
 /**
  * Answers the request for an area.
- * 
+ *
  * @author diogo
  */
 public class AnswerAreaRequestBehaviour extends AchieveREResponder {
-    
+
     public AnswerAreaRequestBehaviour(Agent a, MessageTemplate mt) {
         super(a, mt);
     }
-    
+
+    @Override
+    protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) {
+        ACLMessage informDone = request.createReply();
+        System.out.println("Received: " + request.getContent());
+        informDone.setContent("Ok dude go ahead");
+        return informDone;
+    }
 }

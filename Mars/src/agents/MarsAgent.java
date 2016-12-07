@@ -5,9 +5,13 @@
  */
 package agents;
 
+import jade.core.AID;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAException;
 import java.awt.Color;
 import java.awt.Point;
 import sajas.core.Agent;
+import sajas.domain.DFService;
 import uchicago.src.sim.gui.RoundRectNetworkItem;
 import uchicago.src.sim.network.DefaultDrawableNode;
 
@@ -35,6 +39,29 @@ public class MarsAgent extends Agent {
         item.setWidth(MarsAgent.NODE_SIZE);
         
         return item;
+    }
+    
+    public AID[] getAgents(String ontology) {
+        try {
+            DFAgentDescription description = new DFAgentDescription();
+            description.addOntologies(ontology);
+            DFAgentDescription[] found = DFService.search(this, description);
+            AID[] aids = new AID[found.length];
+            
+            for(int i = 0; i < found.length;  i++)
+                aids[i] = found[i].getName();
+            
+            return aids;
+        } catch(FIPAException e) {
+            System.out.println("No agents with the ontology " + ontology);
+            return new AID[0];
+        }
+    }
+    
+    public static class Ontologies {
+        public static final String SPOTTER = "Spotter";
+        public static final String PRODUCER = "Producer";
+        public static final String TRANSPORTER = "Transporter";
     }
     
 }

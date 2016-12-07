@@ -1,10 +1,14 @@
 package agents;
 
 
-import behaviours.SpotterScanBehaviour;
+import behaviours.AnswerAreaRequestBehaviour;
+import jade.core.AID;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import java.awt.Color;
-import sajas.core.AID;
+import sajas.proto.AchieveREInitiator;
+import sajas.proto.AchieveREResponder;
 
 /**
  *
@@ -21,8 +25,8 @@ public class Spotter extends MarsAgent {
     
     @Override
     protected void setup() {
-        System.out.println("A spotter was set up!");
-        this.addBehaviour(new SpotterScanBehaviour(this));
+        MessageTemplate template = AchieveREResponder.createMessageTemplate(FIPANames.InteractionProtocol.FIPA_REQUEST);
+        this.addBehaviour(new AnswerAreaRequestBehaviour(this, template));
     }
     
     public void assignRow(int yOffset, int height) {
@@ -30,19 +34,22 @@ public class Spotter extends MarsAgent {
         this.rowHeight = height;
         this.node.setX(0);
         this.node.setY(yOffset);
+        System.out.println(this.getAID().getLocalName() + " set to Y:" + yOffset);
         
-        System.out.println("Spotter set to Y:" + yOffset);
-    }
-    
-    public void sayHello() {
-        System.out.println("Sending a hello message!");
-        ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+        ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
+        message.setContent(yOffset + "-" + height);
+        message.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
         
-        message.addReceiver(new AID("Transporter", AID.ISLOCALNAME));
-        message.addReceiver(new AID("Spotter", AID.ISLOCALNAME));
-        message.setLanguage("English");
-        message.setContent("Hello!");
-        send(message);
+        AID[] aids = this.getAgents(MarsAgent.Ontologies.SPOTTER);
+        String localName = this.getAID().getLocalName();
+        for(AID aid : aids) {
+            if(aid.getLocalName().equals(localName))
+                continue;
+            
+            message.addReceiver(aid);
+        }
+        
+        this.addBehaviour(new AchieveREInitiator(this, message));
     }
     
 }
