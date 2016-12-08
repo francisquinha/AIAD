@@ -22,6 +22,7 @@ import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.network.DefaultDrawableNode;
 import uchicago.src.sim.space.Object2DGrid;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +45,8 @@ public class MarsModel extends Repast3Launcher {
     private List<Producer> producers;
     private List<Spotter> spotters;
     private List<Transporter> transporters;
+
+    private Point2D.Double shipPosition;
     
     public MarsModel(Environment environment) {
         this.environment = environment;
@@ -55,6 +58,7 @@ public class MarsModel extends Repast3Launcher {
         this.buildSpace();
         this.buildDisplay();
         this.assignSpotterSpaces();
+        this.shipPosition = new Point2D.Double(50, 50);
     }
     
     @Override
@@ -74,7 +78,7 @@ public class MarsModel extends Repast3Launcher {
         this.nodes = new ArrayList<>();
         this.spotters = buildAgents(MarsAgent.Ontologies.SPOTTER, () -> new Spotter());
         this.producers = buildAgents(MarsAgent.Ontologies.PRODUCER, () -> new Producer());
-        this.transporters = buildAgents(MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter());
+        this.transporters = buildAgents(MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(10, shipPosition));
     }
     
     protected <T extends MarsAgent> List<T> buildAgents(String ontology, Supplier<T> supplier) throws FIPAException, StaleProxyException {
@@ -127,6 +131,10 @@ public class MarsModel extends Repast3Launcher {
             currentOffset += height;
         }
         
+    }
+
+    protected Point2D.Double getShipPosition() {
+        return this.shipPosition;
     }
   
     @Override

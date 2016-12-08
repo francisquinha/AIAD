@@ -1,11 +1,10 @@
 package behaviours;
 
 import agents.Transporter;
+import main.Movement;
 import sajas.core.behaviours.CyclicBehaviour;
 
-import java.awt.*;
-
-import static java.lang.Math.abs;
+import java.awt.geom.Point2D;
 
 /**
  * Created by Angie.
@@ -13,50 +12,28 @@ import static java.lang.Math.abs;
 public class TransporterMoveBehaviour extends CyclicBehaviour {
 
     private final Transporter transporter;
-    private final Point position;
-    private int steps;
-    private final double incX;
-    private final double incY;
+    private final Movement movement;
 
-    public TransporterMoveBehaviour(Transporter transporter, Point position) {
+    public TransporterMoveBehaviour(Transporter transporter, Point2D.Double position) {
         this.transporter = transporter;
-        this.position = position;
-        double dx = this.position.getX() - this.transporter.node.getX();
-        double dy = this.position.getY() - this.transporter.node.getY();
-        int absdx = (int) abs(dx);
-        int absdy = (int) abs(dy);
-        if (absdx > absdy) {
-            this.steps = absdx;
-        }
-        else {
-            this.steps = absdy;
-        }
-        if (this.steps == 0) {
-            this.incX = 0;
-            this.incY = 0;
-        }
-        else {
-            this.incX = dx / this.steps;
-            this.incY = dy / this.steps;
-        }
-
+        movement = new Movement(transporter.getPosition(), position);
         System.out.printf("in = (%.2f, %.2f), out = (%.2f, %.2f), steps = %d, inc = (%.2f, %.2f)\n",
                 this.transporter.node.getX(), this.transporter.node.getY(),
-                this.position.getX(), this.position.getY(),
-                this.steps,
-                this.incX, this.incY);
+                position.getX(), position.getY(),
+                movement.getSteps(),
+                movement.getIncX(), movement.getIncY());
     }
 
     @Override
     public void action() {
-        if (this.steps > 0) {
-            this.steps--;
-            this.transporter.node.setX(this.transporter.node.getX() + this.incX);
-            this.transporter.node.setY(this.transporter.node.getY() + this.incY);
+        if (movement.getSteps() > 0) {
+            movement.decSteps();
+            transporter.node.setX(transporter.node.getX() + movement.getIncX());
+            transporter.node.setY(transporter.node.getY() + movement.getIncY());
         }
         else {
-            this.transporter.node.setX(position.getX());
-            this.transporter.node.setY(position.getY());
+            transporter.node.setX(movement.getFinalPosition().getX());
+            transporter.node.setY(movement.getFinalPosition().getY());
         }
     }
 

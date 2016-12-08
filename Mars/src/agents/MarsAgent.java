@@ -14,6 +14,7 @@ import uchicago.src.sim.gui.RoundRectNetworkItem;
 import uchicago.src.sim.network.DefaultDrawableNode;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 /**
  *
@@ -22,7 +23,7 @@ import java.awt.*;
 public class MarsAgent extends Agent {
     
     public static int NODE_SIZE = 10;
-    public static Point STARTING_POSITION = new Point(0, 0);
+    public static Point2D.Double STARTING_POSITION = new Point2D.Double(50, 50);
     
     public DefaultDrawableNode node;
     
