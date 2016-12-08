@@ -1,3 +1,5 @@
+package main;
+
 import agents.MarsAgent;
 import agents.Producer;
 import agents.Spotter;
@@ -8,14 +10,10 @@ import jade.core.ProfileImpl;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAException;
 import jade.wrapper.StaleProxyException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Supplier;
-import sajas.sim.repast3.Repast3Launcher;
 import sajas.core.Runtime;
 import sajas.domain.AMSService;
 import sajas.domain.DFService;
+import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.gui.DisplaySurface;
@@ -23,6 +21,11 @@ import uchicago.src.sim.gui.Network2DGridDisplay;
 import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.network.DefaultDrawableNode;
 import uchicago.src.sim.space.Object2DGrid;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  *

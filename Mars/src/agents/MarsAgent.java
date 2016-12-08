@@ -8,12 +8,12 @@ package agents;
 import jade.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAException;
-import java.awt.Color;
-import java.awt.Point;
 import sajas.core.Agent;
 import sajas.domain.DFService;
 import uchicago.src.sim.gui.RoundRectNetworkItem;
 import uchicago.src.sim.network.DefaultDrawableNode;
+
+import java.awt.*;
 
 /**
  *
