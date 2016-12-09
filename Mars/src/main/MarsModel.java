@@ -30,7 +30,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 import uchicago.src.sim.gui.Network2DGridDisplay;
-import uchicago.src.sim.util.Random;
 
 /**
  *
@@ -50,7 +49,7 @@ public class MarsModel extends Repast3Launcher {
     private List<Transporter> transporters;
     private List<Mineral> minerals;
 
-    private Point2D.Double shipPosition;
+    private Point2D.Double shipPosition = new Point2D.Double(0, 0);
     
     @Override
     public void begin() {
