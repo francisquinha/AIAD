@@ -2,7 +2,7 @@ package main;
 
 import agents.MarsAgent;
 
-import java.awt.geom.Point2D;
+import java.awt.*;
 
 import static java.lang.Math.abs;
 
@@ -11,13 +11,13 @@ import static java.lang.Math.abs;
  */
 public class Movement {
 
-    private final Point2D.Double finalPosition;
+    private final Point finalPosition;
     private int steps;
     private final double incX;
     private final double incY;
 
 
-    Movement(Point2D.Double initialPosition, Point2D.Double finalPosition) {
+    Movement(Point initialPosition, Point finalPosition) {
         this.finalPosition = finalPosition;
         double dx = finalPosition.getX() - initialPosition.getX();
         double dy = finalPosition.getY() - initialPosition.getY();

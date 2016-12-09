@@ -7,7 +7,6 @@ import main.Transport;
 import main.TransportMovement;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -23,9 +22,9 @@ public class Transporter extends MarsAgent {
     private Queue<TransportMovement> transports;
     private TransportMovement currentTransport;
     private int transportsCost;
-    private Point2D.Double shipPosition;
+    private Point shipPosition;
     
-    public Transporter(/*int capacity, */Point2D.Double shipPosition) {
+    public Transporter(/*int capacity, */Point shipPosition) {
         super(Color.BLUE);
 //        this.capacity = capacity;
 //        available = capacity;
@@ -37,13 +36,18 @@ public class Transporter extends MarsAgent {
 
     @Override
     protected void setup() {
+        int bound = Environment.SIZE * Environment.CELL_SIZE + 1;
         for (int i = 0; i < 10; i++) {
-            Point2D.Double place = new Point2D.Double(Simulation.random.nextInt(
-                    Environment.SIZE + 1), Simulation.random.nextInt(Environment.SIZE + 1));
+            Point place = new Point(Simulation.random.nextInt(bound), Simulation.random.nextInt(bound));
             TransportMovement transport = new TransportMovement(place, 0, shipPosition, shipPosition);
             System.out.printf("%d - %d\n", transport.getCost(), getTransportCost(transport));
             addTransport(transport);
         }
+        Point place = new Point(bound, bound);
+        TransportMovement transport = new TransportMovement(place, 0, shipPosition, shipPosition);
+        System.out.printf("%d - %d\n", transport.getCost(), getTransportCost(transport));
+        addTransport(transport);
+
         this.addBehaviour(new TransporterMoveBehaviour(this));
     }
 

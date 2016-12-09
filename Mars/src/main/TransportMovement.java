@@ -1,6 +1,6 @@
 package main;
 
-import java.awt.geom.Point2D;
+import java.awt.*;
 
 /**
  * Created by Angie.
@@ -10,7 +10,7 @@ public class TransportMovement extends Transport {
     private Movement movement2Place;
     private Movement movement2Ship;
 
-    public TransportMovement(Point2D.Double place, int quantity, Point2D.Double transporterPosition, Point2D.Double shipPosition) {
+    public TransportMovement(Point place, int quantity, Point transporterPosition, Point shipPosition) {
         super(place, quantity);
         movement2Place = new Movement(transporterPosition, place);
         movement2Ship = new Movement(place, shipPosition);
