@@ -15,5 +15,6 @@ public class Environment {
     public static final int PRODUCERS = 10;
     public static final int TRANSPORTERS = 1;
     public static final int CELL_SIZE = 5;
+    public static final int MINERALS = 15;
     
 }

@@ -61,6 +61,7 @@ public class MarsAgent extends Agent {
         public static final String SPOTTER = "Spotter";
         public static final String PRODUCER = "Producer";
         public static final String TRANSPORTER = "Transporter";
+        public static final String MINERAL = "Mineral";
     }
 
     public Point getPosition() {
