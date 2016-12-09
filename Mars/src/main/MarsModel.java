@@ -1,3 +1,5 @@
+package main;
+
 import agents.MarsAgent;
 import agents.Producer;
 import agents.Spotter;
@@ -22,6 +24,9 @@ import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Network2DGridDisplay;
 import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.network.DefaultDrawableNode;
+import uchicago.src.sim.space.Diffuse2D;
+import uchicago.src.sim.space.Discrete2DSpace;
+import uchicago.src.sim.space.Multi2DGrid;
 import uchicago.src.sim.space.Object2DGrid;
 
 /**
@@ -32,19 +37,14 @@ public class MarsModel extends Repast3Launcher {
     
     private ContainerController mainContainer;
     private Schedule schedule;
-    private Object2DGrid space;
+    private Discrete2DSpace space;
     private DisplaySurface displaySurface;
     private Object2DDisplay display;
     private List<DefaultDrawableNode> nodes;
     
-    private final Environment environment;
     private List<Producer> producers;
     private List<Spotter> spotters;
     private List<Transporter> transporters;
-    
-    public MarsModel(Environment environment) {
-        this.environment = environment;
-    }
     
     @Override
     public void begin() {
@@ -77,7 +77,7 @@ public class MarsModel extends Repast3Launcher {
     protected <T extends MarsAgent> List<T> buildAgents(String ontology, Supplier<T> supplier) throws FIPAException, StaleProxyException {
         List<T> createdAgents = new LinkedList<>();
         
-        for(int i = 0; i < this.environment.transporters; i++) {
+        for(int i = 0; i < Environment.TRANSPORTERS; i++) {
             T agent = supplier.get();
             String nickname = ontology + i;
             AID aid = new AID();
@@ -99,7 +99,7 @@ public class MarsModel extends Repast3Launcher {
     }
     
     protected void buildSpace() {
-        this.space = new Object2DGrid(this.environment.size, this.environment.size);
+        this.space = new Diffuse2D(Environment.SIZE * Environment.CELL_SIZE, Environment.SIZE);
         this.displaySurface = new DisplaySurface(this, "Mars");
         this.registerDisplaySurface("Mars", this.displaySurface);
     }
@@ -114,7 +114,7 @@ public class MarsModel extends Repast3Launcher {
     }
     
     protected void assignSpotterSpaces() {
-        int spaceSize = this.environment.size;
+        int spaceSize = Environment.SIZE;
         int spottersCount = this.spotters.size();
         int height = spaceSize/spottersCount;
         int currentOffset = 0;

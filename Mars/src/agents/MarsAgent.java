@@ -10,6 +10,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAException;
 import java.awt.Color;
 import java.awt.Point;
+import main.Environment;
 import sajas.core.Agent;
 import sajas.domain.DFService;
 import uchicago.src.sim.gui.RoundRectNetworkItem;
@@ -21,7 +22,6 @@ import uchicago.src.sim.network.DefaultDrawableNode;
  */
 public class MarsAgent extends Agent {
     
-    public static int NODE_SIZE = 10;
     public static Point STARTING_POSITION = new Point(0, 0);
     
     public DefaultDrawableNode node;
@@ -35,8 +35,8 @@ public class MarsAgent extends Agent {
     private static RoundRectNetworkItem createDefaultItem() {
         RoundRectNetworkItem item = new RoundRectNetworkItem(STARTING_POSITION.x, STARTING_POSITION.y);
         item.allowResizing(false);
-        item.setHeight(MarsAgent.NODE_SIZE);
-        item.setWidth(MarsAgent.NODE_SIZE);
+        item.setHeight(Environment.CELL_SIZE);
+        item.setWidth(Environment.CELL_SIZE);
         
         return item;
     }
