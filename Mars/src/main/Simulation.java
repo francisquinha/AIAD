@@ -3,6 +3,8 @@ package main;
 import sajas.sim.repast3.Repast3Launcher;
 import uchicago.src.sim.engine.SimInit;
 
+import java.util.Random;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -14,7 +16,9 @@ import uchicago.src.sim.engine.SimInit;
  * @author diogo
  */
 public class Simulation {
-    
+
+    public static Random random = new Random();
+
     public static void main(String[] args) {
         SimInit init = new SimInit();
         init.setNumRuns(1);

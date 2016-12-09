@@ -10,14 +10,10 @@ import jade.core.ProfileImpl;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAException;
 import jade.wrapper.StaleProxyException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Supplier;
-import sajas.sim.repast3.Repast3Launcher;
 import sajas.core.Runtime;
 import sajas.domain.AMSService;
 import sajas.domain.DFService;
+import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.gui.DisplaySurface;
@@ -28,6 +24,12 @@ import uchicago.src.sim.space.Diffuse2D;
 import uchicago.src.sim.space.Discrete2DSpace;
 import uchicago.src.sim.space.Multi2DGrid;
 import uchicago.src.sim.space.Object2DGrid;
+
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  *
@@ -45,6 +47,8 @@ public class MarsModel extends Repast3Launcher {
     private List<Producer> producers;
     private List<Spotter> spotters;
     private List<Transporter> transporters;
+
+    private Point2D.Double shipPosition;
     
     @Override
     public void begin() {
@@ -69,15 +73,15 @@ public class MarsModel extends Repast3Launcher {
     
     protected void buildAgents() throws StaleProxyException, FIPAException {
         this.nodes = new ArrayList<>();
-        this.spotters = buildAgents(MarsAgent.Ontologies.SPOTTER, () -> new Spotter());
-        this.producers = buildAgents(MarsAgent.Ontologies.PRODUCER, () -> new Producer());
-        this.transporters = buildAgents(MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter());
+        this.spotters = buildAgents(Environment.SPOTTERS, MarsAgent.Ontologies.SPOTTER, () -> new Spotter());
+        this.producers = buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer());
+        this.transporters = buildAgents(Environment.TRANSPORTERS, MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(shipPosition));
     }
     
-    protected <T extends MarsAgent> List<T> buildAgents(String ontology, Supplier<T> supplier) throws FIPAException, StaleProxyException {
+    protected <T extends MarsAgent> List<T> buildAgents(int count, String ontology, Supplier<T> supplier) throws FIPAException, StaleProxyException {
         List<T> createdAgents = new LinkedList<>();
         
-        for(int i = 0; i < Environment.TRANSPORTERS; i++) {
+        for(int i = 0; i < count; i++) {
             T agent = supplier.get();
             String nickname = ontology + i;
             AID aid = new AID();
@@ -124,6 +128,10 @@ public class MarsModel extends Repast3Launcher {
             currentOffset += height;
         }
         
+    }
+
+    protected Point2D.Double getShipPosition() {
+        return this.shipPosition;
     }
   
     @Override

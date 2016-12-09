@@ -16,6 +16,8 @@ import sajas.domain.DFService;
 import uchicago.src.sim.gui.RoundRectNetworkItem;
 import uchicago.src.sim.network.DefaultDrawableNode;
 
+import java.awt.geom.Point2D;
+
 /**
  *
  * @author diogo
@@ -23,7 +25,6 @@ import uchicago.src.sim.network.DefaultDrawableNode;
 public class MarsAgent extends Agent {
     
     public static Point STARTING_POSITION = new Point(0, 0);
-    
     public DefaultDrawableNode node;
     
     protected MarsAgent(Color color) {
@@ -63,5 +64,9 @@ public class MarsAgent extends Agent {
         public static final String PRODUCER = "Producer";
         public static final String TRANSPORTER = "Transporter";
     }
-    
+
+    public Point2D.Double getPosition() {
+        return new Point2D.Double(this.node.getX(), this.node.getY());
+    }
+
 }
