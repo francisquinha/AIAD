@@ -1,5 +1,7 @@
 package main;
 
+import agents.MarsAgent;
+
 import java.awt.geom.Point2D;
 
 import static java.lang.Math.abs;
@@ -9,15 +11,13 @@ import static java.lang.Math.abs;
  */
 public class Movement {
 
-    private final Point2D.Double initialPosition;
     private final Point2D.Double finalPosition;
     private int steps;
     private final double incX;
     private final double incY;
 
 
-    public Movement(Point2D.Double initialPosition, Point2D.Double finalPosition) {
-        this.initialPosition = initialPosition;
+    Movement(Point2D.Double initialPosition, Point2D.Double finalPosition) {
         this.finalPosition = finalPosition;
         double dx = finalPosition.getX() - initialPosition.getX();
         double dy = finalPosition.getY() - initialPosition.getY();
@@ -43,20 +43,14 @@ public class Movement {
         return steps;
     }
 
-    public double getIncX() {
-        return incX;
-    }
-
-    public double getIncY() {
-        return incY;
-    }
-
-    public void decSteps() {
+    public void move(MarsAgent agent) {
         steps--;
-    }
-
-    public Point2D.Double getFinalPosition() {
-        return finalPosition;
+        agent.node.setX(agent.node.getX() + incX);
+        agent.node.setY(agent.node.getY() + incY);
+        if (steps == 0) {
+            agent.node.setX(finalPosition.getX());
+            agent.node.setY(finalPosition.getY());
+        }
     }
 
 }

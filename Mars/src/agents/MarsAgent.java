@@ -64,5 +64,9 @@ public class MarsAgent extends Agent {
         public static final String PRODUCER = "Producer";
         public static final String TRANSPORTER = "Transporter";
     }
-    
+
+    public Point2D.Double getPosition() {
+        return new Point2D.Double(this.node.getX(), this.node.getY());
+    }
+
 }

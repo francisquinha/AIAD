@@ -50,6 +50,7 @@ public class MarsModel extends Repast3Launcher {
     
     public MarsModel(Environment environment) {
         this.environment = environment;
+        this.shipPosition = new Point2D.Double(50, 50);
     }
     
     @Override
@@ -58,7 +59,6 @@ public class MarsModel extends Repast3Launcher {
         this.buildSpace();
         this.buildDisplay();
         this.assignSpotterSpaces();
-        this.shipPosition = new Point2D.Double(50, 50);
     }
     
     @Override
@@ -78,7 +78,7 @@ public class MarsModel extends Repast3Launcher {
         this.nodes = new ArrayList<>();
         this.spotters = buildAgents(MarsAgent.Ontologies.SPOTTER, () -> new Spotter());
         this.producers = buildAgents(MarsAgent.Ontologies.PRODUCER, () -> new Producer());
-        this.transporters = buildAgents(MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(10, shipPosition));
+        this.transporters = buildAgents(MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(shipPosition));
     }
     
     protected <T extends MarsAgent> List<T> buildAgents(String ontology, Supplier<T> supplier) throws FIPAException, StaleProxyException {

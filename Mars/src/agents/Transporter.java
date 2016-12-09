@@ -1,9 +1,9 @@
 package agents;
 
 import behaviours.TransporterMoveBehaviour;
-import main.Movement;
 import main.Simulation;
 import main.Transport;
+import main.TransportMovement;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -17,64 +17,55 @@ import java.util.Queue;
  */
 public class Transporter extends MarsAgent {
 
-    private int capacity;
-    private int available;
+//    private int capacity;
+//    private int available;
     private Queue<TransportMovement> transports;
-    private int cost;
+    private TransportMovement currentTransport;
+    private int transportsCost;
     private Point2D.Double shipPosition;
     
-    public Transporter(int capacity, Point2D.Double shipPosition) {
+    public Transporter(/*int capacity, */Point2D.Double shipPosition) {
         super(Color.BLUE);
-        this.capacity = capacity;
-        available = capacity;
+//        this.capacity = capacity;
+//        available = capacity;
         transports = new LinkedList<>();
-        cost = 0;
+        currentTransport = null;
+        transportsCost = 0;
         this.shipPosition = shipPosition;
-    }
-
-    public int getTransportCost(Transport transport) {
-        TransportMovement transportMovement = new TransportMovement(transport, shipPosition, shipPosition);
-        return cost + transportMovement.getOneWayCost();
-    }
-
-    public void addTransport(Transport transport) {
-        TransportMovement transportMovement = new TransportMovement(transport, shipPosition, shipPosition);
-        cost += transportMovement.getCost();
-        transports.add(transportMovement);
-    }
-
-    public Point2D.Double getPosition() {
-        return new Point2D.Double(this.node.getX(), this.node.getY());
     }
 
     @Override
     protected void setup() {
-        this.node.setX(Simulation.random.nextInt(101));
-        this.node.setY(Simulation.random.nextInt(101));
-        this.addBehaviour(
-                new TransporterMoveBehaviour(this,
-                        new Point2D.Double(Simulation.random.nextInt(101), Simulation.random.nextInt(101))));
+        for (int i = 0; i < 10; i++) {
+            Point2D.Double place = new Point2D.Double(Simulation.random.nextInt(101), Simulation.random.nextInt(101));
+            TransportMovement transport = new TransportMovement(place, 0, shipPosition, shipPosition);
+            System.out.printf("%d - %d\n", transport.getCost(), getTransportCost(transport));
+            addTransport(transport);
+        }
+        this.addBehaviour(new TransporterMoveBehaviour(this));
     }
 
-    private class TransportMovement extends Transport {
+    public int getTransportCost(Transport transport) {
+        TransportMovement transportMovement = new TransportMovement(transport.getPlace(), transport.getQuantity(), shipPosition, shipPosition);
+        if (currentTransport == null)
+            return transportsCost + transports.size() + transportMovement.getOneWayCost();
+        return currentTransport.getCost() + transportsCost + transports.size() + 1 + transportMovement.getOneWayCost();
+    }
 
-        private Movement movement2Place;
-        private Movement movement2Ship;
+    public void addTransport(Transport transport) {
+        TransportMovement transportMovement = new TransportMovement(transport.getPlace(), transport.getQuantity(), shipPosition, shipPosition);
+        transports.add(transportMovement);
+        transportsCost += transportMovement.getCost();
+    }
 
-        private TransportMovement(Transport transport, Point2D.Double transporterPosition, Point2D.Double shipPosition) {
-            super(transport.getPlace(), transport.getQuantity());
-            movement2Place = new Movement(transporterPosition, this.getPlace());
-            movement2Ship = new Movement(this.getPlace(), shipPosition);
-        }
+    public void getNextTransport() {
+        currentTransport = transports.poll();
+        if (currentTransport != null)
+            transportsCost -= currentTransport.getCost();
+    }
 
-        private int getCost() {
-            return movement2Place.getSteps() + movement2Ship.getSteps();
-        }
-
-        private int getOneWayCost() {
-            return movement2Place.getSteps();
-        }
-
+    public TransportMovement getCurrentTransport() {
+        return currentTransport;
     }
 
 }

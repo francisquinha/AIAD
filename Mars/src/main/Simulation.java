@@ -23,7 +23,7 @@ public class Simulation {
         SimInit init = new SimInit();
         init.setNumRuns(1);
         
-        Environment env = new Environment(100, 10, 10, 10);
+        Environment env = new Environment(100, 10, 10, 1);
         Repast3Launcher model = new MarsModel(env);
         init.loadModel(model, null, false);
     }

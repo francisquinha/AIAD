@@ -2,9 +2,8 @@ package behaviours;
 
 import agents.Transporter;
 import main.Movement;
+import main.TransportMovement;
 import sajas.core.behaviours.CyclicBehaviour;
-
-import java.awt.geom.Point2D;
 
 /**
  * Created by Angie.
@@ -12,29 +11,33 @@ import java.awt.geom.Point2D;
 public class TransporterMoveBehaviour extends CyclicBehaviour {
 
     private final Transporter transporter;
-    private final Movement movement;
 
-    public TransporterMoveBehaviour(Transporter transporter, Point2D.Double position) {
+    public TransporterMoveBehaviour(Transporter transporter) {
         this.transporter = transporter;
-        movement = new Movement(transporter.getPosition(), position);
-        System.out.printf("in = (%.2f, %.2f), out = (%.2f, %.2f), steps = %d, inc = (%.2f, %.2f)\n",
-                this.transporter.node.getX(), this.transporter.node.getY(),
-                position.getX(), position.getY(),
-                movement.getSteps(),
-                movement.getIncX(), movement.getIncY());
     }
 
     @Override
     public void action() {
-        if (movement.getSteps() > 0) {
-            movement.decSteps();
-            transporter.node.setX(transporter.node.getX() + movement.getIncX());
-            transporter.node.setY(transporter.node.getY() + movement.getIncY());
-        }
+        TransportMovement transport = transporter.getCurrentTransport();
+        if (transport == null)
+            transporter.getNextTransport();
         else {
-            transporter.node.setX(movement.getFinalPosition().getX());
-            transporter.node.setY(movement.getFinalPosition().getY());
+            Movement movement = transport.getMovement2Place();
+            if (movement.getSteps() > 0) {
+                movement.move(transporter);
+            }
+            else {
+                movement = transport.getMovement2Ship();
+                if (movement.getSteps() == 0) {
+                    transporter.getNextTransport();
+                }
+                else {
+                    movement.move(transporter);
+                }
+            }
+
         }
+
     }
 
 }
