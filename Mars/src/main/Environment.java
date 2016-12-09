@@ -13,7 +13,7 @@ public class Environment {
     public static final int SIZE = 20;
     public static final int SPOTTERS = 10;
     public static final int PRODUCERS = 10;
-    public static final int TRANSPORTERS = 0;
+    public static final int TRANSPORTERS = 1;
     public static final int CELL_SIZE = 5;
     
 }

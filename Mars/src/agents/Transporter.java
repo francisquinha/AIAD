@@ -1,6 +1,7 @@
 package agents;
 
 import behaviours.TransporterMoveBehaviour;
+import main.Environment;
 import main.Simulation;
 import main.Transport;
 import main.TransportMovement;
@@ -37,7 +38,8 @@ public class Transporter extends MarsAgent {
     @Override
     protected void setup() {
         for (int i = 0; i < 10; i++) {
-            Point2D.Double place = new Point2D.Double(Simulation.random.nextInt(101), Simulation.random.nextInt(101));
+            Point2D.Double place = new Point2D.Double(Simulation.random.nextInt(
+                    Environment.SIZE + 1), Simulation.random.nextInt(Environment.SIZE + 1));
             TransportMovement transport = new TransportMovement(place, 0, shipPosition, shipPosition);
             System.out.printf("%d - %d\n", transport.getCost(), getTransportCost(transport));
             addTransport(transport);

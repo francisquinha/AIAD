@@ -22,8 +22,6 @@ import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.network.DefaultDrawableNode;
 import uchicago.src.sim.space.Diffuse2D;
 import uchicago.src.sim.space.Discrete2DSpace;
-import uchicago.src.sim.space.Multi2DGrid;
-import uchicago.src.sim.space.Object2DGrid;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -48,7 +46,7 @@ public class MarsModel extends Repast3Launcher {
     private List<Spotter> spotters;
     private List<Transporter> transporters;
 
-    private Point2D.Double shipPosition;
+    private Point2D.Double shipPosition = new Point2D.Double(0, 0);
     
     @Override
     public void begin() {
