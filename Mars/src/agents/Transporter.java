@@ -7,7 +7,7 @@ import main.Transport;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.PriorityQueue;
+import java.util.LinkedList;
 import java.util.Queue;
 
 
@@ -27,14 +27,14 @@ public class Transporter extends MarsAgent {
         super(Color.BLUE);
         this.capacity = capacity;
         available = capacity;
-        transports = new PriorityQueue<>();
+        transports = new LinkedList<>();
         cost = 0;
         this.shipPosition = shipPosition;
     }
 
-    public int getTransportTotalCost(Transport transport) {
+    public int getTransportCost(Transport transport) {
         TransportMovement transportMovement = new TransportMovement(transport, shipPosition, shipPosition);
-        return cost + transportMovement.getCost();
+        return cost + transportMovement.getOneWayCost();
     }
 
     public void addTransport(Transport transport) {
@@ -69,6 +69,10 @@ public class Transporter extends MarsAgent {
 
         private int getCost() {
             return movement2Place.getSteps() + movement2Ship.getSteps();
+        }
+
+        private int getOneWayCost() {
+            return movement2Place.getSteps();
         }
 
     }
