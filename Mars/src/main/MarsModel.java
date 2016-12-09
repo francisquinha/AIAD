@@ -1,6 +1,7 @@
 package main;
 
 import agents.MarsAgent;
+import agents.Mineral;
 import agents.Producer;
 import agents.Spotter;
 import agents.Transporter;
@@ -17,19 +18,19 @@ import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.gui.DisplaySurface;
-import uchicago.src.sim.gui.Network2DGridDisplay;
 import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.network.DefaultDrawableNode;
 import uchicago.src.sim.space.Diffuse2D;
 import uchicago.src.sim.space.Discrete2DSpace;
-import uchicago.src.sim.space.Multi2DGrid;
-import uchicago.src.sim.space.Object2DGrid;
+import java.util.concurrent.ThreadLocalRandom;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
+import uchicago.src.sim.gui.Network2DGridDisplay;
+import uchicago.src.sim.util.Random;
 
 /**
  *
@@ -47,6 +48,7 @@ public class MarsModel extends Repast3Launcher {
     private List<Producer> producers;
     private List<Spotter> spotters;
     private List<Transporter> transporters;
+    private List<Mineral> minerals;
 
     private Point2D.Double shipPosition;
     
@@ -55,6 +57,7 @@ public class MarsModel extends Repast3Launcher {
         super.begin();
         this.buildSpace();
         this.buildDisplay();
+        this.spreadMinerals();
         this.assignSpotterSpaces();
     }
     
@@ -76,6 +79,15 @@ public class MarsModel extends Repast3Launcher {
         this.spotters = buildAgents(Environment.SPOTTERS, MarsAgent.Ontologies.SPOTTER, () -> new Spotter());
         this.producers = buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer());
         this.transporters = buildAgents(Environment.TRANSPORTERS, MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(shipPosition));
+        this.minerals = buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral());
+    }
+    
+    protected void spreadMinerals() {
+        ThreadLocalRandom r = ThreadLocalRandom.current();
+        for(Mineral mineral : this.minerals) {
+            mineral.node.setX(r.nextInt(0, Environment.SIZE * Environment.CELL_SIZE));
+            mineral.node.setY(r.nextInt(0, Environment.SIZE * Environment.CELL_SIZE));
+        }
     }
     
     protected <T extends MarsAgent> List<T> buildAgents(int count, String ontology, Supplier<T> supplier) throws FIPAException, StaleProxyException {
@@ -103,7 +115,7 @@ public class MarsModel extends Repast3Launcher {
     }
     
     protected void buildSpace() {
-        this.space = new Diffuse2D(Environment.SIZE * Environment.CELL_SIZE, Environment.SIZE);
+        this.space = new Diffuse2D(Environment.SIZE * Environment.CELL_SIZE, Environment.SIZE * Environment.CELL_SIZE);
         this.displaySurface = new DisplaySurface(this, "Mars");
         this.registerDisplaySurface("Mars", this.displaySurface);
     }
@@ -118,7 +130,7 @@ public class MarsModel extends Repast3Launcher {
     }
     
     protected void assignSpotterSpaces() {
-        int spaceSize = Environment.SIZE;
+        int spaceSize = Environment.SIZE * Environment.CELL_SIZE;
         int spottersCount = this.spotters.size();
         int height = spaceSize/spottersCount;
         int currentOffset = 0;

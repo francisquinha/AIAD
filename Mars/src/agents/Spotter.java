@@ -156,7 +156,6 @@ public class Spotter extends MarsAgent {
             if(Spotter.this.areaNegotiations.containsKey(area)) {
                 AID registered = Spotter.this.areaNegotiations.get(area);
                 if(registered.getLocalName().equals(sender.getLocalName())) {
-                    System.out.println("Received area confirmation from " + sender.getLocalName());
                     Spotter.this.areaNegotiations.remove(area);
                     Spotter.this.areaOwners.put(area, sender);
                     this.reset();
@@ -173,7 +172,6 @@ public class Spotter extends MarsAgent {
         public void action() {
             int currentX = (int)Spotter.this.node.getX();
             int currentY = (int)Spotter.this.node.getY();
-            System.out.println(currentX + ", " + currentY);
             int targetY = Spotter.this.rowYOffset;
             int maxX = Environment.SIZE * Environment.CELL_SIZE;
             
@@ -185,10 +183,8 @@ public class Spotter extends MarsAgent {
             } else {
                 int newX = currentX + Environment.CELL_SIZE;
                 Spotter.this.node.setX(newX);
-                if(newX >= maxX) {
-                    System.out.println("Ok thats enough");
+                if(newX >= maxX)
                     Spotter.this.removeBehaviour(this);
-                }
             }
         }
         
