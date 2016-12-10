@@ -6,7 +6,6 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import java.awt.Color;
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,10 +14,10 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
 import main.Environment;
-import main.MarsNode;
 import sajas.core.behaviours.CyclicBehaviour;
 import sajas.proto.ProposeInitiator;
 import sajas.proto.ProposeResponder;
+
 /**
  *
  * @author diogo
@@ -184,10 +183,10 @@ public class Spotter extends MarsAgent {
             Point down = new Point(0, 1);
             Point left = new Point(-1, 0);
             Point right = new Point(1, 0);
-            
+
             int targetX = maxX;
             int targetY = Spotter.this.rowYOffset + Spotter.this.rowHeight - 1;
-            
+
             int xVector = 1;
             while(position.x != targetX || position.y != targetY) {
                 Point nextMove;
@@ -225,8 +224,10 @@ public class Spotter extends MarsAgent {
             }
             
             Point nextMove = this.movementPlan.poll();
-            if(nextMove == null)
+            if(nextMove == null) {
+                System.out.println(Spotter.this.localName + " finished scanning at (" + Spotter.this.node.getX() + ", " + Spotter.this.node.getY() + ")");
                 Spotter.this.removeBehaviour(this);
+            }
             else {
                 int nextX = (int)Spotter.this.node.getX() + nextMove.x;
                 int nextY = (int)Spotter.this.node.getY() + nextMove.y;

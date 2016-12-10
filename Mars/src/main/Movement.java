@@ -13,8 +13,8 @@ public class Movement {
 
     private final Point finalPosition;
     private int steps;
-    private final double incX;
-    private final double incY;
+    private double incX;
+    private double incY;
 
 
     Movement(Point initialPosition, Point finalPosition) {
@@ -23,17 +23,8 @@ public class Movement {
         double dy = finalPosition.getY() - initialPosition.getY();
         int absdx = (int) abs(dx);
         int absdy = (int) abs(dy);
-        if (absdx > absdy) {
-            steps = absdx;
-        }
-        else {
-            steps = absdy;
-        }
-        if (steps == 0) {
-            incX = 0;
-            incY = 0;
-        }
-        else {
+        steps = (absdx > absdy) ? absdx : absdy;
+        if (steps != 0) {
             incX = dx / steps;
             incY = dy / steps;
         }
@@ -43,7 +34,8 @@ public class Movement {
         return steps;
     }
 
-    public void move(MarsAgent agent) {
+    public boolean move(MarsAgent agent) {
+        if (steps == 0) return false;
         steps--;
         agent.node.setX(agent.node.getX() + incX);
         agent.node.setY(agent.node.getY() + incY);
@@ -51,6 +43,7 @@ public class Movement {
             agent.node.setX(finalPosition.getX());
             agent.node.setY(finalPosition.getY());
         }
+        return true;
     }
 
 }
