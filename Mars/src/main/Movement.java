@@ -17,7 +17,7 @@ public class Movement {
     private final double incY;
 
 
-    Movement(Point initialPosition, Point finalPosition) {
+    public Movement(Point initialPosition, Point finalPosition) {
         this.finalPosition = finalPosition;
         double dx = finalPosition.getX() - initialPosition.getX();
         double dy = finalPosition.getY() - initialPosition.getY();
