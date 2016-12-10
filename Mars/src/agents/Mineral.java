@@ -6,6 +6,7 @@
 package agents;
 
 import java.awt.Color;
+import main.MarsModel;
 
 /**
  *
@@ -13,8 +14,8 @@ import java.awt.Color;
  */
 public class Mineral extends MarsAgent {
     
-    public Mineral() {
-        super(Color.PINK);
+    public Mineral(MarsModel model) {
+        super(Color.PINK, model);
     }
     
 }

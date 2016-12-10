@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import behaviours.ProducerMoveBehaviour;
+import main.MarsModel;
 
 /**
  *
@@ -33,13 +34,13 @@ public class Producer extends MarsAgent {
 	private int bestCost;
 	private AID bestTransporter;
 	
-    public Producer(Point shipPosition) {
-        super(Color.GREEN);
+    public Producer(MarsModel model) {
+        super(Color.GREEN, model);
         // Movement
         this.producersMoves = new LinkedList<Movement>();
         this.currentMovement = null;
         this.movementCost = 0;
-        this.shipFinalPosition = shipPosition;
+        this.shipFinalPosition = model.shipPosition;
         // Minerio
         this.minerioFounded = new LinkedList<Mineral>();
         this.currentMineral = null;

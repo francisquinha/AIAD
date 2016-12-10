@@ -11,11 +11,11 @@ import jade.domain.FIPAException;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
+import main.MarsModel;
 import main.MarsNode;
 import sajas.core.Agent;
 import sajas.domain.DFService;
 import uchicago.src.sim.gui.Drawable2DGridNode;
-import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.gui.SimGraphics;
 
 /**
@@ -24,25 +24,27 @@ import uchicago.src.sim.gui.SimGraphics;
  */
 public class MarsAgent extends Agent implements Drawable2DGridNode {
     
-    public static Point STARTING_POSITION = new Point(0, 0);
-    public Object2DDisplay display = null;
+    public final MarsModel model;
     public final MarsNode node;
     
-    protected MarsAgent(Color color) {
-        node = new MarsNode(this);
+    protected MarsAgent(Color color, MarsModel model) {
+        this.model = model;
+        this.node = new MarsNode(this);
         node.setColor(color);
     }
     
     public void translate(Point vector) {
-        int newX = (int)this.node.getX() + vector.x;
-        int newY = (int)this.node.getY() + vector.y;
-        node.setX(newX);
-        node.setY(newY);
+        Point position = this.getPosition();
+        position.translate(vector.x, vector.y);
+        this.move(position);
     }
     
     public void move(Point position) {
-        node.setX(position.x);
-        node.setY(position.y);
+        this.model.moveAgent(this, position);
+    }
+    
+    public Point getPosition() {
+        return new Point((int)this.node.getX(), (int)this.node.getY());
     }
     
     public AID[] getAgents(String ontology) {

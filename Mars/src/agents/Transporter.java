@@ -9,6 +9,7 @@ import main.TransportMovement;
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.Queue;
+import main.MarsModel;
 
 /**
  *
@@ -23,14 +24,14 @@ public class Transporter extends MarsAgent {
     private int transportsCost;
     private final Point shipPosition;
     
-    public Transporter(/*int capacity, */Point shipPosition) {
-        super(Color.BLUE);
+    public Transporter(/*int capacity, */MarsModel model) {
+        super(Color.BLUE, model);
 //        this.capacity = capacity;
 //        available = capacity;
         transports = new LinkedList<>();
         currentTransport = null;
         transportsCost = 0;
-        this.shipPosition = shipPosition;
+        this.shipPosition = model.shipPosition;
     }
 
     @Override

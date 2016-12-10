@@ -17,7 +17,7 @@ public class MarsNode extends DefaultDrawableNode {
     public MarsAgent agent;
     
     public MarsNode(MarsAgent agent) {
-        super(new RoundRectNetworkItem(0, 0));
+        super(new RoundRectNetworkItem(agent.model.shipPosition.x, agent.model.shipPosition.y));
         this.agent = agent;
     }
     

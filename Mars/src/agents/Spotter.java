@@ -10,10 +10,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
+import main.Directions;
 import main.Environment;
+import main.MarsModel;
 import sajas.core.behaviours.CyclicBehaviour;
 import sajas.proto.ProposeInitiator;
 import sajas.proto.ProposeResponder;
@@ -33,8 +36,8 @@ public class Spotter extends MarsAgent {
     private final HashMap<String, AID> areaOwners = new HashMap<>();
     private final HashMap<String, AID> areaNegotiations = new HashMap<>();
     
-    public Spotter() {
-        super(Color.RED);
+    public Spotter(MarsModel model) {
+        super(Color.RED, model);
     }
     
     @Override
@@ -177,12 +180,7 @@ public class Spotter extends MarsAgent {
         
         public ScanBehaviour() {
             Point position = new Point((int)Spotter.this.node.getX(), (int)Spotter.this.rowYOffset);
-            int maxX = Environment.SIZE;
-            int maxY = Environment.SIZE;
-            
-            Point down = new Point(0, 1);
-            Point left = new Point(-1, 0);
-            Point right = new Point(1, 0);
+            int maxX = Environment.SIZE - 1;
 
             int targetX = maxX;
             int targetY = Spotter.this.rowYOffset + Spotter.this.rowHeight - 1;
@@ -192,16 +190,16 @@ public class Spotter extends MarsAgent {
                 Point nextMove;
                 if(xVector == 1) {
                     if(position.x >= maxX) {
-                        nextMove = down;
+                        nextMove = Directions.DOWN;
                         xVector = -1;
                     } else
-                        nextMove = right;
+                        nextMove = Directions.RIGHT;
                 } else {
                     if(position.x <= 0) {
-                        nextMove = down;
+                        nextMove = Directions.DOWN;
                         xVector = 1;
                     } else
-                        nextMove = left;
+                        nextMove = Directions.LEFT;
                 }
                 
                 this.movementPlan.offer(nextMove);
@@ -215,9 +213,8 @@ public class Spotter extends MarsAgent {
         @Override
         public void action() {           
             if(!inPosition) {
-                int nextY = (int)Spotter.this.node.getY() + 1;
-                Spotter.this.node.setY(nextY);
-                if(nextY >= Spotter.this.rowYOffset)
+                Spotter.this.translate(Directions.DOWN);
+                if(Spotter.this.getPosition().y >= Spotter.this.rowYOffset)
                     inPosition = true;
                     
                 return;
@@ -229,11 +226,13 @@ public class Spotter extends MarsAgent {
                 Spotter.this.removeBehaviour(this);
             }
             else {
-                int nextX = (int)Spotter.this.node.getX() + nextMove.x;
-                int nextY = (int)Spotter.this.node.getY() + nextMove.y;
-                
-                Spotter.this.node.setX(nextX);
-                Spotter.this.node.setY(nextY);
+                Spotter.this.translate(nextMove);
+                Point newPosition = Spotter.this.getPosition();
+                List<MarsAgent> agents = Spotter.this.model.getAgentsAt(newPosition);
+                for(MarsAgent agent : agents) {
+                    if(agent instanceof Mineral)
+                        Spotter.this.model.removeAgent(agent);
+                }
             }
         }
     }

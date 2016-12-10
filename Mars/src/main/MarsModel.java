@@ -26,11 +26,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
-import uchicago.src.sim.gui.MultiObject2DDisplay;
 import uchicago.src.sim.gui.Network2DGridDisplay;
-import uchicago.src.sim.space.BagCell;
 import uchicago.src.sim.space.Discrete2DSpace;
-import uchicago.src.sim.space.IMulti2DGrid;
 import uchicago.src.sim.space.Multi2DGrid;
 
 /**
@@ -39,7 +36,10 @@ import uchicago.src.sim.space.Multi2DGrid;
  */
 public class MarsModel extends Repast3Launcher {
     
+    public Point shipPosition = new Point(0, 0);
+    
     private ContainerController mainContainer;
+    private ArrayList<ArrayList<List<MarsAgent>>> agents;
     private Schedule schedule;
     private Discrete2DSpace space;
     private DisplaySurface displaySurface;
@@ -50,15 +50,39 @@ public class MarsModel extends Repast3Launcher {
     private List<Spotter> spotters;
     private List<Transporter> transporters;
     private List<Mineral> minerals;
-
-    private Point shipPosition = new Point(0, 0);
+    
+    public List<MarsAgent> getAgentsAt(Point position) {
+        return this.agents.get(position.x).get(position.y);
+    }
+    
+    public void moveAgent(MarsAgent agent, Point newPosition) {
+        Point position = agent.getPosition();
+        List<MarsAgent> agentsAtPosition = this.agents.get(position.x).get(position.y);
+        if(agentsAtPosition.contains(agent)) {
+            agentsAtPosition.remove(agent);
+            this.agents.get(newPosition.x).get(newPosition.y).add(agent);
+            agent.node.setX(newPosition.x);
+            agent.node.setY(newPosition.y);
+        }
+    }
+    
+    public void addAgent(MarsAgent agent, Point position) {
+        this.agents.get(position.x).get(position.y).add(agent);
+        agent.node.setX(position.x);
+        agent.node.setY(position.y);
+    }
+    
+    public void removeAgent(MarsAgent agent) {
+        Point position = agent.getPosition();
+        this.agents.get(position.x).get(position.y).remove(agent);
+        this.nodes.remove(agent.node);
+        agent.doDelete();
+    }
     
     @Override
     public void begin() {
         super.begin();
-        this.buildSpace();
         this.buildDisplay();
-        this.nodes.forEach((node) -> node.agent.display = this.display);
         this.spreadMinerals();
         this.assignSpotterSpaces();
     }
@@ -70,6 +94,7 @@ public class MarsModel extends Repast3Launcher {
         this.mainContainer = rt.createMainContainer(p1);
 
         try {
+            this.buildSpace();
             this.buildAgents();
         } catch(StaleProxyException | FIPAException e) {
             System.out.println("Could not launch the agents! " + e.getMessage());
@@ -78,10 +103,11 @@ public class MarsModel extends Repast3Launcher {
     
     protected void buildAgents() throws StaleProxyException, FIPAException {
         this.nodes = new ArrayList<>();
-        this.spotters = buildAgents(Environment.SPOTTERS, MarsAgent.Ontologies.SPOTTER, () -> new Spotter());
-        this.producers = buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer(shipPosition));
-        this.transporters = buildAgents(Environment.TRANSPORTERS, MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(shipPosition));
-        this.minerals = buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral());
+        this.spotters = buildAgents(Environment.SPOTTERS, MarsAgent.Ontologies.SPOTTER, () -> new Spotter(this));
+        this.producers = buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer(this));
+        this.transporters = buildAgents(Environment.TRANSPORTERS, MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(this));
+        this.minerals = buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral(this));
+        this.nodes.forEach((node) -> this.addAgent(node.agent, node.agent.getPosition()));
     }
     
     protected void spreadMinerals() {
@@ -120,6 +146,15 @@ public class MarsModel extends Repast3Launcher {
         this.space = new Multi2DGrid(Environment.SIZE, Environment.SIZE, true);
         this.displaySurface = new DisplaySurface(this, "Mars");
         this.registerDisplaySurface("Mars", this.displaySurface);
+        
+        this.agents = new ArrayList<>(Environment.SIZE);
+        for(int x = 0; x < Environment.SIZE; x++) {
+            ArrayList<List<MarsAgent>> column = new ArrayList<>(Environment.SIZE);
+            for(int y = 0; y <Environment.SIZE; y++)
+                column.add(y, new LinkedList<>());
+            
+            this.agents.add(x, column);
+        }
     }
     
     protected void buildDisplay() {
