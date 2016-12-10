@@ -179,7 +179,7 @@ public class Spotter extends MarsAgent {
             
             int targetX = position.x;
             int targetY = Spotter.this.rowYOffset + Spotter.this.rowHeight;
-            
+
             int xVector = 1;
             while(position.x != targetX || position.y != targetY) {
                 Point nextMove;

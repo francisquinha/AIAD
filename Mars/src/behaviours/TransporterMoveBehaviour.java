@@ -23,16 +23,10 @@ public class TransporterMoveBehaviour extends CyclicBehaviour {
             transporter.getNextTransport();
         else {
             Movement movement = transport.getMovement2Place();
-            if (movement.getSteps() > 0) {
-                movement.move(transporter);
-            }
-            else {
+            if (!movement.move(transporter)) {
                 movement = transport.getMovement2Ship();
-                if (movement.getSteps() == 0) {
+                if (!movement.move(transporter)) {
                     transporter.getNextTransport();
-                }
-                else {
-                    movement.move(transporter);
                 }
             }
 

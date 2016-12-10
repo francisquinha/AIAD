@@ -5,11 +5,11 @@ import main.Environment;
 import main.Simulation;
 import main.Transport;
 import main.TransportMovement;
+import uchicago.src.sim.space.Discrete2DSpace;
 
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.Queue;
-import uchicago.src.sim.space.Discrete2DSpace;
 
 
 /**
@@ -41,12 +41,10 @@ public class Transporter extends MarsAgent {
         for (int i = 0; i < 10; i++) {
             Point place = new Point(Simulation.random.nextInt(bound), Simulation.random.nextInt(bound));
             TransportMovement transport = new TransportMovement(place, 0, shipPosition, shipPosition);
-            System.out.printf("%d - %d\n", transport.getCost(), getTransportCost(transport));
             addTransport(transport);
         }
         Point place = new Point(bound, bound);
         TransportMovement transport = new TransportMovement(place, 0, shipPosition, shipPosition);
-        System.out.printf("%d - %d\n", transport.getCost(), getTransportCost(transport));
         addTransport(transport);
 
         this.addBehaviour(new TransporterMoveBehaviour(this));
