@@ -75,17 +75,17 @@ public class MarsModel extends Repast3Launcher {
     
     protected void buildAgents() throws StaleProxyException, FIPAException {
         this.nodes = new ArrayList<>();
-        this.spotters = buildAgents(Environment.SPOTTERS, MarsAgent.Ontologies.SPOTTER, () -> new Spotter());
-        this.producers = buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer());
-        this.transporters = buildAgents(Environment.TRANSPORTERS, MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(shipPosition));
-        this.minerals = buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral());
+        this.spotters = buildAgents(Environment.SPOTTERS, MarsAgent.Ontologies.SPOTTER, () -> new Spotter(this.space));
+        this.producers = buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer(this.space));
+        this.transporters = buildAgents(Environment.TRANSPORTERS, MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(shipPosition, this.space));
+        this.minerals = buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral(this.space));
     }
     
     protected void spreadMinerals() {
         ThreadLocalRandom r = ThreadLocalRandom.current();
         for(Mineral mineral : this.minerals) {
-            mineral.node.setX(r.nextInt(0, Environment.SIZE * Environment.CELL_SIZE));
-            mineral.node.setY(r.nextInt(0, Environment.SIZE * Environment.CELL_SIZE));
+            mineral.node.setX(r.nextInt(0, Environment.SIZE));
+            mineral.node.setY(r.nextInt(0, Environment.SIZE));
         }
     }
     
@@ -114,7 +114,7 @@ public class MarsModel extends Repast3Launcher {
     }
     
     protected void buildSpace() {
-        this.space = new Diffuse2D(Environment.SIZE * Environment.CELL_SIZE, Environment.SIZE * Environment.CELL_SIZE);
+        this.space = new Diffuse2D(Environment.SIZE, Environment.SIZE);
         this.displaySurface = new DisplaySurface(this, "Mars");
         this.registerDisplaySurface("Mars", this.displaySurface);
     }
@@ -129,7 +129,7 @@ public class MarsModel extends Repast3Launcher {
     }
     
     protected void assignSpotterSpaces() {
-        int spaceSize = Environment.SIZE * Environment.CELL_SIZE;
+        int spaceSize = Environment.SIZE;
         int spottersCount = this.spotters.size();
         int height = spaceSize/spottersCount;
         int currentOffset = 0;

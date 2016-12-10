@@ -5,15 +5,19 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import java.awt.Color;
+import java.awt.Point;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
 import main.Environment;
 import sajas.core.behaviours.CyclicBehaviour;
 import sajas.proto.ProposeInitiator;
 import sajas.proto.ProposeResponder;
+import uchicago.src.sim.space.Discrete2DSpace;
 /**
  *
  * @author diogo
@@ -28,8 +32,8 @@ public class Spotter extends MarsAgent {
     private final HashMap<String, AID> areaOwners = new HashMap<>();
     private final HashMap<String, AID> areaNegotiations = new HashMap<>();
     
-    public Spotter() {
-        super(Color.RED);
+    public Spotter(Discrete2DSpace space) {
+        super(Color.RED, space);
     }
     
     @Override
@@ -84,8 +88,8 @@ public class Spotter extends MarsAgent {
             
             if(this.awaitingConfirmation.isEmpty()) {
                 System.out.println(Spotter.this.localName + " has now " + this.yOffset + "-" + this.height);
-                Spotter.this.node.setY(this.yOffset);
-                Spotter.this.node.setX(0);
+                Spotter.this.rowYOffset = this.yOffset;
+                Spotter.this.rowHeight = this.height;
                 this.sendAreaConfirmation();
                 Spotter.this.addBehaviour(new ScanBehaviour());
             }
@@ -167,24 +171,63 @@ public class Spotter extends MarsAgent {
     private class ScanBehaviour extends CyclicBehaviour {
 
         private boolean inPosition = false;
+        private final Queue<Point> movementPlan = new LinkedList<>();
+        
+        public ScanBehaviour() {
+            Point position = new Point((int)Spotter.this.node.getX(), (int)Spotter.this.node.getY());
+            int maxX = Environment.SIZE;
+            int maxY = Environment.SIZE;
+            
+            Point down = new Point(0, 1);
+            Point left = new Point(-1, 0);
+            Point right = new Point(1, 0);
+            
+            int targetX = position.x;
+            int targetY = Spotter.this.rowYOffset + Spotter.this.rowHeight;
+            
+            int xVector = 1;
+            while(position.x != targetX || position.y != targetY) {
+                Point nextMove;
+                if(xVector == 1) {
+                    if(position.x >= maxX) {
+                        nextMove = down;
+                        xVector *= -1;
+                    } else
+                        nextMove = right;
+                } else {
+                    if(position.x <= 0) {
+                        nextMove = down;
+                        xVector *= -1;
+                    } else
+                        nextMove = left;
+                }
+                
+                this.movementPlan.offer(nextMove);
+                position.translate(nextMove.x, nextMove.y);
+            }
+            
+            this.inPosition = (int)Spotter.this.node.getY() == Spotter.this.rowYOffset;
+        }
         
         @Override
-        public void action() {
-            int currentX = (int)Spotter.this.node.getX();
-            int currentY = (int)Spotter.this.node.getY();
-            int targetY = Spotter.this.rowYOffset;
-            int maxX = Environment.SIZE * Environment.CELL_SIZE;
-            
+        public void action() {           
             if(!inPosition) {
-                int newY = currentY + Environment.CELL_SIZE;
-                Spotter.this.node.setY(newY);
-                if(newY >= targetY)
+                int nextY = (int)Spotter.this.node.getY() + 1;
+                Spotter.this.node.setY(nextY);
+                if(nextY >= Spotter.this.rowYOffset)
                     inPosition = true;
-            } else {
-                int newX = currentX + Environment.CELL_SIZE;
-                Spotter.this.node.setX(newX);
-                if(newX >= maxX)
-                    Spotter.this.removeBehaviour(this);
+                
+                return;
+            }
+            
+            Point nextMove = this.movementPlan.poll();
+            if(nextMove == null)
+                Spotter.this.removeBehaviour(this);
+            else {
+                int nextX = (int)Spotter.this.node.getX() + nextMove.x;
+                int nextY = (int)Spotter.this.node.getY() + nextMove.y;
+                Spotter.this.node.setX(nextX);
+                Spotter.this.node.setY(nextY);
             }
         }
         

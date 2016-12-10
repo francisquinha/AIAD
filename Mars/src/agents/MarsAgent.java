@@ -17,6 +17,7 @@ import uchicago.src.sim.gui.RoundRectNetworkItem;
 import uchicago.src.sim.network.DefaultDrawableNode;
 
 import java.awt.geom.Point2D;
+import uchicago.src.sim.space.Discrete2DSpace;
 
 /**
  *
@@ -27,18 +28,17 @@ public class MarsAgent extends Agent {
     public static Point STARTING_POSITION = new Point(0, 0);
     public DefaultDrawableNode node;
     
-    protected MarsAgent(Color color) {
+    protected Discrete2DSpace space;
+    
+    protected MarsAgent(Color color, Discrete2DSpace space) {
         RoundRectNetworkItem item = MarsAgent.createDefaultItem();
         this.node = new DefaultDrawableNode(item);
         this.node.setColor(color);
+        this.space = space;
     }
     
     private static RoundRectNetworkItem createDefaultItem() {
         RoundRectNetworkItem item = new RoundRectNetworkItem(STARTING_POSITION.x, STARTING_POSITION.y);
-        item.allowResizing(false);
-        item.setHeight(Environment.CELL_SIZE);
-        item.setWidth(Environment.CELL_SIZE);
-        
         return item;
     }
     
