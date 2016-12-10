@@ -14,6 +14,8 @@ public class Environment {
     public static final int SPOTTERS = 10;
     public static final int PRODUCERS = 10;
     public static final int TRANSPORTERS = 1;
+    public static final int TRANSPORTER_CAPACITY = 10;
     public static final int MINERALS = 15;
+    public static final int MAX_FRAGMENTS_PER_MINERAL = 20;
     
 }

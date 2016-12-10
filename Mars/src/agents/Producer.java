@@ -1,19 +1,16 @@
 package agents;
 
 import jade.core.AID;
-import main.Environment;
-import main.Movement;
-import main.Simulation;
-import uchicago.src.sim.space.Discrete2DSpace;
 
 import java.awt.Color;
+import jade.domain.FIPANames;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-
-import behaviours.ProducerMoveBehaviour;
 import main.MarsModel;
+import sajas.proto.ContractNetResponder;
 
 /**
  *
@@ -21,116 +18,50 @@ import main.MarsModel;
  */
 public class Producer extends MarsAgent {
     
-	// Movement
-	private Queue<Movement> producersMoves;
-	private Movement currentMovement, lastMove;
-	private int movementCost;
-	private Point shipFinalPosition;
-	// Minerio
-	private Queue<Mineral> minerioFounded;
-	private Mineral currentMineral;
-	// Transporters
-	private ArrayList<AID> transporters;
-	private int bestCost;
-	private AID bestTransporter;
-	
+    private final Queue<Point> movementPlan;
+    private AID[] otherTransporters;
+    private Point lastPlannedPosition;
+    
     public Producer(MarsModel model) {
         super(Color.GREEN, model);
-        // Movement
-        this.producersMoves = new LinkedList<Movement>();
-        this.currentMovement = null;
-        this.movementCost = 0;
-        this.shipFinalPosition = model.shipPosition;
-        // Minerio
-        this.minerioFounded = new LinkedList<Mineral>();
-        this.currentMineral = null;
-        resetTransportersValues();
+        this.movementPlan = new LinkedList<>();
     }
-
-	private void resetTransportersValues() {
-        // Transporters
-        this.transporters = new ArrayList<AID>();
-        this.bestCost = 0;
-        this.bestTransporter = null;
-	}
     
     @Override
-    protected void setup() {
-        int bound = Environment.SIZE + 1;
-        for (int i = 0; i < 10; i++) {
-            Point place = new Point(Simulation.random.nextInt(bound), Simulation.random.nextInt(bound));
-            System.out.printf("Producer - %d\n", getMovementCost(place));
-            addMovement(place);
+    public void setup() {
+        this.lastPlannedPosition = this.getPosition();
+        this.otherTransporters = this.getAgents(MarsAgent.Ontologies.TRANSPORTER);
+        this.addBehaviour(new AnswerCallBehaviour());
+    }
+    
+    private class AnswerCallBehaviour extends ContractNetResponder {
+        
+        public AnswerCallBehaviour() {
+            super(Producer.this, MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET));
         }
-        /*Point place = new Point(bound, bound);
-        System.out.printf("Producer - %d\n", getMovementCost(place));
-        addMovement(place);
-*/
-        this.addBehaviour(new ProducerMoveBehaviour(this));
-    }
-    
-    //Producer Movement
-    public int getMovementCost(Point place) {
-    	Movement movement2Place = new Movement(shipFinalPosition, place);
-    	if(currentMovement == null)
-    		return movementCost + producersMoves.size() + 1 + movement2Place.getSteps();
-        return currentMovement.getSteps() + movementCost + producersMoves.size() + 1 + movement2Place.getSteps();
-    }
-    
-    public void addMovement(Point place) {
-    	Movement movement2Place = new Movement(shipFinalPosition, place);
-    	producersMoves.add(movement2Place);
-    	movementCost += movement2Place.getSteps();
-    }
-    
-    public void getNextMovement() {    	
-    	if(!producersMoves.isEmpty()){
-    		currentMovement = producersMoves.poll();
-    		movementCost -= currentMovement.getSteps();
-    	}    	
-    }
-    
-    public Movement getCurrentMovement(){
-    	return currentMovement;
-    }
-    
-    //Minerio
-    public void foundMinerio(Mineral minerio){
-    	minerioFounded.add(minerio);
-    	if(currentMineral == null)
-    		nextMinerio();
-    	
-    }
-    
-    private void nextMinerio() {
-    	currentMineral = minerioFounded.poll();
-    	if(currentMineral != null)
-    		sendRequestToTransporters();
-	}
 
-    // Transporter Handler
-	public void sendRequestToTransporters(){
-    	/* Complete with message sending */
+        @Override
+        public ACLMessage handleCfp(ACLMessage message) {
+            ACLMessage response = message.createReply();
+            response.setPerformative(ACLMessage.PROPOSE);
+            
+            int cost = movementPlan.size();
+            String[] coordinates = message.getContent().split(",");
+            Point mineralPosition = new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
+            cost += Math.abs(mineralPosition.x - lastPlannedPosition.x);
+            cost += Math.abs(mineralPosition.y - lastPlannedPosition.y);
+            cost -= 1; // Because it only needs to be adjacent, not in it
+            
+            response.setContent("" + cost);
+            return response;
+        }
+        
+        @Override
+        public ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
+            ACLMessage response = accept.createReply();
+            response.setPerformative(ACLMessage.INFORM);
+            
+            return response;
+        }
     }
-    
-    public void transporterAnswer(AID aid, int cost){
-    	if(bestCost < cost){
-    		bestCost = cost;
-    		bestTransporter = aid;
-    	}    	
-    	
-    	transporters.remove(aid);
-    	if(transporters.size() <= 0)
-    		attributeMinerioToTransporter();    	
-    }
-    
-    public void attributeMinerioToTransporter(){
-    	/*
-    	 *  Necessario enviar mensagem para o Transporter identificado no bestTransporter
-    	 */
-    	
-    	//Reset Values to attribute minerio and get next minerio if exists
-    	resetTransportersValues();
-    	nextMinerio();
-    }    
 }

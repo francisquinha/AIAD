@@ -18,6 +18,7 @@ import main.Directions;
 import main.Environment;
 import main.MarsModel;
 import sajas.core.behaviours.CyclicBehaviour;
+import sajas.proto.ContractNetInitiator;
 import sajas.proto.ProposeInitiator;
 import sajas.proto.ProposeResponder;
 
@@ -29,15 +30,19 @@ public class Spotter extends MarsAgent {
     
     private AID[] otherSpotters;
     private AID[] otherProducers;
+    private List<Mineral> mineralsFound;
     private String localName;
     private int rowYOffset;
     private int rowHeight;
+    
+    private boolean done = false;
     
     private final HashMap<String, AID> areaOwners = new HashMap<>();
     private final HashMap<String, AID> areaNegotiations = new HashMap<>();
     
     public Spotter(MarsModel model) {
         super(Color.RED, model);
+        this.mineralsFound = new LinkedList<>();
     }
     
     @Override
@@ -51,6 +56,7 @@ public class Spotter extends MarsAgent {
         
         this.addBehaviour(new AnswerAreaRequestBehaviour());
         this.addBehaviour(new AcknowledgeAreaBehaviour());
+        this.addBehaviour(new ScanBehaviour());
     }
     
     public void assignRow(int yOffset, int height) {
@@ -96,7 +102,7 @@ public class Spotter extends MarsAgent {
                 Spotter.this.rowYOffset = this.yOffset;
                 Spotter.this.rowHeight = this.height;
                 this.sendAreaConfirmation();
-                Spotter.this.addBehaviour(new ScanBehaviour());
+                Spotter.this.addBehaviour(new MoveBehaviour());
             }
         }
         
@@ -110,9 +116,8 @@ public class Spotter extends MarsAgent {
             message.setContent(yOffset + "-" + height);
             message.setProtocol(FIPANames.InteractionProtocol.FIPA_PROPOSE);
 
-            for (AID spotter : Spotter.this.otherSpotters) {
+            for (AID spotter : Spotter.this.otherSpotters)
                 message.addReceiver(spotter);
-            }
 
             return message;
         }
@@ -173,12 +178,12 @@ public class Spotter extends MarsAgent {
         }
     }
     
-    private class ScanBehaviour extends CyclicBehaviour {
+    private class MoveBehaviour extends CyclicBehaviour {
 
         private boolean inPosition = false;
         private final Queue<Point> movementPlan = new LinkedList<>();
         
-        public ScanBehaviour() {
+        public MoveBehaviour() {
             Point position = new Point((int)Spotter.this.node.getX(), (int)Spotter.this.rowYOffset);
             int maxX = Environment.SIZE - 1;
 
@@ -211,7 +216,23 @@ public class Spotter extends MarsAgent {
         }
         
         @Override
-        public void action() {           
+        public void action() {    
+            if(Spotter.this.done) {
+                Point position = Spotter.this.getPosition();
+                int y = Spotter.this.model.shipPosition.y - position.y;
+                int x = Spotter.this.model.shipPosition.x - position.x;
+                if(y != 0) {
+                    y = y > 0 ? Math.min(1, y) : Math.max(-1, y);
+                    Spotter.this.translate(new Point(0, y));
+                } else if(x != 0) {
+                    x = x > 0 ? Math.min(1, x) : Math.max(-1, x);
+                    Spotter.this.translate(new Point(x, 0));
+                } else
+                    Spotter.this.removeBehaviour(this);
+                
+                return;
+            }
+            
             if(!inPosition) {
                 Spotter.this.translate(Directions.DOWN);
                 if(Spotter.this.getPosition().y >= Spotter.this.rowYOffset)
@@ -221,19 +242,78 @@ public class Spotter extends MarsAgent {
             }
             
             Point nextMove = this.movementPlan.poll();
-            if(nextMove == null) {
-                System.out.println(Spotter.this.localName + " finished scanning at (" + Spotter.this.node.getX() + ", " + Spotter.this.node.getY() + ")");
-                Spotter.this.removeBehaviour(this);
-            }
-            else {
+            if(nextMove == null)
+                done = true;
+            else
                 Spotter.this.translate(nextMove);
-                Point newPosition = Spotter.this.getPosition();
-                List<MarsAgent> agents = Spotter.this.model.getAgentsAt(newPosition);
-                for(MarsAgent agent : agents) {
-                    if(agent instanceof Mineral)
-                        Spotter.this.model.removeAgent(agent);
+        }
+    }
+    
+    public class ScanBehaviour extends CyclicBehaviour {
+
+        @Override
+        public void action() {
+            if(Spotter.this.done)
+                Spotter.this.removeBehaviour(this);
+            
+            Point newPosition = Spotter.this.getPosition();
+            Set<MarsAgent> agents = Spotter.this.model.getAgentsAt(newPosition);
+            for(MarsAgent agent : agents) {
+                if(agent instanceof Mineral) {
+                    Mineral mineral = (Mineral)agent;
+                    ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+                    msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
+                    msg.setContent(newPosition.x + "," + newPosition.y);
+                    for(AID producer : Spotter.this.otherProducers)
+                        msg.addReceiver(producer);
+                    
+                    Spotter.this.mineralsFound.add(mineral);
+                    Spotter.this.addBehaviour(new RequestProducerBehaviour(mineral, msg));
                 }
             }
         }
+        
+    }
+    
+    public class RequestProducerBehaviour extends ContractNetInitiator {
+        
+        private final Mineral mineral;
+        
+        public RequestProducerBehaviour(Mineral mineral, ACLMessage msg) {
+            super(Spotter.this, msg);
+            this.mineral = mineral;
+        }
+        
+        @Override
+        public void handleAllResponses(Vector proposes, Vector responses) {
+            int minCost = Integer.MAX_VALUE;
+            ACLMessage minCostProposal = null;
+            
+            for(Object proposeObj : proposes) {
+                ACLMessage propose = (ACLMessage)proposeObj;
+                int cost = Integer.parseInt(propose.getContent());
+                if(cost < minCost) {
+                    minCost = cost;
+                    minCostProposal = propose;
+                } else {
+                    ACLMessage response = propose.createReply();
+                    response.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                    responses.add(response);
+                }
+            }
+            
+            if(minCostProposal != null) {
+                ACLMessage selectedMessage = minCostProposal.createReply();
+                selectedMessage.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                responses.add(selectedMessage);
+            }
+        }
+        
+        @Override
+        public void handleInform(ACLMessage inform) {
+            System.out.println("Got a producer for a mineral!");
+            Spotter.this.removeBehaviour(this);
+        }
+        
     }
 }

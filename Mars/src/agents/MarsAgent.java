@@ -10,19 +10,16 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAException;
 import java.awt.Color;
 import java.awt.Point;
-import java.util.ArrayList;
 import main.MarsModel;
 import main.MarsNode;
 import sajas.core.Agent;
 import sajas.domain.DFService;
-import uchicago.src.sim.gui.Drawable2DGridNode;
-import uchicago.src.sim.gui.SimGraphics;
 
 /**
  *
  * @author diogo
  */
-public class MarsAgent extends Agent implements Drawable2DGridNode {
+public class MarsAgent extends Agent implements Comparable {
     
     public final MarsModel model;
     public final MarsNode node;
@@ -47,7 +44,7 @@ public class MarsAgent extends Agent implements Drawable2DGridNode {
         return new Point((int)this.node.getX(), (int)this.node.getY());
     }
     
-    public AID[] getAgents(String ontology) {
+    public final AID[] getAgents(String ontology) {
         try {
             DFAgentDescription description = new DFAgentDescription();
             description.addOntologies(ontology);
@@ -65,23 +62,14 @@ public class MarsAgent extends Agent implements Drawable2DGridNode {
     }
 
     @Override
-    public ArrayList getOutEdges() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double getX() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double getY() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void draw(SimGraphics sg) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int compareTo(Object t) {
+        if(t == null)
+            return 1;
+        
+        if(t instanceof MarsAgent)
+            return this.toString().compareTo(t.toString());
+        else
+            return -1;
     }
     
     public static class Ontologies {

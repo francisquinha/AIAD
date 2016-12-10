@@ -25,6 +25,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.function.Supplier;
 import uchicago.src.sim.gui.Network2DGridDisplay;
 import uchicago.src.sim.space.Discrete2DSpace;
@@ -39,7 +41,7 @@ public class MarsModel extends Repast3Launcher {
     public Point shipPosition = new Point(0, 0);
     
     private ContainerController mainContainer;
-    private ArrayList<ArrayList<List<MarsAgent>>> agents;
+    private ArrayList<ArrayList<ConcurrentSkipListSet<MarsAgent>>> agents;
     private Schedule schedule;
     private Discrete2DSpace space;
     private DisplaySurface displaySurface;
@@ -51,13 +53,13 @@ public class MarsModel extends Repast3Launcher {
     private List<Transporter> transporters;
     private List<Mineral> minerals;
     
-    public List<MarsAgent> getAgentsAt(Point position) {
+    public Set<MarsAgent> getAgentsAt(Point position) {
         return this.agents.get(position.x).get(position.y);
     }
     
     public void moveAgent(MarsAgent agent, Point newPosition) {
         Point position = agent.getPosition();
-        List<MarsAgent> agentsAtPosition = this.agents.get(position.x).get(position.y);
+        Set<MarsAgent> agentsAtPosition = this.agents.get(position.x).get(position.y);
         if(agentsAtPosition.contains(agent)) {
             agentsAtPosition.remove(agent);
             this.agents.get(newPosition.x).get(newPosition.y).add(agent);
@@ -70,12 +72,13 @@ public class MarsModel extends Repast3Launcher {
         this.agents.get(position.x).get(position.y).add(agent);
         agent.node.setX(position.x);
         agent.node.setY(position.y);
+        this.nodes.add(agent.node);
     }
     
     public void removeAgent(MarsAgent agent) {
         Point position = agent.getPosition();
-        this.agents.get(position.x).get(position.y).remove(agent);
         this.nodes.remove(agent.node);
+        this.agents.get(position.x).get(position.y).remove(agent);
         agent.doDelete();
     }
     
@@ -107,7 +110,6 @@ public class MarsModel extends Repast3Launcher {
         this.producers = buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer(this));
         this.transporters = buildAgents(Environment.TRANSPORTERS, MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(this));
         this.minerals = buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral(this));
-        this.nodes.forEach((node) -> this.addAgent(node.agent, node.agent.getPosition()));
     }
     
     protected void spreadMinerals() {
@@ -135,7 +137,7 @@ public class MarsModel extends Repast3Launcher {
             AMSService.register(agent);
             DFService.register(agent, df);
             
-            this.nodes.add(agent.node);
+            this.addAgent(agent, shipPosition);
             this.mainContainer.acceptNewAgent(nickname, agent).start();
         }
         
@@ -149,9 +151,9 @@ public class MarsModel extends Repast3Launcher {
         
         this.agents = new ArrayList<>(Environment.SIZE);
         for(int x = 0; x < Environment.SIZE; x++) {
-            ArrayList<List<MarsAgent>> column = new ArrayList<>(Environment.SIZE);
+            ArrayList<ConcurrentSkipListSet<MarsAgent>> column = new ArrayList<>(Environment.SIZE);
             for(int y = 0; y <Environment.SIZE; y++)
-                column.add(y, new LinkedList<>());
+                column.add(y, new ConcurrentSkipListSet<>());
             
             this.agents.add(x, column);
         }
