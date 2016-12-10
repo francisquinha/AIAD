@@ -10,13 +10,10 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAException;
 import java.awt.Color;
 import java.awt.Point;
-import main.Environment;
 import sajas.core.Agent;
 import sajas.domain.DFService;
 import uchicago.src.sim.gui.RoundRectNetworkItem;
 import uchicago.src.sim.network.DefaultDrawableNode;
-
-import java.awt.geom.Point2D;
 import uchicago.src.sim.space.Discrete2DSpace;
 
 /**
@@ -66,8 +63,8 @@ public class MarsAgent extends Agent {
         public static final String MINERAL = "Mineral";
     }
 
-    public Point2D.Double getPosition() {
-        return new Point2D.Double(this.node.getX(), this.node.getY());
+    public Point getPosition() {
+        return new Point((int)this.node.getX(), (int)this.node.getY());
     }
 
 }

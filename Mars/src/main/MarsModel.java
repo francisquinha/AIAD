@@ -24,6 +24,7 @@ import uchicago.src.sim.space.Diffuse2D;
 import uchicago.src.sim.space.Discrete2DSpace;
 import java.util.concurrent.ThreadLocalRandom;
 
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -49,7 +50,7 @@ public class MarsModel extends Repast3Launcher {
     private List<Transporter> transporters;
     private List<Mineral> minerals;
 
-    private Point2D.Double shipPosition = new Point2D.Double(0, 0);
+    private Point shipPosition = new Point(0, 0);
     
     @Override
     public void begin() {
@@ -141,7 +142,7 @@ public class MarsModel extends Repast3Launcher {
         
     }
 
-    protected Point2D.Double getShipPosition() {
+    protected Point getShipPosition() {
         return this.shipPosition;
     }
   
