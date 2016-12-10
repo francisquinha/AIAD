@@ -28,9 +28,9 @@ import sajas.proto.ProposeResponder;
  */
 public class Spotter extends MarsAgent {
     
+    private final List<Mineral> mineralsFound;
     private AID[] otherSpotters;
     private AID[] otherProducers;
-    private List<Mineral> mineralsFound;
     private String localName;
     private int rowYOffset;
     private int rowHeight;
@@ -294,6 +294,12 @@ public class Spotter extends MarsAgent {
                 int cost = Integer.parseInt(propose.getContent());
                 if(cost < minCost) {
                     minCost = cost;
+                    if(minCostProposal != null) {
+                        ACLMessage response = minCostProposal.createReply();
+                        response.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                        responses.add(response);
+                    }
+                    
                     minCostProposal = propose;
                 } else {
                     ACLMessage response = propose.createReply();
