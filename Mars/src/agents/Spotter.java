@@ -4,20 +4,15 @@ import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import java.awt.Color;
-import java.awt.Point;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Vector;
 import main.Environment;
 import sajas.core.behaviours.CyclicBehaviour;
 import sajas.proto.ProposeInitiator;
 import sajas.proto.ProposeResponder;
 import uchicago.src.sim.space.Discrete2DSpace;
+
+import java.awt.*;
+import java.util.*;
+import java.util.Queue;
 /**
  *
  * @author diogo
@@ -221,8 +216,10 @@ public class Spotter extends MarsAgent {
             }
             
             Point nextMove = this.movementPlan.poll();
-            if(nextMove == null)
+            if(nextMove == null) {
+                System.out.println(Spotter.this.localName + " finished scanning at (" + Spotter.this.node.getX() + ", " + Spotter.this.node.getY() + ")");
                 Spotter.this.removeBehaviour(this);
+            }
             else {
                 int nextX = (int)Spotter.this.node.getX() + nextMove.x;
                 int nextY = (int)Spotter.this.node.getY() + nextMove.y;
