@@ -10,33 +10,39 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAException;
 import java.awt.Color;
 import java.awt.Point;
+import java.util.ArrayList;
+import main.MarsNode;
 import sajas.core.Agent;
 import sajas.domain.DFService;
-import uchicago.src.sim.gui.RoundRectNetworkItem;
-import uchicago.src.sim.network.DefaultDrawableNode;
-import uchicago.src.sim.space.Discrete2DSpace;
+import uchicago.src.sim.gui.Drawable2DGridNode;
+import uchicago.src.sim.gui.Object2DDisplay;
+import uchicago.src.sim.gui.SimGraphics;
 
 /**
  *
  * @author diogo
  */
-public class MarsAgent extends Agent {
+public class MarsAgent extends Agent implements Drawable2DGridNode {
     
     public static Point STARTING_POSITION = new Point(0, 0);
-    public DefaultDrawableNode node;
+    public Object2DDisplay display = null;
+    public final MarsNode node;
     
-    protected Discrete2DSpace space;
-    
-    protected MarsAgent(Color color, Discrete2DSpace space) {
-        RoundRectNetworkItem item = MarsAgent.createDefaultItem();
-        this.node = new DefaultDrawableNode(item);
-        this.node.setColor(color);
-        this.space = space;
+    protected MarsAgent(Color color) {
+        node = new MarsNode(this);
+        node.setColor(color);
     }
     
-    private static RoundRectNetworkItem createDefaultItem() {
-        RoundRectNetworkItem item = new RoundRectNetworkItem(STARTING_POSITION.x, STARTING_POSITION.y);
-        return item;
+    public void translate(Point vector) {
+        int newX = (int)this.node.getX() + vector.x;
+        int newY = (int)this.node.getY() + vector.y;
+        node.setX(newX);
+        node.setY(newY);
+    }
+    
+    public void move(Point position) {
+        node.setX(position.x);
+        node.setY(position.y);
     }
     
     public AID[] getAgents(String ontology) {
@@ -55,6 +61,26 @@ public class MarsAgent extends Agent {
             return new AID[0];
         }
     }
+
+    @Override
+    public ArrayList getOutEdges() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getX() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getY() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void draw(SimGraphics sg) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     public static class Ontologies {
         public static final String SPOTTER = "Spotter";
@@ -62,9 +88,4 @@ public class MarsAgent extends Agent {
         public static final String TRANSPORTER = "Transporter";
         public static final String MINERAL = "Mineral";
     }
-
-    public Point getPosition() {
-        return new Point((int)this.node.getX(), (int)this.node.getY());
-    }
-
 }

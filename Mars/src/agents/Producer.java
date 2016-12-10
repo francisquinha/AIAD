@@ -5,7 +5,6 @@ import jade.domain.FIPANames;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
 import java.awt.Color;
-import uchicago.src.sim.space.Discrete2DSpace;
 
 /**
  *
@@ -13,8 +12,8 @@ import uchicago.src.sim.space.Discrete2DSpace;
  */
 public class Producer extends MarsAgent {
     
-    public Producer(Discrete2DSpace space) {
-        super(Color.GREEN, space);
+    public Producer() {
+        super(Color.GREEN);
     }
     
     @Override

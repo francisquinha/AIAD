@@ -10,7 +10,7 @@ package main;/*
  */
 public class Environment {
  
-    public static final int SIZE = 50;
+    public static final int SIZE = 30;
     public static final int SPOTTERS = 10;
     public static final int PRODUCERS = 10;
     public static final int TRANSPORTERS = 1;

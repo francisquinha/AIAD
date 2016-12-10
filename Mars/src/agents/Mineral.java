@@ -6,7 +6,6 @@
 package agents;
 
 import java.awt.Color;
-import uchicago.src.sim.space.Discrete2DSpace;
 
 /**
  *
@@ -14,8 +13,8 @@ import uchicago.src.sim.space.Discrete2DSpace;
  */
 public class Mineral extends MarsAgent {
     
-    public Mineral(Discrete2DSpace space) {
-        super(Color.PINK, space);
+    public Mineral() {
+        super(Color.PINK);
     }
     
 }

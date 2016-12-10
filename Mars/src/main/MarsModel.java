@@ -19,18 +19,19 @@ import sajas.wrapper.ContainerController;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Object2DDisplay;
-import uchicago.src.sim.network.DefaultDrawableNode;
-import uchicago.src.sim.space.Diffuse2D;
-import uchicago.src.sim.space.Discrete2DSpace;
 import java.util.concurrent.ThreadLocalRandom;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
+import uchicago.src.sim.gui.MultiObject2DDisplay;
 import uchicago.src.sim.gui.Network2DGridDisplay;
+import uchicago.src.sim.space.BagCell;
+import uchicago.src.sim.space.Discrete2DSpace;
+import uchicago.src.sim.space.IMulti2DGrid;
+import uchicago.src.sim.space.Multi2DGrid;
 
 /**
  *
@@ -43,7 +44,7 @@ public class MarsModel extends Repast3Launcher {
     private Discrete2DSpace space;
     private DisplaySurface displaySurface;
     private Object2DDisplay display;
-    private List<DefaultDrawableNode> nodes;
+    private List<MarsNode> nodes;
     
     private List<Producer> producers;
     private List<Spotter> spotters;
@@ -57,6 +58,7 @@ public class MarsModel extends Repast3Launcher {
         super.begin();
         this.buildSpace();
         this.buildDisplay();
+        this.nodes.forEach((node) -> node.agent.display = this.display);
         this.spreadMinerals();
         this.assignSpotterSpaces();
     }
@@ -68,7 +70,7 @@ public class MarsModel extends Repast3Launcher {
         this.mainContainer = rt.createMainContainer(p1);
 
         try {
-            buildAgents();
+            this.buildAgents();
         } catch(StaleProxyException | FIPAException e) {
             System.out.println("Could not launch the agents! " + e.getMessage());
         }
@@ -76,17 +78,17 @@ public class MarsModel extends Repast3Launcher {
     
     protected void buildAgents() throws StaleProxyException, FIPAException {
         this.nodes = new ArrayList<>();
-        this.spotters = buildAgents(Environment.SPOTTERS, MarsAgent.Ontologies.SPOTTER, () -> new Spotter(this.space));
-        this.producers = buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer(this.space));
-        this.transporters = buildAgents(Environment.TRANSPORTERS, MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(shipPosition, this.space));
-        this.minerals = buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral(this.space));
+        this.spotters = buildAgents(Environment.SPOTTERS, MarsAgent.Ontologies.SPOTTER, () -> new Spotter());
+        this.producers = buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer());
+        this.transporters = buildAgents(Environment.TRANSPORTERS, MarsAgent.Ontologies.TRANSPORTER, () -> new Transporter(shipPosition));
+        this.minerals = buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral());
     }
     
     protected void spreadMinerals() {
         ThreadLocalRandom r = ThreadLocalRandom.current();
         for(Mineral mineral : this.minerals) {
-            mineral.node.setX(r.nextInt(0, Environment.SIZE));
-            mineral.node.setY(r.nextInt(0, Environment.SIZE));
+            Point newPosition = new Point(r.nextInt(0, Environment.SIZE), r.nextInt(0, Environment.SIZE));
+            mineral.move(newPosition);
         }
     }
     
@@ -115,7 +117,7 @@ public class MarsModel extends Repast3Launcher {
     }
     
     protected void buildSpace() {
-        this.space = new Diffuse2D(Environment.SIZE, Environment.SIZE);
+        this.space = new Multi2DGrid(Environment.SIZE, Environment.SIZE, true);
         this.displaySurface = new DisplaySurface(this, "Mars");
         this.registerDisplaySurface("Mars", this.displaySurface);
     }
@@ -139,7 +141,6 @@ public class MarsModel extends Repast3Launcher {
             spotter.assignRow(currentOffset, height);
             currentOffset += height;
         }
-        
     }
 
     protected Point getShipPosition() {

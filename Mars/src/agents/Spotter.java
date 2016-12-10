@@ -6,6 +6,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import java.awt.Color;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,10 +15,10 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
 import main.Environment;
+import main.MarsNode;
 import sajas.core.behaviours.CyclicBehaviour;
 import sajas.proto.ProposeInitiator;
 import sajas.proto.ProposeResponder;
-import uchicago.src.sim.space.Discrete2DSpace;
 /**
  *
  * @author diogo
@@ -25,6 +26,7 @@ import uchicago.src.sim.space.Discrete2DSpace;
 public class Spotter extends MarsAgent {
     
     private AID[] otherSpotters;
+    private AID[] otherProducers;
     private String localName;
     private int rowYOffset;
     private int rowHeight;
@@ -32,8 +34,8 @@ public class Spotter extends MarsAgent {
     private final HashMap<String, AID> areaOwners = new HashMap<>();
     private final HashMap<String, AID> areaNegotiations = new HashMap<>();
     
-    public Spotter(Discrete2DSpace space) {
-        super(Color.RED, space);
+    public Spotter() {
+        super(Color.RED);
     }
     
     @Override
@@ -43,6 +45,7 @@ public class Spotter extends MarsAgent {
         this.otherSpotters = Arrays.stream(allSpotters)
                                     .filter((aid) -> !aid.getLocalName().equals(localName))
                                     .toArray(AID[]::new);
+        this.otherProducers = Spotter.this.getAgents(MarsAgent.Ontologies.PRODUCER);
         
         this.addBehaviour(new AnswerAreaRequestBehaviour());
         this.addBehaviour(new AcknowledgeAreaBehaviour());
@@ -174,7 +177,7 @@ public class Spotter extends MarsAgent {
         private final Queue<Point> movementPlan = new LinkedList<>();
         
         public ScanBehaviour() {
-            Point position = new Point((int)Spotter.this.node.getX(), (int)Spotter.this.node.getY());
+            Point position = new Point((int)Spotter.this.node.getX(), (int)Spotter.this.rowYOffset);
             int maxX = Environment.SIZE;
             int maxY = Environment.SIZE;
             
@@ -182,8 +185,8 @@ public class Spotter extends MarsAgent {
             Point left = new Point(-1, 0);
             Point right = new Point(1, 0);
             
-            int targetX = position.x;
-            int targetY = Spotter.this.rowYOffset + Spotter.this.rowHeight;
+            int targetX = maxX;
+            int targetY = Spotter.this.rowYOffset + Spotter.this.rowHeight - 1;
             
             int xVector = 1;
             while(position.x != targetX || position.y != targetY) {
@@ -191,22 +194,23 @@ public class Spotter extends MarsAgent {
                 if(xVector == 1) {
                     if(position.x >= maxX) {
                         nextMove = down;
-                        xVector *= -1;
+                        xVector = -1;
                     } else
                         nextMove = right;
                 } else {
                     if(position.x <= 0) {
                         nextMove = down;
-                        xVector *= -1;
+                        xVector = 1;
                     } else
                         nextMove = left;
                 }
                 
                 this.movementPlan.offer(nextMove);
-                position.translate(nextMove.x, nextMove.y);
+                position.x += nextMove.x;
+                position.y += nextMove.y;
             }
             
-            this.inPosition = (int)Spotter.this.node.getY() == Spotter.this.rowYOffset;
+            this.inPosition = (int)Spotter.this.node.getY() >= Spotter.this.rowYOffset;
         }
         
         @Override
@@ -216,7 +220,7 @@ public class Spotter extends MarsAgent {
                 Spotter.this.node.setY(nextY);
                 if(nextY >= Spotter.this.rowYOffset)
                     inPosition = true;
-                
+                    
                 return;
             }
             
@@ -226,10 +230,10 @@ public class Spotter extends MarsAgent {
             else {
                 int nextX = (int)Spotter.this.node.getX() + nextMove.x;
                 int nextY = (int)Spotter.this.node.getY() + nextMove.y;
+                
                 Spotter.this.node.setX(nextX);
                 Spotter.this.node.setY(nextY);
             }
         }
-        
     }
 }

@@ -9,8 +9,6 @@ import main.TransportMovement;
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.Queue;
-import uchicago.src.sim.space.Discrete2DSpace;
-
 
 /**
  *
@@ -25,8 +23,8 @@ public class Transporter extends MarsAgent {
     private int transportsCost;
     private final Point shipPosition;
     
-    public Transporter(/*int capacity, */Point shipPosition, Discrete2DSpace space) {
-        super(Color.BLUE, space);
+    public Transporter(/*int capacity, */Point shipPosition) {
+        super(Color.BLUE);
 //        this.capacity = capacity;
 //        available = capacity;
         transports = new LinkedList<>();
