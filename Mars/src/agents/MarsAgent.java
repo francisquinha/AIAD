@@ -19,11 +19,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- *
  * @author diogo
  */
 public class MarsAgent extends Agent implements Comparable {
-    
+
     public final MarsModel model;
     public final MarsNode node;
 
@@ -32,33 +31,33 @@ public class MarsAgent extends Agent implements Comparable {
         this.node = new MarsNode(this, drawable);
         node.setColor(color);
     }
-    
+
     public void translate(Point vector) {
         Point position = this.getPosition();
         position.translate(vector.x, vector.y);
         this.move(position);
     }
-    
+
     public void move(Point position) {
         this.model.moveAgent(this, position);
     }
-    
+
     public Point getPosition() {
-        return new Point((int)this.node.getX(), (int)this.node.getY());
+        return new Point((int) this.node.getX(), (int) this.node.getY());
     }
-    
+
     public final AID[] getAgents(String ontology) {
         try {
             DFAgentDescription description = new DFAgentDescription();
             description.addOntologies(ontology);
             DFAgentDescription[] found = DFService.search(this, description);
             AID[] aids = new AID[found.length];
-            
-            for(int i = 0; i < found.length;  i++)
+
+            for (int i = 0; i < found.length; i++)
                 aids[i] = found[i].getName();
-            
+
             return aids;
-        } catch(FIPAException e) {
+        } catch (FIPAException e) {
             System.out.println("No agents with the ontology " + ontology);
             return new AID[0];
         }
@@ -66,11 +65,11 @@ public class MarsAgent extends Agent implements Comparable {
 
     protected Queue<Point> getPlanToPosition(Point from, Point target, int maxDistance) {
         Queue<Point> plan = new LinkedList<>();
-        while(Math.abs(from.distance(target)) > maxDistance) {
+        while (Math.abs(from.distance(target)) > maxDistance) {
             int dx = target.x - from.x;
             int dy = target.y - from.y;
             Point nextMove;
-            if(dx != 0) {
+            if (dx != 0) {
                 dx = dx > 0 ? Math.min(1, dx) : Math.max(-1, dx);
                 nextMove = new Point(dx, 0);
             } else {
@@ -83,18 +82,18 @@ public class MarsAgent extends Agent implements Comparable {
         }
         return plan;
     }
-    
+
     @Override
     public int compareTo(Object t) {
-        if(t == null)
+        if (t == null)
             return 1;
-        
-        if(t instanceof MarsAgent)
+
+        if (t instanceof MarsAgent)
             return this.toString().compareTo(t.toString());
         else
             return -1;
     }
-    
+
     public static class Ontologies {
         public static final String SPOTTER = "Spotter";
         public static final String PRODUCER = "Producer";

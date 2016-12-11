@@ -8,8 +8,8 @@ package main;
 import agents.MarsAgent;
 import uchicago.src.sim.gui.NetworkDrawable;
 import uchicago.src.sim.network.DefaultDrawableNode;
+
 /**
- *
  * @author diogo
  */
 public class MarsNode extends DefaultDrawableNode {

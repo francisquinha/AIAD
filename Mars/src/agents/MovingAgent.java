@@ -26,7 +26,7 @@ class MovingAgent extends MarsAgent {
 
     void moveMovementPlan() {
         Point nextMove = movementPlan.poll();
-        if(nextMove != null)
+        if (nextMove != null)
             translate(nextMove);
     }
 

@@ -4,7 +4,6 @@ import sajas.sim.repast3.Repast3Launcher;
 import uchicago.src.sim.engine.SimInit;
 
 /**
- *
  * @author diogo
  */
 public class Simulation {
@@ -15,5 +14,5 @@ public class Simulation {
         Repast3Launcher model = new MarsModel();
         init.loadModel(model, null, false);
     }
-    
+
 }
