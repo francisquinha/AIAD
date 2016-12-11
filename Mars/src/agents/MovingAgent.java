@@ -13,14 +13,14 @@ import java.util.Queue;
  */
 class MovingAgent extends MarsAgent {
 
-    private Queue<Point> movementPlan;
-    private Point lastPlannedPosition;
+    private final Queue<Point> movementPlan;
+    private final Point lastPlannedPosition;
     private boolean done;
 
     MovingAgent(Color color, MarsModel model) {
         super(color, model, new OvalNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
         movementPlan = new LinkedList<>();
-        this.lastPlannedPosition = getPosition();
+        lastPlannedPosition = getPosition();
         done = false;
     }
 
@@ -31,8 +31,8 @@ class MovingAgent extends MarsAgent {
     }
 
     void scheduleRetreat() {
-        this.movementPlan.addAll(getPlanToPosition(lastPlannedPosition, Environment.SHIP_POSITION, 0));
-        this.done = true;
+        movementPlan.addAll(getPlanToPosition(lastPlannedPosition, Environment.SHIP_POSITION, 0));
+        done = true;
     }
 
     boolean getDone() {

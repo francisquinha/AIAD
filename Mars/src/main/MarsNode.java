@@ -14,7 +14,7 @@ import uchicago.src.sim.network.DefaultDrawableNode;
  */
 public class MarsNode extends DefaultDrawableNode {
 
-    MarsAgent agent;
+    final MarsAgent agent;
 
     public MarsNode(MarsAgent agent, NetworkDrawable drawable) {
         super(drawable);

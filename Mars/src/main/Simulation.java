@@ -6,7 +6,7 @@ import uchicago.src.sim.engine.SimInit;
 /**
  * @author diogo
  */
-public class Simulation {
+class Simulation {
 
     public static void main(String[] args) {
         SimInit init = new SimInit();

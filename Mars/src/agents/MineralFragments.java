@@ -17,19 +17,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class MineralFragments extends MarsAgent {
 
-    public AtomicInteger quantity;
+    final AtomicInteger quantity;
 
-    public MineralFragments(MarsModel model, int quantity) {
+    MineralFragments(MarsModel model, int quantity) {
         super(Color.MAGENTA, model, new RectNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
         this.quantity = new AtomicInteger(quantity);
     }
 
-    public int take(int wanted) {
-        if (wanted >= this.quantity.get()) {
-            this.model.removeAgent(this);
-            return this.quantity.get();
+    int take(int wanted) {
+        if (wanted >= quantity.get()) {
+            model.removeAgent(this);
+            return quantity.get();
         } else {
-            this.quantity.getAndAdd(-wanted);
+            quantity.getAndAdd(-wanted);
             return wanted;
         }
     }

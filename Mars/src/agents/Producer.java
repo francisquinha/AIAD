@@ -24,15 +24,15 @@ public class Producer extends MovingAgent {
 
     public Producer(MarsModel model) {
         super(Color.GREEN, model);
-        this.mineralPlan = new LinkedList<>();
+        mineralPlan = new LinkedList<>();
     }
 
     @Override
     public void setup() {
-        this.otherTransporters = this.getAgents(MarsAgent.Ontologies.TRANSPORTER);
-        this.addBehaviour(new RoutineBehaviour());
-        this.addBehaviour(new AnswerCallBehaviour());
-        this.model.registerOnNoMoreMinerals(this::scheduleRetreat);
+        otherTransporters = getAgents(MarsAgent.Ontologies.TRANSPORTER);
+        addBehaviour(new RoutineBehaviour());
+        addBehaviour(new AnswerCallBehaviour());
+        model.registerOnNoMoreMinerals(this::scheduleRetreat);
     }
 
     private class RoutineBehaviour extends CyclicBehaviour {
@@ -40,18 +40,19 @@ public class Producer extends MovingAgent {
         @Override
         public void action() {
             if (getDone()) {
-                if (Producer.this.getPosition().distance(Environment.SHIP_POSITION) <= 0)
+                if (getPosition().distance(Environment.SHIP_POSITION) <= 0)
                     removeBehaviour(this);
+                else moveMovementPlan();
             }
 
-            Mineral nextMineral = Producer.this.mineralPlan.peek();
+            Mineral nextMineral = mineralPlan.peek();
             if (nextMineral == null)
                 return;
 
-            Point position = Producer.this.getPosition();
+            Point position = getPosition();
             Point mineralPosition = nextMineral.getPosition();
             if (Math.abs(position.distance(mineralPosition)) <= 1) {
-                Producer.this.mineralPlan.poll();
+                mineralPlan.poll();
                 MineralFragments fragments = nextMineral.mine();
 
                 ACLMessage msg = new ACLMessage(ACLMessage.CFP);
@@ -60,7 +61,7 @@ public class Producer extends MovingAgent {
                 for (AID aid : otherTransporters)
                     msg.addReceiver(aid);
 
-                Producer.this.addBehaviour(new RequestTransporterBehaviour(fragments, msg));
+                addBehaviour(new RequestTransporterBehaviour(fragments, msg));
             } else {
                 moveMovementPlan();
             }
@@ -99,8 +100,8 @@ public class Producer extends MovingAgent {
 
             addMovementPlan(mineralPosition, 1);
 
-            Mineral mineral = this.getMineralAt(mineralPosition);
-            Producer.this.mineralPlan.add(mineral);
+            Mineral mineral = getMineralAt(mineralPosition);
+            mineralPlan.add(mineral);
 
             ACLMessage response = accept.createReply();
             response.setPerformative(ACLMessage.INFORM);
@@ -109,7 +110,7 @@ public class Producer extends MovingAgent {
 
         private Mineral getMineralAt(Point position) {
             Mineral found = null;
-            Set<MarsAgent> agents = Producer.this.model.getAgentsAt(position);
+            Set<MarsAgent> agents = model.getAgentsAt(position);
             for (MarsAgent agent : agents) {
                 if (agent instanceof Mineral) {
                     found = (Mineral) agent;
@@ -123,18 +124,17 @@ public class Producer extends MovingAgent {
 
     private class RequestTransporterBehaviour extends ContractNetInitiator {
 
-        private final MineralFragments fragments;
         private int fragmentsRemaining;
-        private ACLMessage initialMessage;
+        private final ACLMessage initialMessage;
 
-        public RequestTransporterBehaviour(MineralFragments fragments, ACLMessage msg) {
+        RequestTransporterBehaviour(MineralFragments fragments, ACLMessage msg) {
             super(Producer.this, msg);
-            this.fragments = fragments;
-            this.fragmentsRemaining = fragments.quantity.get();
-            this.initialMessage = msg;
+            fragmentsRemaining = fragments.quantity.get();
+            initialMessage = msg;
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void handleAllResponses(Vector proposes, Vector responses) {
             Hashtable<Integer, ACLMessage> loads = new Hashtable<>();
 
@@ -181,7 +181,7 @@ public class Producer extends MovingAgent {
             }
 
             if (chosen.isEmpty())
-                this.reset();
+                reset();
         }
 
         @Override
@@ -189,7 +189,7 @@ public class Producer extends MovingAgent {
             for (Object obj : v) {
                 ACLMessage message = (ACLMessage) obj;
                 if (message.getPerformative() == ACLMessage.FAILURE) {
-                    this.reset();
+                    reset();
                     return;
                 }
             }
@@ -198,7 +198,7 @@ public class Producer extends MovingAgent {
                 String[] content = initialMessage.getContent().split(",");
                 content[2] = fragmentsRemaining + "";
                 initialMessage.setContent(content[0] + "," + content[1] + "," + content[2]);
-                this.reset(initialMessage);
+                reset(initialMessage);
             }
         }
 

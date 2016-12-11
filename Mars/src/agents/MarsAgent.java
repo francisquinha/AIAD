@@ -23,30 +23,30 @@ import java.util.Queue;
  */
 public class MarsAgent extends Agent implements Comparable {
 
-    public final MarsModel model;
+    final MarsModel model;
     public final MarsNode node;
 
-    protected MarsAgent(Color color, MarsModel model, NetworkDrawable drawable) {
+    MarsAgent(Color color, MarsModel model, NetworkDrawable drawable) {
         this.model = model;
-        this.node = new MarsNode(this, drawable);
+        node = new MarsNode(this, drawable);
         node.setColor(color);
     }
 
-    public void translate(Point vector) {
-        Point position = this.getPosition();
+    void translate(Point vector) {
+        Point position = getPosition();
         position.translate(vector.x, vector.y);
-        this.move(position);
+        move(position);
     }
 
     public void move(Point position) {
-        this.model.moveAgent(this, position);
+        model.moveAgent(this, position);
     }
 
     public Point getPosition() {
-        return new Point((int) this.node.getX(), (int) this.node.getY());
+        return new Point((int) node.getX(), (int) node.getY());
     }
 
-    public final AID[] getAgents(String ontology) {
+    final AID[] getAgents(String ontology) {
         try {
             DFAgentDescription description = new DFAgentDescription();
             description.addOntologies(ontology);
@@ -63,7 +63,7 @@ public class MarsAgent extends Agent implements Comparable {
         }
     }
 
-    protected Queue<Point> getPlanToPosition(Point from, Point target, int maxDistance) {
+    Queue<Point> getPlanToPosition(Point from, Point target, int maxDistance) {
         Queue<Point> plan = new LinkedList<>();
         while (Math.abs(from.distance(target)) > maxDistance) {
             int dx = target.x - from.x;
@@ -89,7 +89,7 @@ public class MarsAgent extends Agent implements Comparable {
             return 1;
 
         if (t instanceof MarsAgent)
-            return this.toString().compareTo(t.toString());
+            return toString().compareTo(t.toString());
         else
             return -1;
     }
