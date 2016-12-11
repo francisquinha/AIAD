@@ -18,47 +18,31 @@ import java.util.Queue;
  *
  * @author diogo
  */
-public class Producer extends MarsAgent {
+public class Producer extends MovingAgent {
     
-    private final Queue<Point> movementPlan;
     private final Queue<Mineral> mineralPlan;
     private AID[] otherTransporters;
-    private Point lastPlannedPosition;
-    private boolean done = false;
-    
+
     public Producer(MarsModel model) {
-        super(Color.GREEN, model);
-        this.movementPlan = new LinkedList<>();
+        super(Color.GREEN, model, Ontologies.PRODUCER);
         this.mineralPlan = new LinkedList<>();
     }
     
     @Override
     public void setup() {
-        this.lastPlannedPosition = this.getPosition();
         this.otherTransporters = this.getAgents(MarsAgent.Ontologies.TRANSPORTER);
         this.addBehaviour(new RoutineBehaviour());
         this.addBehaviour(new AnswerCallBehaviour());
-        this.model.registerOnNoMoreMinerals(() -> this.scheduleRetreat());
+        this.model.registerOnNoMoreMinerals(this::scheduleRetreat);
     }
-    
-    public void scheduleRetreat() {
-        Queue<Point> retreatPlan = this.getPlanToPosition(lastPlannedPosition, Environment.SHIP_POSITION, 0);
-        this.movementPlan.addAll(retreatPlan);
-        this.done = true;
-    }
-    
+
     private class RoutineBehaviour extends CyclicBehaviour {
 
         @Override
         public void action() {
-            if(done) {
+            if(getDone()) {
                 if(Producer.this.getPosition().distance(Environment.SHIP_POSITION) <= 0)
                     removeBehaviour(this);
-                else {
-                    Point nextMove = Producer.this.movementPlan.poll();
-                    if(nextMove != null)
-                        Producer.this.translate(nextMove);
-                }
             }
             
             Mineral nextMineral = Producer.this.mineralPlan.peek();
@@ -79,9 +63,7 @@ public class Producer extends MarsAgent {
                 
                 Producer.this.addBehaviour(new RequestTransporterBehaviour(fragments, msg));
             } else {
-                Point nextMove = Producer.this.movementPlan.poll();
-                if(nextMove != null)
-                    Producer.this.translate(nextMove);
+                moveMovementPlan();
             }
         }
         
@@ -89,7 +71,7 @@ public class Producer extends MarsAgent {
     
     private class AnswerCallBehaviour extends ContractNetResponder {
         
-        public AnswerCallBehaviour() {
+        AnswerCallBehaviour() {
             super(Producer.this, MessageTemplate.and(
                     MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET), 
                     MessageTemplate.MatchOntology(MarsAgent.Ontologies.SPOTTER)));
@@ -100,14 +82,12 @@ public class Producer extends MarsAgent {
             ACLMessage response = message.createReply();
             response.setPerformative(ACLMessage.PROPOSE);
             
-            int cost = movementPlan.size();
+            int cost = getPlanCost();
             String[] coordinates = message.getContent().split(",");
             Point mineralPosition = new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
-                    
-            cost += Math.abs(mineralPosition.x - lastPlannedPosition.x);
-            cost += Math.abs(mineralPosition.y - lastPlannedPosition.y);
-            cost -= 1; // Because it only needs to be adjacent, not in it
-            
+
+            cost += getCost(mineralPosition) - 1; // Because it only needs to be adjacent, not in it
+
             response.setContent("" + cost);
             return response;
         }
@@ -116,27 +96,10 @@ public class Producer extends MarsAgent {
         public ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
             String[] coordinates = cfp.getContent().split(",");
             
-//            Point position = Producer.this.getPosition();
             Point mineralPosition = new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
-            // This will keep up-to-date
-/*            Producer.this.lastPlannedPosition = position;
-            while(Math.abs(position.distance(mineralPosition)) > 1) {
-                int dx = mineralPosition.x - position.x;
-                int dy = mineralPosition.y - position.y;
-                Point nextMove;
-                if(dx != 0) {
-                    dx = dx > 0 ? Math.min(1, dx) : Math.max(-1, dx);
-                    nextMove = new Point(dx, 0);
-                } else {
-                    dy = dy > 0 ? Math.min(1, dy) : Math.max(-1, dy);
-                    nextMove = new Point(0, dy);
-                }
-                
-                Producer.this.movementPlan.add(nextMove);
-                position.translate(nextMove.x, nextMove.y);
-            }
-*/
-            Producer.this.movementPlan.addAll(getPlanToPosition(Producer.this.lastPlannedPosition, mineralPosition, 1));
+
+            addMovementPlan(mineralPosition, 1);
+
             Mineral mineral = this.getMineralAt(mineralPosition);
             Producer.this.mineralPlan.add(mineral);
             
@@ -160,7 +123,7 @@ public class Producer extends MarsAgent {
     }
     
     private class RequestTransporterBehaviour extends ContractNetInitiator {
-        
+
         private final MineralFragments fragments;
         private int fragmentsRemaining;
         private ACLMessage initialMessage;

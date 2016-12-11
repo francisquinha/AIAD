@@ -5,9 +5,10 @@
  */
 package agents;
 
-import java.awt.Color;
-import java.util.concurrent.atomic.AtomicInteger;
 import main.MarsModel;
+
+import java.awt.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -18,7 +19,7 @@ public class MineralFragments extends MarsAgent {
     public AtomicInteger quantity;
     
     public MineralFragments(MarsModel model, int quantity) {
-        super(Color.MAGENTA, model);
+        super(Color.MAGENTA, model, Ontologies.MINERAL);
         this.quantity = new AtomicInteger(quantity);
     }
     

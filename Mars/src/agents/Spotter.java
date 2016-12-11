@@ -29,14 +29,14 @@ public class Spotter extends MarsAgent {
     private String localName;
     private int rowYOffset;
     private int rowHeight;
-    
+
     private boolean done = false;
-    
+
     private final HashMap<String, AID> areaOwners = new HashMap<>();
     private final HashMap<String, AID> areaNegotiations = new HashMap<>();
     
     public Spotter(MarsModel model) {
-        super(Color.RED, model);
+        super(Color.RED, model, Ontologies.SPOTTER);
         this.mineralsFound = new LinkedList<>();
     }
     
@@ -193,7 +193,7 @@ public class Spotter extends MarsAgent {
 
             int maxX = Environment.SIZE - 1;
 
-            int targetX = maxX;
+            int targetX = Spotter.this.rowHeight % 2 == 0 ? 0 : maxX;
             int targetY = Spotter.this.rowYOffset + Spotter.this.rowHeight - 1;
 
             int xVector = 1;

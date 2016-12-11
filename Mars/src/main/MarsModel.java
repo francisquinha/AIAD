@@ -44,7 +44,7 @@ public class MarsModel extends Repast3Launcher {
     private final Set<MineralFragments> fragments;
     private final List<Runnable> noMineralsCallbacks;
     private final List<Runnable> noFragmentsCallbacks;
-    
+
     public MarsModel() {
         this.minerals = new HashSet<>();
         this.fragments = new HashSet<>();
@@ -101,7 +101,7 @@ public class MarsModel extends Repast3Launcher {
                 this.fireNoMoreMinerals();
         } else if(agent instanceof MineralFragments) {
             this.fragments.remove(agent);
-            if(this.fragments.isEmpty())
+            if(this.fragments.isEmpty() && this.minerals.isEmpty())
                 this.fireNoMoreFragments();
         }
     }

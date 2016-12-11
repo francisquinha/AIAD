@@ -25,11 +25,13 @@ public class MarsAgent extends Agent implements Comparable {
     
     public final MarsModel model;
     public final MarsNode node;
-    
-    protected MarsAgent(Color color, MarsModel model) {
+    public final String ontology;
+
+    protected MarsAgent(Color color, MarsModel model, String ontology) {
         this.model = model;
         this.node = new MarsNode(this);
         node.setColor(color);
+        this.ontology = ontology;
     }
     
     public void translate(Point vector) {
@@ -99,5 +101,6 @@ public class MarsAgent extends Agent implements Comparable {
         public static final String PRODUCER = "Producer";
         public static final String TRANSPORTER = "Transporter";
         public static final String MINERAL = "Mineral";
+        public static final String SHIP = "Ship";
     }
 }

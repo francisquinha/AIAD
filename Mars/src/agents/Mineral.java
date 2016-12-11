@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Mineral extends MarsAgent {
     
     public Mineral(MarsModel model) {
-        super(Color.PINK, model);
+        super(Color.PINK, model, Ontologies.MINERAL);
     }
     
     public MineralFragments mine() {
