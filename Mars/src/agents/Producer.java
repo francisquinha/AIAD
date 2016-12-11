@@ -124,8 +124,8 @@ public class Producer extends MovingAgent {
 
     private class RequestTransporterBehaviour extends ContractNetInitiator {
 
-        private int fragmentsRemaining;
         private final ACLMessage initialMessage;
+        private int fragmentsRemaining;
 
         RequestTransporterBehaviour(MineralFragments fragments, ACLMessage msg) {
             super(Producer.this, msg);

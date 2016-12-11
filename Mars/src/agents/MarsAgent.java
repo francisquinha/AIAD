@@ -23,8 +23,8 @@ import java.util.Queue;
  */
 public class MarsAgent extends Agent implements Comparable {
 
-    final MarsModel model;
     public final MarsNode node;
+    final MarsModel model;
 
     MarsAgent(Color color, MarsModel model, NetworkDrawable drawable) {
         this.model = model;

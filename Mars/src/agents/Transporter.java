@@ -19,12 +19,11 @@ import java.util.Set;
 public class Transporter extends MovingAgent {
 
     private final int capacity;
-    private int load;
     private final Queue<MineralFragments> fragmentsPlan;
-    private int lastPlannedLoad;
-
     private final Queue<ACLMessage> pending = new LinkedList<>();
     private final Queue<ACLMessage> toReject = new LinkedList<>();
+    private int load;
+    private int lastPlannedLoad;
 
     public Transporter(MarsModel model, int capacity) {
         super(Color.BLUE, model);
