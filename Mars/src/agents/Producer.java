@@ -21,10 +21,12 @@ public class Producer extends MovingAgent {
 
     private final Queue<Mineral> mineralPlan;
     private AID[] otherTransporters;
+    private int extractTime;
 
     public Producer(MarsModel model) {
         super(Color.GREEN, model);
         mineralPlan = new LinkedList<>();
+        extractTime =0;
     }
 
     @Override
@@ -34,11 +36,28 @@ public class Producer extends MovingAgent {
         addBehaviour(new AnswerCallBehaviour());
         model.registerOnNoMoreMinerals(this::scheduleRetreat);
     }
+    
+    @Override
+    int getPlanCost() {
+    	int totalCost = super.getPlanCost();
+    	
+    	if (mineralPlan.size() > 0){
+    		for(Mineral mineral : mineralPlan){
+    			totalCost += mineral.getMineralFrag();
+    		}
+    	
+    		if(extractTime > 0)
+    			totalCost = totalCost - mineralPlan.peek().getMineralFrag() + extractTime;
+    	}
+    
+    	return totalCost;
+    } 
 
     private class RoutineBehaviour extends CyclicBehaviour {
 
         @Override
         public void action() {
+        	
             if (getDone()) {
                 if (getPosition().distance(Environment.SHIP_POSITION) <= 0)
                     removeBehaviour(this);
@@ -49,19 +68,29 @@ public class Producer extends MovingAgent {
             if (nextMineral == null)
                 return;
 
+            if(extractTime > 0){
+            	if(extractTime == 1){
+            		Point mineralPosition = nextMineral.getPosition();
+            		
+            		mineralPlan.poll();
+                    MineralFragments fragments = nextMineral.mine();
+
+                    ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+                    msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
+                    msg.setContent(mineralPosition.x + "," + mineralPosition.y + "," + fragments.quantity.get());
+                    for (AID aid : otherTransporters)
+                        msg.addReceiver(aid);
+
+                    addBehaviour(new RequestTransporterBehaviour(fragments, msg));
+            	}
+        		extractTime--; 
+        		return;
+        	}
+            
             Point position = getPosition();
             Point mineralPosition = nextMineral.getPosition();
             if (Math.abs(position.distance(mineralPosition)) <= 1) {
-                mineralPlan.poll();
-                MineralFragments fragments = nextMineral.mine();
-
-                ACLMessage msg = new ACLMessage(ACLMessage.CFP);
-                msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-                msg.setContent(mineralPosition.x + "," + mineralPosition.y + "," + fragments.quantity.get());
-                for (AID aid : otherTransporters)
-                    msg.addReceiver(aid);
-
-                addBehaviour(new RequestTransporterBehaviour(fragments, msg));
+            	extractTime = nextMineral.getMineralFrag();
             } else {
                 moveMovementPlan();
             }
