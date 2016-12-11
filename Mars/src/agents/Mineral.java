@@ -20,12 +20,13 @@ public class Mineral extends MarsAgent {
         super(Color.PINK, model);
     }
     
-    public void mine() {
+    public MineralFragments mine() {
         ThreadLocalRandom r = ThreadLocalRandom.current();
-        int count = r.nextInt(Environment.MAX_FRAGMENTS_PER_MINERAL);
+        int count = r.nextInt(Environment.MIN_FRAGMENTS_PER_MINERAL, Environment.MAX_FRAGMENTS_PER_MINERAL);
         MineralFragments fragments = new MineralFragments(this.model, count);
         this.model.addAgent(fragments, this.getPosition());
         this.model.removeAgent(this);
+        return fragments;
     }
     
 }

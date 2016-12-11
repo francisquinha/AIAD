@@ -6,6 +6,7 @@
 package agents;
 
 import java.awt.Color;
+import java.util.concurrent.atomic.AtomicInteger;
 import main.MarsModel;
 
 /**
@@ -14,21 +15,19 @@ import main.MarsModel;
  */
 public class MineralFragments extends MarsAgent {
     
-    public int quantity;
+    public AtomicInteger quantity;
     
     public MineralFragments(MarsModel model, int quantity) {
         super(Color.MAGENTA, model);
-        this.quantity = quantity;
-        this.node.setLabelColor(Color.WHITE);
-        this.node.setNodeLabel("" + quantity);
+        this.quantity = new AtomicInteger(quantity);
     }
     
     public int take(int wanted) {
-        if(wanted >= this.quantity) {
+        if(wanted >= this.quantity.get()) {
             this.model.removeAgent(this);
-            return this.quantity;
+            return this.quantity.get();
         } else {
-            this.quantity -= wanted;
+            this.quantity.getAndAdd(-wanted);
             return wanted;
         }
     }

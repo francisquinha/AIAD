@@ -11,11 +11,12 @@ package main;/*
 public class Environment {
  
     public static final int SIZE = 30;
-    public static final int SPOTTERS = 10;
-    public static final int PRODUCERS = 10;
-    public static final int TRANSPORTERS = 1;
-    public static final int TRANSPORTER_CAPACITY = 10;
+    public static final int SPOTTERS = 2;
+    public static final int PRODUCERS = 5;
+    public static final int TRANSPORTERS = 5;
+    public static final int TRANSPORTER_CAPACITY = 4;
     public static final int MINERALS = 15;
+    public static final int MIN_FRAGMENTS_PER_MINERAL = 5;
     public static final int MAX_FRAGMENTS_PER_MINERAL = 20;
     
 }

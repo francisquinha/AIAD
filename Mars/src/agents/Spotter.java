@@ -73,9 +73,9 @@ public class Spotter extends MarsAgent {
             super(Spotter.this, null);
             this.yOffset = yOffset;
             this.height = height;
-            this.awaitingConfirmation = new HashSet<>();
+            this.awaitingConfirmation = new HashSet<>();    
         }
-
+        
         @Override
         @SuppressWarnings("UseOfObsoleteCollectionType")
         protected Vector<ACLMessage> prepareInitiations(ACLMessage initialPropose) {
@@ -262,6 +262,7 @@ public class Spotter extends MarsAgent {
                 if(agent instanceof Mineral) {
                     Mineral mineral = (Mineral)agent;
                     ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+                    msg.setOntology(MarsAgent.Ontologies.SPOTTER);
                     msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
                     msg.setContent(newPosition.x + "," + newPosition.y);
                     for(AID producer : Spotter.this.otherProducers)
@@ -318,7 +319,6 @@ public class Spotter extends MarsAgent {
         @Override
         public void handleInform(ACLMessage inform) {
             System.out.println("Got a producer for a mineral!");
-            Spotter.this.removeBehaviour(this);
         }
         
     }

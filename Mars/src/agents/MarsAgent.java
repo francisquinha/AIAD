@@ -10,6 +10,8 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAException;
 import java.awt.Color;
 import java.awt.Point;
+import java.util.LinkedList;
+import java.util.Queue;
 import main.MarsModel;
 import main.MarsNode;
 import sajas.core.Agent;
@@ -61,6 +63,29 @@ public class MarsAgent extends Agent implements Comparable {
         }
     }
 
+    protected Queue<Point> getPlanToPosition(Point from, Point target, int maxDistance) {
+        Queue<Point> plan = new LinkedList<>();
+        
+        Point position = new Point(from.x, from.y);
+        while(Math.abs(position.distance(target)) > maxDistance) {
+            int dx = target.x - position.x;
+            int dy = target.y - position.y;
+            Point nextMove;
+            if(dx != 0) {
+                dx = dx > 0 ? Math.min(1, dx) : Math.max(-1, dx);
+                nextMove = new Point(dx, 0);
+            } else {
+                dy = dy > 0 ? Math.min(1, dy) : Math.max(-1, dy);
+                nextMove = new Point(0, dy);
+            }
+
+            position.translate(nextMove.x, nextMove.y);
+            plan.add(nextMove);
+        }
+        
+        return plan;
+    }
+    
     @Override
     public int compareTo(Object t) {
         if(t == null)

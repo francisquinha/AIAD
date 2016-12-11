@@ -7,11 +7,16 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import java.awt.Point;
+import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Vector;
 import main.MarsModel;
+import sajas.core.Agent;
 import sajas.core.behaviours.CyclicBehaviour;
+import sajas.proto.ContractNetInitiator;
 import sajas.proto.ContractNetResponder;
 
 /**
@@ -24,6 +29,7 @@ public class Producer extends MarsAgent {
     private final Queue<Mineral> mineralPlan;
     private AID[] otherTransporters;
     private Point lastPlannedPosition;
+    private boolean done = false;
     
     public Producer(MarsModel model) {
         super(Color.GREEN, model);
@@ -37,12 +43,29 @@ public class Producer extends MarsAgent {
         this.otherTransporters = this.getAgents(MarsAgent.Ontologies.TRANSPORTER);
         this.addBehaviour(new RoutineBehaviour());
         this.addBehaviour(new AnswerCallBehaviour());
+        this.model.registerOnNoMoreMinerals(() -> this.scheduleRetreat());
+    }
+    
+    public void scheduleRetreat() {
+        Queue<Point> retreatPlan = this.getPlanToPosition(lastPlannedPosition, this.model.shipPosition, 0);
+        this.movementPlan.addAll(retreatPlan);
+        this.done = true;
     }
     
     private class RoutineBehaviour extends CyclicBehaviour {
 
         @Override
         public void action() {
+            if(done) {
+                if(Producer.this.getPosition().distance(model.shipPosition) <= 0)
+                    removeBehaviour(this);
+                else {
+                    Point nextMove = Producer.this.movementPlan.poll();
+                    if(nextMove != null)
+                        Producer.this.translate(nextMove);
+                }
+            }
+            
             Mineral nextMineral = Producer.this.mineralPlan.peek();
             if(nextMineral == null)
                 return;
@@ -51,7 +74,15 @@ public class Producer extends MarsAgent {
             Point mineralPosition = nextMineral.getPosition();
             if(Math.abs(position.distance(mineralPosition)) <= 1) {
                 Producer.this.mineralPlan.poll();
-                nextMineral.mine();
+                MineralFragments fragments = nextMineral.mine();
+                
+                ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+                msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
+                msg.setContent(mineralPosition.x + "," + mineralPosition.y + "," + fragments.quantity.get());
+                for(AID aid : otherTransporters)
+                    msg.addReceiver(aid);
+                
+                Producer.this.addBehaviour(new RequestTransporterBehaviour(fragments, msg));
             } else {
                 Point nextMove = Producer.this.movementPlan.poll();
                 if(nextMove != null)
@@ -64,7 +95,9 @@ public class Producer extends MarsAgent {
     private class AnswerCallBehaviour extends ContractNetResponder {
         
         public AnswerCallBehaviour() {
-            super(Producer.this, MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET));
+            super(Producer.this, MessageTemplate.and(
+                    MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET), 
+                    MessageTemplate.MatchOntology(MarsAgent.Ontologies.SPOTTER)));
         }
 
         @Override
@@ -128,5 +161,88 @@ public class Producer extends MarsAgent {
             
             return found;
         }
+    }
+    
+    private class RequestTransporterBehaviour extends ContractNetInitiator {
+        
+        private final MineralFragments fragments;
+        private int fragmentsRemaining;
+        private ACLMessage initialMessage;
+        
+        public RequestTransporterBehaviour(MineralFragments fragments, ACLMessage msg) {
+            super(Producer.this, msg);
+            this.fragments = fragments;
+            this.fragmentsRemaining = fragments.quantity.get();
+            this.initialMessage = msg;
+        }
+        
+        @Override
+        public void handleAllResponses(Vector proposes, Vector responses) {
+            Hashtable<Integer, ACLMessage> loads = new Hashtable<>();
+            
+            for(Object proposeObj : proposes) {
+                ACLMessage propose = (ACLMessage)proposeObj;
+                String[] contents = propose.getContent().split("-");
+                loads.put(Integer.parseInt(contents[0]), propose);
+            }
+            
+            Integer[] orderedLoads = loads.keySet().toArray(new Integer[0]);
+            Arrays.sort(orderedLoads);
+            
+            Queue<ACLMessage> chosen = new LinkedList<>();
+            for(Integer load : orderedLoads) {
+                if(load >= fragmentsRemaining) {
+                    fragmentsRemaining = 0;
+                    ACLMessage sender = loads.get(load);
+                    chosen.add(sender);
+                }
+            }
+            
+            for(int i = orderedLoads.length - 1; i >= 0; i--) {
+                if(fragmentsRemaining == 0)
+                    break;
+                
+                Integer load = orderedLoads[i];
+                fragmentsRemaining -= load;
+                ACLMessage proposal = loads.get(load);
+                chosen.add(proposal);
+            }
+            
+            for(ACLMessage m : chosen) {
+                ACLMessage response = m.createReply();
+                response.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                responses.add(response);
+            }
+            
+            proposes.removeAll(chosen);
+            for(Object obj : proposes) {
+                ACLMessage propose = (ACLMessage)obj;
+                ACLMessage response = propose.createReply();
+                response.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                responses.add(response);
+            }
+            
+            if(chosen.isEmpty())
+                this.reset();
+        }
+        
+        @Override
+        public void handleAllResultNotifications(Vector v) {
+            for(Object obj : v) {
+                ACLMessage message = (ACLMessage)obj;
+                if(message.getPerformative() == ACLMessage.FAILURE) {
+                    this.reset();
+                    return;
+                }
+            }
+            
+            if(fragmentsRemaining > 0) {
+                String[] content = initialMessage.getContent().split(",");
+                content[2] = fragmentsRemaining + "";
+                initialMessage.setContent(content[0] + "," + content[1] + "," + content[2]);
+                this.reset(initialMessage);
+            }
+        }
+        
     }
 }
