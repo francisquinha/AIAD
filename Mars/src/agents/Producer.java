@@ -1,23 +1,18 @@
 package agents;
 
 import jade.core.AID;
-
-import java.awt.Color;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import java.awt.Point;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Vector;
+import main.Environment;
 import main.MarsModel;
-import sajas.core.Agent;
 import sajas.core.behaviours.CyclicBehaviour;
 import sajas.proto.ContractNetInitiator;
 import sajas.proto.ContractNetResponder;
+
+import java.awt.*;
+import java.util.*;
+import java.util.Queue;
 
 /**
  *
@@ -47,7 +42,7 @@ public class Producer extends MarsAgent {
     }
     
     public void scheduleRetreat() {
-        Queue<Point> retreatPlan = this.getPlanToPosition(lastPlannedPosition, this.model.shipPosition, 0);
+        Queue<Point> retreatPlan = this.getPlanToPosition(lastPlannedPosition, Environment.SHIP_POSITION, 0);
         this.movementPlan.addAll(retreatPlan);
         this.done = true;
     }
@@ -57,7 +52,7 @@ public class Producer extends MarsAgent {
         @Override
         public void action() {
             if(done) {
-                if(Producer.this.getPosition().distance(model.shipPosition) <= 0)
+                if(Producer.this.getPosition().distance(Environment.SHIP_POSITION) <= 0)
                     removeBehaviour(this);
                 else {
                     Point nextMove = Producer.this.movementPlan.poll();
@@ -121,10 +116,10 @@ public class Producer extends MarsAgent {
         public ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
             String[] coordinates = cfp.getContent().split(",");
             
-            Point position = Producer.this.getPosition();
+//            Point position = Producer.this.getPosition();
             Point mineralPosition = new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
             // This will keep up-to-date
-            Producer.this.lastPlannedPosition = position;
+/*            Producer.this.lastPlannedPosition = position;
             while(Math.abs(position.distance(mineralPosition)) > 1) {
                 int dx = mineralPosition.x - position.x;
                 int dy = mineralPosition.y - position.y;
@@ -140,7 +135,8 @@ public class Producer extends MarsAgent {
                 Producer.this.movementPlan.add(nextMove);
                 position.translate(nextMove.x, nextMove.y);
             }
-            
+*/
+            Producer.this.movementPlan.addAll(getPlanToPosition(Producer.this.lastPlannedPosition, mineralPosition, 1));
             Mineral mineral = this.getMineralAt(mineralPosition);
             Producer.this.mineralPlan.add(mineral);
             

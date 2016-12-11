@@ -1,11 +1,6 @@
 package main;
 
-import agents.MarsAgent;
-import agents.Mineral;
-import agents.MineralFragments;
-import agents.Producer;
-import agents.Spotter;
-import agents.Transporter;
+import agents.*;
 import jade.core.AID;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -19,29 +14,23 @@ import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.gui.DisplaySurface;
-import uchicago.src.sim.gui.Object2DDisplay;
-import java.util.concurrent.ThreadLocalRandom;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import uchicago.src.sim.gui.Network2DGridDisplay;
+import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.space.Discrete2DSpace;
 import uchicago.src.sim.space.Multi2DGrid;
+
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 
 /**
  *
  * @author diogo
  */
 public class MarsModel extends Repast3Launcher {
-    
-    public Point shipPosition = new Point(0, 0);
     
     private ContainerController mainContainer;
     private ArrayList<ArrayList<ConcurrentSkipListSet<MarsAgent>>> agents;
@@ -189,7 +178,7 @@ public class MarsModel extends Repast3Launcher {
             AMSService.register(agent);
             DFService.register(agent, df);
             
-            this.addAgent(agent, shipPosition);
+            this.addAgent(agent, Environment.SHIP_POSITION);
             this.mainContainer.acceptNewAgent(nickname, agent).start();
         }
         
@@ -233,10 +222,6 @@ public class MarsModel extends Repast3Launcher {
         }
     }
 
-    protected Point getShipPosition() {
-        return this.shipPosition;
-    }
-  
     @Override
     public String[] getInitParam() {
         return new String[0];

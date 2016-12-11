@@ -3,14 +3,15 @@ package agents;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import main.Environment;
+import main.MarsModel;
+import sajas.core.behaviours.CyclicBehaviour;
+import sajas.proto.ContractNetResponder;
 
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
-import main.MarsModel;
-import sajas.core.behaviours.CyclicBehaviour;
-import sajas.proto.ContractNetResponder;
 
 /**
  *
@@ -48,7 +49,7 @@ public class Transporter extends MarsAgent {
 
         @Override
         public void action() {
-            if(Math.abs(Transporter.this.model.shipPosition.distance(Transporter.this.getPosition())) <= 1)
+            if(Math.abs(Environment.SHIP_POSITION.distance(Transporter.this.getPosition())) <= 1)
                 load = 0;
             
             MineralFragments nextFragments = fragmentsPlan.peek();
@@ -116,16 +117,14 @@ public class Transporter extends MarsAgent {
             Point position = Transporter.this.getPosition();
             Point fragmentsPosition = new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
             
-            Queue<Point> planToFragments = getPlanToPosition(lastPlannedPosition, fragmentsPosition, 1);
-            movementPlan.addAll(planToFragments);
-            planToFragments.forEach(p -> lastPlannedPosition.translate(p.x, p.y));
-            
+            movementPlan.addAll(getPlanToPosition(lastPlannedPosition, fragmentsPosition, 1));
+
             MineralFragments fragments = this.getMineralFragmentsAt(fragmentsPosition);
             Transporter.this.fragmentsPlan.add(fragments);
             int collectable = Math.min(capacity - lastPlannedLoad, fragments.quantity.get());
             lastPlannedLoad += collectable;
             if(lastPlannedLoad >= capacity) {
-                Queue<Point> planToShip = getPlanToPosition(lastPlannedPosition, model.shipPosition, 1);
+                Queue<Point> planToShip = getPlanToPosition(lastPlannedPosition, Environment.SHIP_POSITION, 1);
                 movementPlan.addAll(planToShip);
                 planToShip.forEach(p -> lastPlannedPosition.translate(p.x, p.y));
                 lastPlannedLoad = 0;

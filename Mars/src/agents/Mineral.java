@@ -5,10 +5,11 @@
  */
 package agents;
 
-import java.awt.Color;
-import java.util.concurrent.ThreadLocalRandom;
 import main.Environment;
 import main.MarsModel;
+
+import java.awt.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  *

@@ -8,14 +8,14 @@ package agents;
 import jade.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAException;
-import java.awt.Color;
-import java.awt.Point;
-import java.util.LinkedList;
-import java.util.Queue;
 import main.MarsModel;
 import main.MarsNode;
 import sajas.core.Agent;
 import sajas.domain.DFService;
+
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  *
@@ -65,11 +65,9 @@ public class MarsAgent extends Agent implements Comparable {
 
     protected Queue<Point> getPlanToPosition(Point from, Point target, int maxDistance) {
         Queue<Point> plan = new LinkedList<>();
-        
-        Point position = new Point(from.x, from.y);
-        while(Math.abs(position.distance(target)) > maxDistance) {
-            int dx = target.x - position.x;
-            int dy = target.y - position.y;
+        while(Math.abs(from.distance(target)) > maxDistance) {
+            int dx = target.x - from.x;
+            int dy = target.y - from.y;
             Point nextMove;
             if(dx != 0) {
                 dx = dx > 0 ? Math.min(1, dx) : Math.max(-1, dx);
@@ -79,10 +77,9 @@ public class MarsAgent extends Agent implements Comparable {
                 nextMove = new Point(0, dy);
             }
 
-            position.translate(nextMove.x, nextMove.y);
+            from.translate(nextMove.x, nextMove.y);
             plan.add(nextMove);
         }
-        
         return plan;
     }
     

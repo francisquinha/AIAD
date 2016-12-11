@@ -6,7 +6,7 @@
 package main;
 
 import agents.MarsAgent;
-import uchicago.src.sim.gui.RoundRectNetworkItem;
+import uchicago.src.sim.gui.OvalNetworkItem;
 import uchicago.src.sim.network.DefaultDrawableNode;
 /**
  *
@@ -17,7 +17,7 @@ public class MarsNode extends DefaultDrawableNode {
     public MarsAgent agent;
     
     public MarsNode(MarsAgent agent) {
-        super(new RoundRectNetworkItem(agent.model.shipPosition.x, agent.model.shipPosition.y));
+        super(new OvalNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
         this.agent = agent;
     }
     

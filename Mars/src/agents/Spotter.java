@@ -4,16 +4,6 @@ import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import java.awt.Color;
-import java.awt.Point;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Vector;
 import main.Directions;
 import main.Environment;
 import main.MarsModel;
@@ -21,6 +11,11 @@ import sajas.core.behaviours.CyclicBehaviour;
 import sajas.proto.ContractNetInitiator;
 import sajas.proto.ProposeInitiator;
 import sajas.proto.ProposeResponder;
+
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.util.Queue;
 
 /**
  *
@@ -180,11 +175,22 @@ public class Spotter extends MarsAgent {
     
     private class MoveBehaviour extends CyclicBehaviour {
 
-        private boolean inPosition = false;
-        private final Queue<Point> movementPlan = new LinkedList<>();
-        
+        private Queue<Point> movementPlan;
+
         public MoveBehaviour() {
-            Point position = new Point((int)Spotter.this.node.getX(), (int)Spotter.this.rowYOffset);
+
+            Point position;
+            if (Spotter.this.rowYOffset != Spotter.this.node.getY()) {
+                position = new Point(0, Spotter.this.rowYOffset);
+                Point from = new Point((int) Spotter.this.node.getX(), (int) Spotter.this.node.getY());
+                this.movementPlan = Spotter.this.getPlanToPosition(from, position,0);
+
+            }
+            else {
+                position = new Point((int)Spotter.this.node.getX(), Spotter.this.rowYOffset);
+                this.movementPlan = new LinkedList<>();
+            }
+
             int maxX = Environment.SIZE - 1;
 
             int targetX = maxX;
@@ -211,39 +217,16 @@ public class Spotter extends MarsAgent {
                 position.x += nextMove.x;
                 position.y += nextMove.y;
             }
-            
-            this.inPosition = (int)Spotter.this.node.getY() >= Spotter.this.rowYOffset;
+            movementPlan.addAll(getPlanToPosition(position, Environment.SHIP_POSITION, 0));
         }
         
         @Override
         public void action() {    
-            if(Spotter.this.done) {
-                Point position = Spotter.this.getPosition();
-                int y = Spotter.this.model.shipPosition.y - position.y;
-                int x = Spotter.this.model.shipPosition.x - position.x;
-                if(y != 0) {
-                    y = y > 0 ? Math.min(1, y) : Math.max(-1, y);
-                    Spotter.this.translate(new Point(0, y));
-                } else if(x != 0) {
-                    x = x > 0 ? Math.min(1, x) : Math.max(-1, x);
-                    Spotter.this.translate(new Point(x, 0));
-                } else
-                    Spotter.this.removeBehaviour(this);
-                
-                return;
-            }
-            
-            if(!inPosition) {
-                Spotter.this.translate(Directions.DOWN);
-                if(Spotter.this.getPosition().y >= Spotter.this.rowYOffset)
-                    inPosition = true;
-                    
-                return;
-            }
-            
             Point nextMove = this.movementPlan.poll();
-            if(nextMove == null)
+            if(nextMove == null) {
                 done = true;
+                Spotter.this.removeBehaviour(this);
+            }
             else
                 Spotter.this.translate(nextMove);
         }
@@ -261,6 +244,7 @@ public class Spotter extends MarsAgent {
             for(MarsAgent agent : agents) {
                 if(agent instanceof Mineral) {
                     Mineral mineral = (Mineral)agent;
+                    mineral.node.setColor(Color.YELLOW);
                     ACLMessage msg = new ACLMessage(ACLMessage.CFP);
                     msg.setOntology(MarsAgent.Ontologies.SPOTTER);
                     msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
