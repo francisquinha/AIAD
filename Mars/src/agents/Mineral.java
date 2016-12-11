@@ -7,6 +7,7 @@ package agents;
 
 import main.Environment;
 import main.MarsModel;
+import uchicago.src.sim.gui.RectNetworkItem;
 
 import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Mineral extends MarsAgent {
     
     public Mineral(MarsModel model) {
-        super(Color.PINK, model, Ontologies.MINERAL);
+        super(Color.PINK, model, new RectNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
     }
     
     public MineralFragments mine() {

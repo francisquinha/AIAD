@@ -28,7 +28,7 @@ public class Transporter extends MovingAgent {
     private Queue<ACLMessage> toReject = new LinkedList<>();
     
     public Transporter(MarsModel model, int capacity) {
-        super(Color.BLUE, model, Ontologies.TRANSPORTER);
+        super(Color.BLUE, model);
         this.capacity = capacity;
         this.load = 0;
         this.lastPlannedLoad = 0;
@@ -85,7 +85,7 @@ public class Transporter extends MovingAgent {
             int cost = getPlanCost();
             int available = Transporter.this.capacity - Transporter.this.lastPlannedLoad;
             int collectable = Math.min(available, totalFragments);
-            cost += getCost(fragmentsPosition) - 1; // Because it only needs to be adjacent, not in it
+            cost += getCost(fragmentsPosition);
 
             ACLMessage response = message.createReply();
             response.setPerformative(ACLMessage.PROPOSE);
@@ -112,14 +112,14 @@ public class Transporter extends MovingAgent {
             
             Point fragmentsPosition = new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
 
-            addMovementPlan(fragmentsPosition, 1);
+            addMovementPlan(fragmentsPosition, 0);
 
             MineralFragments fragments = this.getMineralFragmentsAt(fragmentsPosition);
             Transporter.this.fragmentsPlan.add(fragments);
             int collectable = Math.min(capacity - lastPlannedLoad, fragments.quantity.get());
             lastPlannedLoad += collectable;
             if(lastPlannedLoad >= capacity) {
-                addMovementPlan(Environment.SHIP_POSITION, 1);
+                addMovementPlan(Environment.SHIP_POSITION, 0);
                 lastPlannedLoad = 0;
             }
             

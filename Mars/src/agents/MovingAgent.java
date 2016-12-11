@@ -2,6 +2,7 @@ package agents;
 
 import main.Environment;
 import main.MarsModel;
+import uchicago.src.sim.gui.OvalNetworkItem;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -16,8 +17,8 @@ class MovingAgent extends MarsAgent {
     private Point lastPlannedPosition;
     private boolean done;
 
-    MovingAgent(Color color, MarsModel model, String ontology) {
-        super(color, model, ontology);
+    MovingAgent(Color color, MarsModel model) {
+        super(color, model, new OvalNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
         movementPlan = new LinkedList<>();
         this.lastPlannedPosition = getPosition();
         done = false;

@@ -12,6 +12,7 @@ import main.MarsModel;
 import main.MarsNode;
 import sajas.core.Agent;
 import sajas.domain.DFService;
+import uchicago.src.sim.gui.NetworkDrawable;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -25,13 +26,11 @@ public class MarsAgent extends Agent implements Comparable {
     
     public final MarsModel model;
     public final MarsNode node;
-    public final String ontology;
 
-    protected MarsAgent(Color color, MarsModel model, String ontology) {
+    protected MarsAgent(Color color, MarsModel model, NetworkDrawable drawable) {
         this.model = model;
-        this.node = new MarsNode(this);
+        this.node = new MarsNode(this, drawable);
         node.setColor(color);
-        this.ontology = ontology;
     }
     
     public void translate(Point vector) {
@@ -101,6 +100,5 @@ public class MarsAgent extends Agent implements Comparable {
         public static final String PRODUCER = "Producer";
         public static final String TRANSPORTER = "Transporter";
         public static final String MINERAL = "Mineral";
-        public static final String SHIP = "Ship";
     }
 }

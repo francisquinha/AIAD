@@ -16,6 +16,7 @@ import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Network2DGridDisplay;
 import uchicago.src.sim.gui.Object2DDisplay;
+import uchicago.src.sim.gui.RectNetworkItem;
 import uchicago.src.sim.space.Discrete2DSpace;
 import uchicago.src.sim.space.Multi2DGrid;
 
@@ -55,7 +56,7 @@ public class MarsModel extends Repast3Launcher {
     public <T> Set<T> getAgents(Class<T> cl) {
         Set<T> found = new HashSet<>();
         for(MarsNode node : nodes) {
-            if(cl.isAssignableFrom(node.agent.getClass()))
+            if (node.agent != null && cl.isAssignableFrom(node.agent.getClass()))
                 found.add((T)node.agent);
         }
         
@@ -146,6 +147,9 @@ public class MarsModel extends Repast3Launcher {
     
     protected void buildAgents() throws StaleProxyException, FIPAException {
         this.nodes = new ArrayList<>();
+        MarsNode shipNode = new MarsNode(null, new RectNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
+        shipNode.setColor(Color.WHITE);
+        this.nodes.add(shipNode);
         buildAgents(Environment.SPOTTERS, MarsAgent.Ontologies.SPOTTER, () -> new Spotter(this));
         buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer(this));
         buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral(this));

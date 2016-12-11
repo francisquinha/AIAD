@@ -11,6 +11,7 @@ import sajas.core.behaviours.CyclicBehaviour;
 import sajas.proto.ContractNetInitiator;
 import sajas.proto.ProposeInitiator;
 import sajas.proto.ProposeResponder;
+import uchicago.src.sim.gui.OvalNetworkItem;
 
 import java.awt.*;
 import java.util.*;
@@ -36,7 +37,7 @@ public class Spotter extends MarsAgent {
     private final HashMap<String, AID> areaNegotiations = new HashMap<>();
     
     public Spotter(MarsModel model) {
-        super(Color.RED, model, Ontologies.SPOTTER);
+        super(Color.RED, model, new OvalNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
         this.mineralsFound = new LinkedList<>();
     }
     

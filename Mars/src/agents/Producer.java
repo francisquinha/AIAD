@@ -24,7 +24,7 @@ public class Producer extends MovingAgent {
     private AID[] otherTransporters;
 
     public Producer(MarsModel model) {
-        super(Color.GREEN, model, Ontologies.PRODUCER);
+        super(Color.GREEN, model);
         this.mineralPlan = new LinkedList<>();
     }
     
