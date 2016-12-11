@@ -61,10 +61,13 @@ public class Producer extends MovingAgent {
             if (fragments != null) {
                 ACLMessage msg = new ACLMessage(ACLMessage.CFP);
                 msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-                msg.setContent(fragments.getPosition().x + "," + fragments.getPosition().y + "," + fragments.previewQuantity.get());
-                for (AID aid : otherTransporters)
-                    msg.addReceiver(aid);
-                addBehaviour(new RequestTransporterBehaviour(fragments, msg));
+                int quantity = Math.min(fragments.quantity.get(), fragments.previewQuantity.get());
+                if (quantity != 0) {
+                    msg.setContent(fragments.getPosition().x + "," + fragments.getPosition().y + "," + fragments.previewQuantity.get());
+                    for (AID aid : otherTransporters)
+                        msg.addReceiver(aid);
+                    addBehaviour(new RequestTransporterBehaviour(fragments, msg));
+                }
             }
 
             Mineral nextMineral = mineralPlan.peek();
@@ -178,9 +181,9 @@ public class Producer extends MovingAgent {
             ACLMessage proposal = costs.get(orderedCosts[0]);
             int load = Integer.parseInt(proposal.getContent().split("-")[0]);
             fragments.previewTake(load);
-            System.out.printf("%s assigned to Mineral Fragments at (%d, %d) - quantity %d - load %d\n",
+            System.out.printf("%s assigned to Mineral Fragments at (%d, %d) - quantity %d - load %d - remaining - %d\n",
                     proposal.getSender().getLocalName(), (int) fragments.getPosition().getX(),
-                    (int) fragments.getPosition().getY(), fragments.quantity.get(), load);
+                    (int) fragments.getPosition().getY(), fragments.quantity.get(), load, fragments.previewQuantity.get());
             chosen.add(proposal);
 
             if (fragments.previewQuantity.get() > 0) {

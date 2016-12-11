@@ -113,14 +113,15 @@ public class Transporter extends MovingAgent {
             addMovementPlan(fragmentsPosition, 0);
 
             MineralFragments fragments = getMineralFragmentsAt(fragmentsPosition);
-            fragmentsPlan.add(fragments);
-            int collectible = Math.min(capacity - lastPlannedLoad, fragments.quantity.get());
-            lastPlannedLoad += collectible;
-            if (lastPlannedLoad >= capacity) {
-                addMovementPlan(Environment.SHIP_POSITION, 0);
-                lastPlannedLoad = 0;
+            if (fragments != null) {
+                fragmentsPlan.add(fragments);
+                int collectible = Math.min(capacity - lastPlannedLoad, fragments.quantity.get());
+                lastPlannedLoad += collectible;
+                if (lastPlannedLoad >= capacity) {
+                    addMovementPlan(Environment.SHIP_POSITION, 0);
+                    lastPlannedLoad = 0;
+                }
             }
-
             ACLMessage response = accept.createReply();
             response.setPerformative(ACLMessage.INFORM);
             return response;
