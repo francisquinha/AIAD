@@ -88,7 +88,7 @@ public class Spotter extends MovingAgent {
             awaitingConfirmation.remove(sender.getLocalName());
 
             if (awaitingConfirmation.isEmpty()) {
-                System.out.println(localName + " has now " + yOffset + "-" + height);
+                System.out.println(localName + " assigned to rows " + yOffset + "-" + height);
                 rowYOffset = yOffset;
                 rowHeight = height;
                 sendAreaConfirmation();
@@ -98,7 +98,7 @@ public class Spotter extends MovingAgent {
 
         @Override
         protected void handleRejectProposal(ACLMessage response) {
-            System.out.println(localName + " was rejected for " + yOffset + "-" + height);
+            System.out.println(localName + " was rejected for rows " + yOffset + "-" + height);
         }
 
         ACLMessage buildMessage() {
@@ -231,7 +231,7 @@ public class Spotter extends MovingAgent {
                         msg.addReceiver(producer);
 
                     mineralsFound.add(mineral);
-                    addBehaviour(new RequestProducerBehaviour(msg));
+                    addBehaviour(new RequestProducerBehaviour(msg, mineral));
                 }
             }
         }
@@ -240,8 +240,11 @@ public class Spotter extends MovingAgent {
 
     public class RequestProducerBehaviour extends ContractNetInitiator {
 
-        RequestProducerBehaviour(ACLMessage msg) {
+        private Mineral mineral;
+
+        RequestProducerBehaviour(ACLMessage msg, Mineral mineral) {
             super(Spotter.this, msg);
+            this.mineral = mineral;
         }
 
         @Override
@@ -272,13 +275,10 @@ public class Spotter extends MovingAgent {
             if (minCostProposal != null) {
                 ACLMessage selectedMessage = minCostProposal.createReply();
                 selectedMessage.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                System.out.printf("%s assigned to Mineral at (%d, %d)\n", minCostProposal.getSender().getLocalName(),
+                        (int) mineral.getPosition().getX(), (int) mineral.getPosition().getY());
                 responses.add(selectedMessage);
             }
-        }
-
-        @Override
-        public void handleInform(ACLMessage inform) {
-            System.out.println("Got a producer for a mineral");
         }
 
     }

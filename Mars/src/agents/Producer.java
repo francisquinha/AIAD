@@ -126,11 +126,13 @@ public class Producer extends MovingAgent {
 
         private final ACLMessage initialMessage;
         private int fragmentsRemaining;
+        private MineralFragments fragments;
 
         RequestTransporterBehaviour(MineralFragments fragments, ACLMessage msg) {
             super(Producer.this, msg);
             fragmentsRemaining = fragments.quantity.get();
             initialMessage = msg;
+            this.fragments = fragments;
         }
 
         @Override
@@ -169,6 +171,8 @@ public class Producer extends MovingAgent {
             for (ACLMessage m : chosen) {
                 ACLMessage response = m.createReply();
                 response.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                System.out.printf("%s assigned to Mineral Fragments at (%d, %d)\n", proposal.getSender().getLocalName(),
+                        (int) fragments.getPosition().getX(), (int) fragments.getPosition().getY());
                 responses.add(response);
             }
 
