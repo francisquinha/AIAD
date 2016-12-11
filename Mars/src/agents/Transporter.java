@@ -25,9 +25,9 @@ public class Transporter extends MovingAgent {
     private int load;
     private int lastPlannedLoad;
 
-    public Transporter(MarsModel model, int capacity) {
+    public Transporter(MarsModel model) {
         super(Color.BLUE, model);
-        this.capacity = capacity;
+        capacity = Environment.TRANSPORTER_CAPACITY;
         load = 0;
         lastPlannedLoad = 0;
         fragmentsPlan = new LinkedList<>();

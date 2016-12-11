@@ -20,13 +20,17 @@ import java.util.Queue;
 public class Producer extends MovingAgent {
 
     private final Queue<Mineral> mineralPlan;
+    private final Queue<MineralFragments> remainingMineralPlan;
+    private final int totalExtractTime;
     private AID[] otherTransporters;
     private int extractTime;
 
     public Producer(MarsModel model) {
         super(Color.GREEN, model);
         mineralPlan = new LinkedList<>();
-        extractTime =0;
+        remainingMineralPlan = new LinkedList<>();
+        extractTime = 0;
+        totalExtractTime = 0;
     }
 
     @Override
@@ -34,63 +38,58 @@ public class Producer extends MovingAgent {
         otherTransporters = getAgents(MarsAgent.Ontologies.TRANSPORTER);
         addBehaviour(new RoutineBehaviour());
         addBehaviour(new AnswerCallBehaviour());
-        model.registerOnNoMoreMinerals(this::scheduleRetreat);
+        model.registerOnNoMoreFragments(this::scheduleRetreat);
     }
-    
+
     @Override
     int getPlanCost() {
-    	int totalCost = super.getPlanCost();
-    	
-    	if (mineralPlan.size() > 0){
-    		for(Mineral mineral : mineralPlan){
-    			totalCost += mineral.getMineralFrag();
-    		}
-    	
-    		if(extractTime > 0)
-    			totalCost = totalCost - mineralPlan.peek().getMineralFrag() + extractTime;
-    	}
-    
-    	return totalCost;
-    } 
+        return super.getPlanCost() + totalExtractTime + extractTime;
+    }
 
     private class RoutineBehaviour extends CyclicBehaviour {
 
         @Override
         public void action() {
-        	
+
             if (getDone()) {
                 if (getPosition().distance(Environment.SHIP_POSITION) <= 0)
                     removeBehaviour(this);
                 else moveMovementPlan();
             }
 
+            MineralFragments fragments = remainingMineralPlan.poll();
+            if (fragments != null) {
+                ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+                msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
+                msg.setContent(fragments.getPosition().x + "," + fragments.getPosition().y + "," + fragments.previewQuantity.get());
+                for (AID aid : otherTransporters)
+                    msg.addReceiver(aid);
+                addBehaviour(new RequestTransporterBehaviour(fragments, msg));
+            }
+
             Mineral nextMineral = mineralPlan.peek();
             if (nextMineral == null)
                 return;
 
-            if(extractTime > 0){
-            	if(extractTime == 1){
-            		Point mineralPosition = nextMineral.getPosition();
-            		
-            		mineralPlan.poll();
-                    MineralFragments fragments = nextMineral.mine();
+            if (Math.abs(getPosition().distance(nextMineral.getPosition())) <= 1) {
+                if (extractTime <= 0)
+                    extractTime = nextMineral.getQuantity();
+                else {
+                    if (extractTime == 1) {
+                        Point mineralPosition = nextMineral.getPosition();
 
-                    ACLMessage msg = new ACLMessage(ACLMessage.CFP);
-                    msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-                    msg.setContent(mineralPosition.x + "," + mineralPosition.y + "," + fragments.quantity.get());
-                    for (AID aid : otherTransporters)
-                        msg.addReceiver(aid);
+                        mineralPlan.poll();
+                        fragments = nextMineral.mine();
 
-                    addBehaviour(new RequestTransporterBehaviour(fragments, msg));
-            	}
-        		extractTime--; 
-        		return;
-        	}
-            
-            Point position = getPosition();
-            Point mineralPosition = nextMineral.getPosition();
-            if (Math.abs(position.distance(mineralPosition)) <= 1) {
-            	extractTime = nextMineral.getMineralFrag();
+                        ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+                        msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
+                        msg.setContent(mineralPosition.x + "," + mineralPosition.y + "," + fragments.quantity.get());
+                        for (AID aid : otherTransporters)
+                            msg.addReceiver(aid);
+                        addBehaviour(new RequestTransporterBehaviour(fragments, msg));
+                    }
+                    extractTime--;
+                }
             } else {
                 moveMovementPlan();
             }
@@ -153,48 +152,39 @@ public class Producer extends MovingAgent {
 
     private class RequestTransporterBehaviour extends ContractNetInitiator {
 
-        private final ACLMessage initialMessage;
-        private int fragmentsRemaining;
-        private MineralFragments fragments;
+        private final MineralFragments fragments;
 
         RequestTransporterBehaviour(MineralFragments fragments, ACLMessage msg) {
             super(Producer.this, msg);
-            fragmentsRemaining = fragments.quantity.get();
-            initialMessage = msg;
             this.fragments = fragments;
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public void handleAllResponses(Vector proposes, Vector responses) {
-            Hashtable<Integer, ACLMessage> loads = new Hashtable<>();
+            Hashtable<Integer, ACLMessage> costs = new Hashtable<>();
 
             for (Object proposeObj : proposes) {
                 ACLMessage propose = (ACLMessage) proposeObj;
                 String[] contents = propose.getContent().split("-");
-                loads.put(Integer.parseInt(contents[0]), propose);
+                costs.put(Integer.parseInt(contents[1]), propose);
             }
 
-            Integer[] orderedLoads = loads.keySet().toArray(new Integer[0]);
-            Arrays.sort(orderedLoads);
+            Integer[] orderedCosts = costs.keySet().toArray(new Integer[0]);
+            Arrays.sort(orderedCosts);
 
             Queue<ACLMessage> chosen = new LinkedList<>();
-            for (Integer load : orderedLoads) {
-                if (load >= fragmentsRemaining) {
-                    fragmentsRemaining = 0;
-                    ACLMessage sender = loads.get(load);
-                    chosen.add(sender);
-                }
-            }
 
-            for (int i = orderedLoads.length - 1; i >= 0; i--) {
-                if (fragmentsRemaining == 0)
-                    break;
+            ACLMessage proposal = costs.get(orderedCosts[0]);
+            int load = Integer.parseInt(proposal.getContent().split("-")[0]);
+            fragments.previewTake(load);
+            System.out.printf("%s assigned to Mineral Fragments at (%d, %d) - quantity %d - load %d\n",
+                    proposal.getSender().getLocalName(), (int) fragments.getPosition().getX(),
+                    (int) fragments.getPosition().getY(), fragments.quantity.get(), load);
+            chosen.add(proposal);
 
-                Integer load = orderedLoads[i];
-                fragmentsRemaining -= load;
-                ACLMessage proposal = loads.get(load);
-                chosen.add(proposal);
+            if (fragments.previewQuantity.get() > 0) {
+                remainingMineralPlan.add(fragments);
             }
 
             for (ACLMessage m : chosen) {
@@ -209,27 +199,6 @@ public class Producer extends MovingAgent {
                 ACLMessage response = propose.createReply();
                 response.setPerformative(ACLMessage.REJECT_PROPOSAL);
                 responses.add(response);
-            }
-
-            if (chosen.isEmpty())
-                reset();
-        }
-
-        @Override
-        public void handleAllResultNotifications(Vector v) {
-            for (Object obj : v) {
-                ACLMessage message = (ACLMessage) obj;
-                if (message.getPerformative() == ACLMessage.FAILURE) {
-                    reset();
-                    return;
-                }
-            }
-
-            if (fragmentsRemaining > 0) {
-                String[] content = initialMessage.getContent().split(",");
-                content[2] = fragmentsRemaining + "";
-                initialMessage.setContent(content[0] + "," + content[1] + "," + content[2]);
-                reset(initialMessage);
             }
         }
 

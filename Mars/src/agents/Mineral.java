@@ -17,23 +17,23 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Mineral extends MarsAgent {
 
-	private int mineralFrag;
-	
+    private final int quantity;
+
     public Mineral(MarsModel model) {
         super(Color.PINK, model, new RectNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
         ThreadLocalRandom r = ThreadLocalRandom.current();
-        mineralFrag = r.nextInt(Environment.MIN_FRAGMENTS_PER_MINERAL, Environment.MAX_FRAGMENTS_PER_MINERAL);
+        quantity = r.nextInt(Environment.MIN_FRAGMENTS_PER_MINERAL, Environment.MAX_FRAGMENTS_PER_MINERAL);
     }
 
     MineralFragments mine() {
-        MineralFragments fragments = new MineralFragments(model, mineralFrag);
+        MineralFragments fragments = new MineralFragments(model, quantity);
         model.addAgent(fragments, getPosition());
         model.removeAgent(this);
         return fragments;
     }
-    
-    int getMineralFrag(){
-    	return mineralFrag;
+
+    int getQuantity() {
+        return quantity;
     }
 
 }

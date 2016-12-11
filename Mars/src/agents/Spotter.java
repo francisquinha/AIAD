@@ -170,7 +170,7 @@ public class Spotter extends MovingAgent {
 
     private class MoveBehaviour extends CyclicBehaviour {
 
-        Point finalPosition;
+        final Point finalPosition;
 
         MoveBehaviour() {
             if (rowYOffset != node.getY())
@@ -178,7 +178,8 @@ public class Spotter extends MovingAgent {
 
             int maxX = Environment.SIZE - 1;
 
-            finalPosition = new Point(rowHeight % 2 == 0 ? 0 : maxX, rowYOffset + rowHeight - 1);
+            finalPosition = new Point(rowHeight % 2 == 0 ? 0 : maxX, rowYOffset + rowHeight);
+            if (finalPosition.y >= Environment.SIZE) finalPosition.y = Environment.SIZE - 1;
 
             boolean direction = true;
             Point target = new Point(0, rowYOffset);
@@ -240,7 +241,7 @@ public class Spotter extends MovingAgent {
 
     public class RequestProducerBehaviour extends ContractNetInitiator {
 
-        private Mineral mineral;
+        private final Mineral mineral;
 
         RequestProducerBehaviour(ACLMessage msg, Mineral mineral) {
             super(Spotter.this, msg);
@@ -275,8 +276,8 @@ public class Spotter extends MovingAgent {
             if (minCostProposal != null) {
                 ACLMessage selectedMessage = minCostProposal.createReply();
                 selectedMessage.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
-                System.out.printf("%s assigned to Mineral at (%d, %d)\n", minCostProposal.getSender().getLocalName(),
-                        (int) mineral.getPosition().getX(), (int) mineral.getPosition().getY());
+                System.out.printf("%s assigned to Mineral at (%d, %d) - quantity %d\n", minCostProposal.getSender().getLocalName(),
+                        (int) mineral.getPosition().getX(), (int) mineral.getPosition().getY(), mineral.getQuantity());
                 responses.add(selectedMessage);
             }
         }

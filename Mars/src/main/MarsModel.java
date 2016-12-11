@@ -104,10 +104,6 @@ public class MarsModel extends Repast3Launcher {
         }
     }
 
-    public void registerOnNoMoreMinerals(Runnable callback) {
-        noMineralsCallbacks.add(callback);
-    }
-
     public void registerOnNoMoreFragments(Runnable callback) {
         noFragmentsCallbacks.add(callback);
     }
@@ -151,7 +147,7 @@ public class MarsModel extends Repast3Launcher {
         buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer(this));
         buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral(this));
         buildAgents(Environment.TRANSPORTERS, MarsAgent.Ontologies.TRANSPORTER,
-                () -> new Transporter(this, Environment.TRANSPORTER_CAPACITY));
+                () -> new Transporter(this));
     }
 
     private void spreadMinerals() {

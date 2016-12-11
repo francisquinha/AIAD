@@ -18,10 +18,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MineralFragments extends MarsAgent {
 
     final AtomicInteger quantity;
+    final AtomicInteger previewQuantity;
 
     MineralFragments(MarsModel model, int quantity) {
         super(Color.MAGENTA, model, new RectNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
         this.quantity = new AtomicInteger(quantity);
+        previewQuantity = new AtomicInteger(quantity);
     }
 
     int take(int wanted) {
@@ -32,6 +34,10 @@ public class MineralFragments extends MarsAgent {
             quantity.getAndAdd(-wanted);
             return wanted;
         }
+    }
+
+    void previewTake(int wanted) {
+        previewQuantity.getAndAdd(-Math.min(wanted, previewQuantity.get()));
     }
 
 }
