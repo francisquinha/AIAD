@@ -16,5 +16,6 @@ public class Environment {
     static final int PRODUCERS = 5;
     static final int TRANSPORTERS = 5;
     static final int MINERALS = 10;
+    public static final int PROBABILITY_EXTRACTABLE = 80;
 
 }

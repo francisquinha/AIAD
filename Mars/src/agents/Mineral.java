@@ -18,11 +18,19 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Mineral extends MarsAgent {
 
     private final int quantity;
+    private final boolean extractable;
 
     public Mineral(MarsModel model) {
         super(Color.PINK, model, new RectNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
         ThreadLocalRandom r = ThreadLocalRandom.current();
         quantity = r.nextInt(Environment.MIN_FRAGMENTS_PER_MINERAL, Environment.MAX_FRAGMENTS_PER_MINERAL);
+
+        extractable = getRandomBoolean(r, Environment.PROBABILITY_EXTRACTABLE);
+    }
+
+    private Boolean getRandomBoolean(ThreadLocalRandom r, int probability) {
+        int randomInt = r.nextInt(100);
+        return randomInt < probability;
     }
 
     MineralFragments mine() {
@@ -34,6 +42,10 @@ public class Mineral extends MarsAgent {
 
     int getQuantity() {
         return quantity;
+    }
+
+    public boolean getExtractable() {
+        return extractable;
     }
 
 }

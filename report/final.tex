@@ -12,12 +12,13 @@
 \geometry{a4paper, total={150mm,225mm}, left=30mm, top=30mm}
 \pagenumbering{arabic}
 
-\usepackage{xargs}                      % Use more than one optional parameter in a new commands
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xargs}
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 \newcommandx{\todonew}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
-\newcommandx{\todochange}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
-\newcommandx{\todoreview}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
-\newcommandx{\todoimprove}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\todochange}[2][1=]{\todo[linecolor=orange,backgroundcolor=orange!25,bordercolor=orange,#1]{#2}}
+\newcommandx{\todoreview}[2][1=]{\todo[linecolor=yellow,backgroundcolor=yellow!25,bordercolor=yellow,#1]{#2}}
+\newcommandx{\todoimprove}[2][1=]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green,#1]{#2}}
 \newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
 
 \begin{document}
@@ -38,7 +39,6 @@
 \newcommand{\Transporter}{\emph{Transporter}\xspace}
 \newcommand{\transporter}{\emph{transporter}\xspace}
 \newcommand{\transporters}{\emph{transporters}\xspace}
-
 
 \begin{titlepage}
 	\begin{center}
@@ -66,10 +66,14 @@
 
 \tableofcontents
 
+
+%%%%%%%%%%%%%
+% OBJECTIVO %
+%%%%%%%%%%%%%
 \chapter{Objetivo}
 
 \section{Descrição do cenário}
-No âmbito da unidade curricular de Agentes e Inteligência Artificial Distribuída, o nosso grupo propôs-se a implementar um Sistema Multi-Agente para simulação de um cenário de extração de minérios em Marte. Para tal, é necessário descobrir os minérios, extraí-los e transportá-los para a base. Sendo assim, no nosso sistema existem três tipos de Agentes:
+No âmbito da unidade curricular de Agentes e Inteligência Artificial Distribuída, o nosso grupo propôs-se a implementar um Sistema Multi-Agente para simulação de um cenário de extração de minérios em Marte. Para tal, é necessário descobrir os minérios, extraí-los e transportá-los para a base. Sendo assim, no sistema pretendido existem três tipos de Agentes:
 
 \begin{itemize}
 	\item \Spotter – Procura fontes de minérios e inspeciona-as para determinar se podem ser exploradas. 
@@ -81,15 +85,23 @@ De forma a facilitar a procura, todos os agentes podem localizar fontes de miné
 
 \section{Objetivos do trabalho}
 
-Um dos objetivos deste trabalho é implementar os agentes de forma a que a simulação da exploração seja tão eficiente quanto possível. Para tal serão estudadas várias alternativas de implementação, de forma a determinar qual a melhor abordagem. 
+Um dos objetivos deste trabalho é implementar os agentes de forma a que a simulação da exploração seja tão eficiente quanto possível. Para tal devem ser estudadas várias alternativas de implementação, de forma a determinar qual a melhor abordagem. 
 
-No caso dos agentes do tipo \spotter, tencionamos usar algoritmos de distribuição do espaço a explorar entre eles, para que cubram toda a região mais rapidamente. Em relação aos \producers e \transporters, pretendemos instalar protocolos de negociação que garantam que o melhor agente é escolhido para a tarefa.
+No caso dos agentes do tipo \spotter, podem ser utilizados diferentes algoritmos de distribuição do espaço a explorar entre eles, para que cubram toda a região mais rapidamente. Em relação aos \producers e \transporters, podem ser instalados diferentes protocolos de negociação que garantam que o melhor agente é escolhido para a tarefa.
 
-O nosso maior objetivo é utilizar este projeto como forma de melhor interiorizar os conceitos dos Sistemas Multi-Agente, nomeadamente ganhando uma maior familiaridade com as plataformas que permitem implementar e simular estes sistemas.
+O nosso principal objetivo é utilizar este projeto como forma de melhor interiorizar os conceitos dos Sistemas Multi-Agente, nomeadamente ganhando uma maior familiaridade com as plataformas que permitem implementar e simular estes sistemas.
 
+
+%%%%%%%%%%%%%%%%%
+% ESPECIFICACAO %
+%%%%%%%%%%%%%%%%%
 \chapter{Especificação}
 
-\section{Identificação e caracterização dos agentes (arquitetura, comportamento, estratégias, processos de raciocínio\todonew{novo no relatório final})}
+\section{Identificação e caracterização dos agentes}
+
+\todoreview[inline]{arquitetura, comportamento, estratégias}
+\todonew[inline]{processos de raciocínio - novo no relatório final}
+
 Tal como descrito acima, o nosso sistema tem três tipos de agentes. De seguida descrevem-se mais detalhadamente estes agentes e a forma como decidimos implementá-los.
 
 \subsection{\Spotter}
@@ -176,34 +188,21 @@ Cada \transporter comunica o valor do esforço e o minério que consegue transpo
 
 A Figura~\ref{transporter-scheduling} exemplifica o processo de escolha de \transporters para os minérios extraídos por dois \producers. Consideramos ainda as quantidades de minério extraídas, a capacidade e carga corrente dos \transporters. Estas restrições irão influenciar a forma como se negoceia a afetação dos \transporters numa fase mais avançada da implementação.
 
+
+%%%%%%%%%%%%%%%%%%%
+% DESENVOLVIMENTO %
+%%%%%%%%%%%%%%%%%%%
 \chapter{Desenvolvimento}
 
-\todonew[inline]{Capítulo novo mas as secções não são completamente novas}
+\todonew[inline]{capítulo novo mas as secções não são completamente novas}
 
-\section{Plataforma/Ferramenta utilizada (brevíssima descrição o que é), ambiente de desenvolvimento (SO,IDE,...)}
+\section{Plataformas utilizadas}
 
-\section{Estrutura da aplicação, módulos, diagrama de classes...}
-
-\section{Detalhes relevantes da implementação}
-
-\chapter{Plataforma/Ferramenta}
-
-\todochange[inline]{Passar para a secção da plataforma do capítulo anterior}
-
-\section{Para que serve}
+\todoimprove[inline]{brevíssima descrição o que é - é capaz de ser melhor reduzir isto}
 
 \subsection{\jade}
 O \jade, \emph{Java Agent DEvelopment Framework}, é um software que permite desenvolver sistemas baseados em agentes. Os agentes são distribuídos por \emph{containers} que podem estar em máquinas diferentes, cada um utiliza uma \emph{thread}. 
 
-\subsection{\repast}
-O \repast, \emph{Recursive Porous Agent Simulation Toolkit}, é uma ferramenta de simulação baseada em agentes, que permite construir simulações locais à máquina com diversos agentes. O processamento de cada agente é distribuído por \emph{threads}.
-
-\subsection{\sajas}
-O \sajas, \emph{Simple API for JADE-based Simulations}, é uma ferramenta que se propõe servir de ponte entre o desenvolvimento e a simulação de Sistemas Multi-Agente. Desta forma, através do \sajas, podemos tomar vantagem dos benefícios do \jade e do \repast.
-
-\section{Descrição das características principais}
-
-\subsection{\jade}
 O \jade é uma ferramenta totalmente escrita em \java, que suporta troca de mensagens \acl, seguindo a especificação \fipa. Além disso, possui um sistema de gestão de agentes e um sistema de páginas amarelas. Como os agentes estão distribuídos por contentores que podem estar em máquinas diferentes, permite ter agentes remotos. Os agentes podem migrar entre contentores e ser clonados. Esta plataforma possui ainda uma série de ferramentas que simplificam a administração e o desenvolvimento de aplicações, tais como:
 \begin{itemize}
    \item agente de monitorização remota - interface gráfico para monitorizar a atividade dos agentes;
@@ -211,24 +210,55 @@ O \jade é uma ferramenta totalmente escrita em \java, que suporta troca de mens
    \item agente inspetor - permite inspecionar outros agentes;
    \item agente introspetivo - permite monitorizar o ciclo de vida de um agente.
 \end{itemize}
+
 A implementação de agentes em \jade é feita recorrendo a comportamentos, que determinam as tarefas a executar pelos agentes consoante o contexto. 
-  
+
 \subsection{\repast}
+O \repast, \emph{Recursive Porous Agent Simulation Toolkit}, é uma ferramenta de simulação baseada em agentes, que permite construir simulações locais à máquina com diversos agentes. O processamento de cada agente é distribuído por \emph{threads}.
+
 O \repast suporta simulação de espaços físicos, representação 2D e 3D e análise em tempo real. Possui uma barra de ferramentas para controlar as simulações, um interface gráfico para manipular os parâmetros. Permite recolher dados em vários formatos, incluindo vários tipos de gráficos. A interação entre os agentes pode ser visualizada graficamente. Os espaços físicos simulados podem ser de variados tipos, como por exemplo, grelhas hexagonais ou retangulares, espaços contínuos ou redes. Além de poderem ser corridas com recurso ao interface gráfico, as simulações podem também ser lançadas em \emph{batch}.
   
 O simulador discreto considera unidades de tempo - \emph{ticks} ou passos. Os eventos são planeados para ocorrer em \emph{ticks} específicos e assim é respeitada a ordem dos acontecimentos. Uma simulação considera um conjunto de agentes, cujos comportamentos são controlados recorrendo ao plano.
 
 \subsection{\sajas}
+O \sajas, \emph{Simple API for JADE-based Simulations}, é uma ferramenta que se propõe servir de ponte entre o desenvolvimento e a simulação de Sistemas Multi-Agente. Desta forma, através do \sajas, podemos tomar vantagem dos benefícios do \jade e do \repast.
+
 O \sajas permite construir um Sistema Multi-Agente tal como é feito em \jade, existindo até uma ferramenta (\massim) que traduz código \jade para \sajas (e vice-versa), alterando as classes importadas. Ao contrário do \jade, permite ainda, recorrendo para isso ao \repast, a simulação deste tipo de sistemas. Além disso, o \sajas permite obter melhores performances do que numa simulação construída em \jade, que teria que considerar algum tipo de agente representado o `mundo'.
 
-\section{Realce das funcionalidades relevantes para o trabalho}
+\subsection{Realce das funcionalidades relevantes para o trabalho}
 
 Com o suporte do \jade são feitos os protocolos de comunicação entre os diferentes agentes, utilizando mensagens \acl. Usando o \repast torna-se
 fácil simular um espaço físico, popular o espaço com os agentes construídos em \jade, desenhá-los e finalmente vê-los em ação, obtendo gráficos relativos à sua performance. O \sajas permite-nos recorrer a estas duas ferramentas simultaneamente, construindo e simulando o nosso sistema de forma eficiente.
 
+\subsection{Ambiente de desenvolvimento}
+
+Os elementos do grupo utilizam Sistemas Operativos (SO) e Ambientes de Desenvolvimento Integrado (IDE) diferentes, de acordo com as suas preferências. Para tal, é especialmente útil as plataformas utilizadas serem baseadas em \texttt{Java}. Assim como, o facto de apenas ser necessário adicionar os respetivos módulos \texttt{jar} ao projeto, para que qualquer IDE compile e execute a aplicação devidamente. Desta forma, a combinação SO - IDE utilizada por cada elemento, foi:
+\begin{itemize}
+	\item Ângela Cardoso - macOS Sierra - IntelliJ IDEA;
+	\item Diogo Ferreira - Linux\todoimprove{não sei exatamente qual} - NetBeans;
+	\item Marina Camilo - Windows\todoimprove{não sei exatamente qual} - Eclipse;
+\end{itemize}
+
+\section{Estrutura da aplicação}
+
+\todonew[inline]{módulos, diagrama de classes...}
+
+\section{Detalhes relevantes da implementação}
+
+
+%%%%%%%%%%%%%%%%
+% EXPERIENCIAS %
+%%%%%%%%%%%%%%%%
 \chapter{Experiências}
 
-\todonew[inline]{Capítulo novo, mas acho que falamos de experiências no relatório intercalar}
+\todonew[inline]{capítulo novo, mas falamos de experiências no relatório intercalar}
+\todochange[inline]{esta foi a parte que mais falou de experiências no relatório intercalar}
+
+Para podermos ver resultados mais rapidamente, inicialmente serão implementadas apenas as funcionalidades mais básicas de cada tipo de agente. Como tal, a primeira fase de avaliação preocupar-se-á essencialmente em garantir que cada agente faz aquilo que é suposto.
+
+Numa segunda fase, introduziremos as restrições pretendidas para a simulação, nomeadamente a capacidade limitada dos \transporters e o facto de todos os agentes poderem detetar minério nas suas deambulações. Uma vez realizadas estas alterações aos agentes básicos, a avaliação geral levará em conta o tempo que a simulação demora a correr e o número de passos efetuados por todos os agentes. Usando estas métricas, dados vários tamanhos para o espaço inicial a explorar, iremos determinar a complexidade do nosso sistema. Para podermos melhorar cada componente individual, calcularemos também métricas mais finas, como o tempo de espera médio e máximo, quando é invocado um \producer ou um \transporter, ou o tempo de exploração do terreno pelos \spotters consoante o seu número.
+
+Com as métricas obtidas após a segunda fase de implementação, analisaremos diferentes algoritmos de forma a tornar mais eficiente esta demanda. Nomeadamente, avaliaremos qual a alocação mais eficiente de agentes, se o mapa fica corretamente dividido entre os \spotters e se o tempo de simulação foi o mínimo para o caso em questão.
 
 \section{Objetivos de cada experiência}
 
@@ -242,10 +272,12 @@ fácil simular um espaço físico, popular o espaço com os agentes construídos
 
 \chapter{Melhoramentos}
 
-\todonew[inline]{Capítulo novo}
+\todonew[inline]{sugestões para melhoramentos a introduzir no programa}
 
-\section{Sugestões para melhoramentos a introduzir no programa}
 
+%%%%%%%%%%%%
+% RECURSOS %
+%%%%%%%%%%%%
 \chapter{Recursos}
 
 \section{Bibliografia}
@@ -265,20 +297,23 @@ fácil simular um espaço físico, popular o espaço com os agentes construídos
 	\item \href{http://jade.tilab.com}{\jade}
 	\item \href{http://repast.sourceforge.net/repast_3/index.html}{\repast}
 	\item \href{https://web.fe.up.pt/~hlc/doku.php?id=sajas}{\sajas}
-	\item \href{https://web.fe.up.pt/~hlc/doku.php?id=massim2dev}{\massim}
 \end{itemize}
 
 \section{Elementos do grupo}
-\todochange[inline]{Indicar percentagem aproximada de trabalho efetivo de cada elementos do grupo}
+\todochange[inline]{indicar percentagem aproximada de trabalho efetivo de cada elementos do grupo}
 \begin{itemize}
 	\item Ângela Cardoso - \%
 	\item Diogo Ferreira - \%
 	\item Marina Camilo - \%
 \end{itemize}
 
+
+%%%%%%%%%%%%
+% APENDICE %
+%%%%%%%%%%%%
 \chapter{Apêndice}
 
-\todonew[inline]{Manual do utilizador (sucinto)}
+\todonew[inline]{manual do utilizador (sucinto)}
 
 
 \end{document}

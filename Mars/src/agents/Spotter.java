@@ -231,7 +231,10 @@ public class Spotter extends MovingAgent {
                         msg.addReceiver(producer);
 
                     mineralsFound.add(mineral);
-                    addBehaviour(new RequestProducerBehaviour(msg, mineral));
+                    if (mineral.getExtractable())
+                        addBehaviour(new RequestProducerBehaviour(msg, mineral));
+                    else
+                        mineral.node.setColor(Color.GRAY);
                 }
             }
         }

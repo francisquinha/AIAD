@@ -95,13 +95,20 @@ public class MarsModel extends Repast3Launcher {
 
         if (agent instanceof Mineral) {
             minerals.remove(agent);
-            if (minerals.isEmpty())
+            if (noMoreMinerals())
                 fireNoMoreMinerals();
         } else if (agent instanceof MineralFragments) {
             fragments.remove(agent);
-            if (fragments.isEmpty() && minerals.isEmpty())
+            if (fragments.isEmpty() && noMoreMinerals())
                 fireNoMoreFragments();
         }
+    }
+
+    private boolean noMoreMinerals() {
+        for (Mineral mineral: minerals) {
+            if (mineral.getExtractable()) return false;
+        }
+        return true;
     }
 
     public void registerOnNoMoreFragments(Runnable callback) {
