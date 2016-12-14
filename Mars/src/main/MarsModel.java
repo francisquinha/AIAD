@@ -34,6 +34,7 @@ public class MarsModel extends Repast3Launcher {
 
     private final Set<Mineral> minerals;
     private final Set<MineralFragments> fragments;
+    private final Set<MovingAgent> movers;
     private final List<Runnable> noMineralsCallbacks;
     private final List<Runnable> noFragmentsCallbacks;
     private ContainerController mainContainer;
@@ -45,6 +46,7 @@ public class MarsModel extends Repast3Launcher {
     MarsModel() {
         minerals = new HashSet<>();
         fragments = new HashSet<>();
+        movers = new HashSet<>();
         noFragmentsCallbacks = new LinkedList<>();
         noMineralsCallbacks = new LinkedList<>();
     }
@@ -85,6 +87,8 @@ public class MarsModel extends Repast3Launcher {
             minerals.add((Mineral) agent);
         else if (agent instanceof MineralFragments)
             fragments.add((MineralFragments) agent);
+        else
+            movers.add((MovingAgent) agent);
     }
 
     public void removeAgent(MarsAgent agent) {
@@ -99,8 +103,14 @@ public class MarsModel extends Repast3Launcher {
                 fireNoMoreMinerals();
         } else if (agent instanceof MineralFragments) {
             fragments.remove(agent);
-            if (fragments.isEmpty() && noMoreMinerals())
+            if (fragments.isEmpty() && noMoreMinerals()) {
                 fireNoMoreFragments();
+            }
+        }
+        else {
+            movers.remove(agent);
+            if (movers.isEmpty())
+                stopSimulation();
         }
     }
 
@@ -129,6 +139,11 @@ public class MarsModel extends Repast3Launcher {
         buildDisplay();
         spreadMinerals();
         assignSpotterSpaces();
+    }
+
+    @Override
+    public void stopSimulation() {
+        super.stopSimulation();
     }
 
     @Override

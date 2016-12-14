@@ -11,7 +11,7 @@ import java.util.Queue;
 /**
  * Created by Angie.
  */
-class MovingAgent extends MarsAgent {
+public class MovingAgent extends MarsAgent {
 
     private final Queue<Point> movementPlan;
     private final Point lastPlannedPosition;

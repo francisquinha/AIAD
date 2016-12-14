@@ -45,8 +45,10 @@ public class Transporter extends MovingAgent {
         @Override
         public void action() {
             if (getDone()) {
-                if (getPosition().distance(Environment.SHIP_POSITION) <= 0)
+                if (getPosition().distance(Environment.SHIP_POSITION) <= 0) {
                     removeBehaviour(this);
+                    model.removeAgent(Transporter.this);
+                }
             }
             if (Math.abs(Environment.SHIP_POSITION.distance(getPosition())) <= 1)
                 load = 0;

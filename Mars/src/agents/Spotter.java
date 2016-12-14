@@ -46,7 +46,7 @@ public class Spotter extends MovingAgent {
         addBehaviour(new AnswerAreaRequestBehaviour());
         addBehaviour(new AcknowledgeAreaBehaviour());
         addBehaviour(new ScanBehaviour());
-
+        model.registerOnNoMoreFragments(this::scheduleRetreat);
     }
 
     public void assignRow(int yOffset, int height) {
@@ -200,12 +200,12 @@ public class Spotter extends MovingAgent {
         @Override
         public void action() {
             if (getDone()) {
-                if (getPosition().distance(Environment.SHIP_POSITION) <= 0)
+                if (getPosition().distance(Environment.SHIP_POSITION) <= 0) {
                     removeBehaviour(this);
+                    model.removeAgent(Spotter.this);
+                }
             }
             moveMovementPlan();
-            if (getPosition().distance(finalPosition) == 0)
-                scheduleRetreat();
         }
     }
 
@@ -214,8 +214,7 @@ public class Spotter extends MovingAgent {
         @Override
         public void action() {
             if (getDone()) {
-                if (getPosition().distance(Environment.SHIP_POSITION) <= 0)
-                    removeBehaviour(this);
+                removeBehaviour(this);
             }
             Point newPosition = getPosition();
             Set<MarsAgent> agents = model.getAgentsAt(newPosition);
