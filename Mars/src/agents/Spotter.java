@@ -72,21 +72,20 @@ public class Spotter extends MovingAgent {
             Vector<ACLMessage> messages = new Vector<>();
             ACLMessage proposeMessage = buildMessage();
             messages.add(proposeMessage);
-
             for (AID spotter : otherSpotters)
                 awaitingConfirmation.add(spotter.getLocalName());
-
+            acceptAssignment();
             return messages;
         }
 
         @Override
         protected void handleAcceptProposal(ACLMessage response) {
-            if (awaitingConfirmation.isEmpty())
-                return;
-
             AID sender = response.getSender();
             awaitingConfirmation.remove(sender.getLocalName());
+            acceptAssignment();
+        }
 
+        void acceptAssignment() {
             if (awaitingConfirmation.isEmpty()) {
                 System.out.println(localName + " assigned to rows " + yOffset + "-" + height);
                 rowYOffset = yOffset;

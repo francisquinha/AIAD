@@ -143,9 +143,9 @@ public class MarsModel extends Repast3Launcher {
         MarsNode shipNode = new MarsNode(null, new RectNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
         shipNode.setColor(Color.WHITE);
         nodes.add(shipNode);
+        buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral(this));
         buildAgents(Environment.SPOTTERS, MarsAgent.Ontologies.SPOTTER, () -> new Spotter(this));
         buildAgents(Environment.PRODUCERS, MarsAgent.Ontologies.PRODUCER, () -> new Producer(this));
-        buildAgents(Environment.MINERALS, MarsAgent.Ontologies.MINERAL, () -> new Mineral(this));
         buildAgents(Environment.TRANSPORTERS, MarsAgent.Ontologies.TRANSPORTER,
                 () -> new Transporter(this));
     }
