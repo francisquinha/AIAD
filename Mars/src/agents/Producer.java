@@ -55,8 +55,7 @@ public class Producer extends MovingAgent {
                 if (getPosition().distance(Environment.SHIP_POSITION) <= 0) {
                     removeBehaviour(this);
                     model.removeAgent(Producer.this);
-                }
-                else moveMovementPlan();
+                } else moveMovementPlan();
             }
 
             Mineral remainingMineral = remainingMineralPlan.poll();

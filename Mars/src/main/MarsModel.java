@@ -93,8 +93,7 @@ public class MarsModel extends Repast3Launcher {
             minerals.remove(agent);
             if (noMoreMinerals())
                 fireNoMoreMinerals();
-        }
-        else {
+        } else if (agent instanceof MovingAgent) {
             movers.remove(agent);
             if (movers.isEmpty())
                 stopSimulation();
@@ -102,7 +101,7 @@ public class MarsModel extends Repast3Launcher {
     }
 
     private boolean noMoreMinerals() {
-        for (Mineral mineral: minerals) {
+        for (Mineral mineral : minerals) {
             if (mineral.getExtractable()) return false;
         }
         return true;
@@ -122,11 +121,6 @@ public class MarsModel extends Repast3Launcher {
         buildDisplay();
         spreadMinerals();
         assignSpotterSpaces();
-    }
-
-    @Override
-    public void stopSimulation() {
-        super.stopSimulation();
     }
 
     @Override

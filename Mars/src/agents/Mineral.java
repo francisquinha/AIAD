@@ -18,10 +18,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Mineral extends MarsAgent {
 
-    private final int quantity;
-    private final boolean extractable;
     final AtomicInteger fragments;
     final AtomicInteger previewFragments;
+    private final int quantity;
+    private final boolean extractable;
 
     public Mineral(MarsModel model) {
         super(Color.PINK, model, new RectNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));

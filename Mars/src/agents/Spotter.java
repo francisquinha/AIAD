@@ -13,14 +13,12 @@ import sajas.proto.ProposeResponder;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 /**
  * @author diogo
  */
 public class Spotter extends MovingAgent {
 
-    private final List<Mineral> mineralsFound;
     private final HashMap<String, AID> areaOwners = new HashMap<>();
     private final HashMap<String, AID> areaNegotiations = new HashMap<>();
     private AID[] otherSpotters;
@@ -31,7 +29,6 @@ public class Spotter extends MovingAgent {
 
     public Spotter(MarsModel model) {
         super(Color.RED, model);
-        mineralsFound = new LinkedList<>();
     }
 
     @Override
@@ -227,8 +224,6 @@ public class Spotter extends MovingAgent {
                     msg.setContent(newPosition.x + "," + newPosition.y);
                     for (AID producer : otherProducers)
                         msg.addReceiver(producer);
-
-                    mineralsFound.add(mineral);
                     if (mineral.getExtractable())
                         addBehaviour(new RequestProducerBehaviour(msg, mineral));
                     else
