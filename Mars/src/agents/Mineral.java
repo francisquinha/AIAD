@@ -24,8 +24,7 @@ public class Mineral extends MarsAgent {
         super(Color.PINK, model, new RectNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
         ThreadLocalRandom r = ThreadLocalRandom.current();
         quantity = r.nextInt(Environment.MIN_FRAGMENTS_PER_MINERAL, Environment.MAX_FRAGMENTS_PER_MINERAL);
-
-        extractable = getRandomBoolean(r, Environment.PROBABILITY_EXTRACTABLE);
+        extractable = getRandomBoolean(r, Environment.PROB_EXTRACTABLE_MINERAL);
     }
 
     private Boolean getRandomBoolean(ThreadLocalRandom r, int probability) {

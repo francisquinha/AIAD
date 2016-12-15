@@ -174,9 +174,16 @@ public class MarsModel extends Repast3Launcher {
 
     private void spreadMinerals() {
         ThreadLocalRandom r = ThreadLocalRandom.current();
+        ArrayList<Point> allPoints = new ArrayList<>();
+        for (int x = 0; x < Environment.SIZE; x++)
+            for (int y = 0; y < Environment.SIZE; y++)
+                if (x != Environment.SHIP_POSITION.x || y != Environment.SHIP_POSITION.y)
+                    allPoints.add(new Point(x, y));
+        Collections.shuffle(allPoints);
+        int i = 0;
         for (Mineral mineral : getAgents(Mineral.class)) {
-            Point newPosition = new Point(r.nextInt(0, Environment.SIZE), r.nextInt(0, Environment.SIZE));
-            mineral.move(newPosition);
+            mineral.move(allPoints.get(i));
+            i++;
         }
     }
 

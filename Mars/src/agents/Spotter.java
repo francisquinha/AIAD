@@ -177,8 +177,8 @@ public class Spotter extends MovingAgent {
 
             int maxX = Environment.SIZE - 1;
 
-            finalPosition = new Point(rowHeight % 2 == 0 ? 0 : maxX, rowYOffset + rowHeight);
-            if (finalPosition.y >= Environment.SIZE) finalPosition.y = Environment.SIZE - 1;
+            finalPosition = new Point(rowHeight % 2 == 0 ? 0 : maxX, rowYOffset + rowHeight - 1);
+            //if (finalPosition.y >= Environment.SIZE) finalPosition.y = Environment.SIZE - 1;
 
             boolean direction = true;
             Point target = new Point(0, rowYOffset);

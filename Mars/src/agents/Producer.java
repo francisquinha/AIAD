@@ -76,7 +76,7 @@ public class Producer extends MovingAgent {
             if (nextMineral == null)
                 return;
 
-            if (Math.abs(getPosition().distance(nextMineral.getPosition())) <= 1) {
+            if (Math.abs(getPosition().distance(nextMineral.getPosition())) <= Environment.MINING_DISTANCE) {
                 if (extractTime <= 0)
                     extractTime = nextMineral.getQuantity();
                 else {
@@ -119,7 +119,7 @@ public class Producer extends MovingAgent {
             String[] coordinates = message.getContent().split(",");
             Point mineralPosition = new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
 
-            cost += getCost(mineralPosition) - 1; // Because it only needs to be adjacent, not in it
+            cost += getCost(mineralPosition) - Environment.MINING_DISTANCE; // Because it only needs to be adjacent, not in it
 
             response.setContent("" + cost);
             return response;
@@ -131,7 +131,7 @@ public class Producer extends MovingAgent {
 
             Point mineralPosition = new Point(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
 
-            addMovementPlan(mineralPosition, 1);
+            addMovementPlan(mineralPosition, Environment.MINING_DISTANCE);
 
             Mineral mineral = getMineralAt(mineralPosition);
             mineralPlan.add(mineral);
