@@ -19,25 +19,25 @@ import java.util.Set;
 public class Transporter extends MovingAgent {
 
     private final int capacity;
-    private final Queue<MineralFragments> fragmentsPlan;
+    private final Queue<Mineral> MineralsPlan;
     private final Queue<ACLMessage> pending = new LinkedList<>();
     private final Queue<ACLMessage> toReject = new LinkedList<>();
     private int load;
     private int lastPlannedLoad;
 
     public Transporter(MarsModel model) {
-        super(Color.BLUE, model);
+        super(Color.GREEN, model);
         capacity = Environment.TRANSPORTER_CAPACITY;
         load = 0;
         lastPlannedLoad = 0;
-        fragmentsPlan = new LinkedList<>();
+        MineralsPlan = new LinkedList<>();
     }
 
     @Override
     public void setup() {
         addBehaviour(new RoutineBehaviour());
         addBehaviour(new AnswerCallBehaviour());
-        model.registerOnNoMoreFragments(this::scheduleRetreat);
+        model.registerOnNoMoreMinerals(this::scheduleRetreat);
     }
 
     private class RoutineBehaviour extends CyclicBehaviour {
@@ -53,15 +53,15 @@ public class Transporter extends MovingAgent {
             if (Math.abs(Environment.SHIP_POSITION.distance(getPosition())) <= 1)
                 load = 0;
 
-            MineralFragments nextFragments = fragmentsPlan.peek();
+            Mineral nextMineral = MineralsPlan.peek();
             Point position = getPosition();
 
-            if (nextFragments != null) {
-                Point mineralPosition = nextFragments.getPosition();
+            if (nextMineral != null) {
+                Point mineralPosition = nextMineral.getPosition();
                 if (Math.abs(position.distance(mineralPosition)) <= 1) {
-                    fragmentsPlan.poll();
-                    int collectible = Math.min(capacity - load, nextFragments.quantity.get());
-                    nextFragments.take(collectible);
+                    MineralsPlan.poll();
+                    int collectible = Math.min(capacity - load, nextMineral.fragments.get());
+                    nextMineral.take(collectible);
                     load += collectible;
                 }
             }
@@ -80,11 +80,11 @@ public class Transporter extends MovingAgent {
         public ACLMessage handleCfp(ACLMessage message) {
             String[] content = message.getContent().split(",");
             Point fragmentsPosition = new Point(Integer.parseInt(content[0]), Integer.parseInt(content[1]));
-            int totalFragments = Integer.parseInt(content[2]);
+            int totalMinerals = Integer.parseInt(content[2]);
 
             int cost = getPlanCost();
             int available = capacity - lastPlannedLoad;
-            int collectible = Math.min(available, totalFragments);
+            int collectible = Math.min(available, totalMinerals);
             cost += getCost(fragmentsPosition);
 
             ACLMessage response = message.createReply();
@@ -114,10 +114,10 @@ public class Transporter extends MovingAgent {
 
             addMovementPlan(fragmentsPosition, 0);
 
-            MineralFragments fragments = getMineralFragmentsAt(fragmentsPosition);
-            if (fragments != null) {
-                fragmentsPlan.add(fragments);
-                int collectible = Math.min(capacity - lastPlannedLoad, fragments.quantity.get());
+            Mineral mineral = getMineralAt(fragmentsPosition);
+            if (mineral != null) {
+                MineralsPlan.add(mineral);
+                int collectible = Math.min(capacity - lastPlannedLoad, mineral.fragments.get());
                 lastPlannedLoad += collectible;
                 if (lastPlannedLoad >= capacity) {
                     addMovementPlan(Environment.SHIP_POSITION, 0);
@@ -134,12 +134,12 @@ public class Transporter extends MovingAgent {
             toReject.remove(proposal);
         }
 
-        private MineralFragments getMineralFragmentsAt(Point position) {
-            MineralFragments found = null;
+        private Mineral getMineralAt(Point position) {
+            Mineral found = null;
             Set<MarsAgent> agents = model.getAgentsAt(position);
             for (MarsAgent agent : agents) {
-                if (agent instanceof MineralFragments) {
-                    found = (MineralFragments) agent;
+                if (agent instanceof Mineral) {
+                    found = (Mineral) agent;
                     break;
                 }
             }

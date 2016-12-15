@@ -24,7 +24,6 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 /**
@@ -33,10 +32,8 @@ import java.util.function.Supplier;
 public class MarsModel extends Repast3Launcher {
 
     private final Set<Mineral> minerals;
-    private final Set<MineralFragments> fragments;
     private final Set<MovingAgent> movers;
     private final List<Runnable> noMineralsCallbacks;
-    private final List<Runnable> noFragmentsCallbacks;
     private ContainerController mainContainer;
     private ArrayList<ArrayList<ConcurrentSkipListSet<MarsAgent>>> agents;
     private Discrete2DSpace space;
@@ -45,9 +42,7 @@ public class MarsModel extends Repast3Launcher {
 
     MarsModel() {
         minerals = new HashSet<>();
-        fragments = new HashSet<>();
         movers = new HashSet<>();
-        noFragmentsCallbacks = new LinkedList<>();
         noMineralsCallbacks = new LinkedList<>();
     }
 
@@ -77,16 +72,13 @@ public class MarsModel extends Repast3Launcher {
         }
     }
 
-    public void addAgent(MarsAgent agent, Point position) {
+    private void addAgent(MarsAgent agent, Point position) {
         agents.get(position.x).get(position.y).add(agent);
         agent.node.setX(position.x);
         agent.node.setY(position.y);
         nodes.add(agent.node);
-
         if (agent instanceof Mineral)
             minerals.add((Mineral) agent);
-        else if (agent instanceof MineralFragments)
-            fragments.add((MineralFragments) agent);
         else
             movers.add((MovingAgent) agent);
     }
@@ -101,11 +93,6 @@ public class MarsModel extends Repast3Launcher {
             minerals.remove(agent);
             if (noMoreMinerals())
                 fireNoMoreMinerals();
-        } else if (agent instanceof MineralFragments) {
-            fragments.remove(agent);
-            if (fragments.isEmpty() && noMoreMinerals()) {
-                fireNoMoreFragments();
-            }
         }
         else {
             movers.remove(agent);
@@ -121,16 +108,12 @@ public class MarsModel extends Repast3Launcher {
         return true;
     }
 
-    public void registerOnNoMoreFragments(Runnable callback) {
-        noFragmentsCallbacks.add(callback);
+    public void registerOnNoMoreMinerals(Runnable callback) {
+        noMineralsCallbacks.add(callback);
     }
 
     private void fireNoMoreMinerals() {
         noMineralsCallbacks.forEach(Runnable::run);
-    }
-
-    private void fireNoMoreFragments() {
-        noFragmentsCallbacks.forEach(Runnable::run);
     }
 
     @Override
@@ -173,7 +156,6 @@ public class MarsModel extends Repast3Launcher {
     }
 
     private void spreadMinerals() {
-        ThreadLocalRandom r = ThreadLocalRandom.current();
         ArrayList<Point> allPoints = new ArrayList<>();
         for (int x = 0; x < Environment.SIZE; x++)
             for (int y = 0; y < Environment.SIZE; y++)

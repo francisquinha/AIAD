@@ -46,7 +46,7 @@ public class Spotter extends MovingAgent {
         addBehaviour(new AnswerAreaRequestBehaviour());
         addBehaviour(new AcknowledgeAreaBehaviour());
         addBehaviour(new ScanBehaviour());
-        model.registerOnNoMoreFragments(this::scheduleRetreat);
+        model.registerOnNoMoreMinerals(this::scheduleRetreat);
     }
 
     public void assignRow(int yOffset, int height) {
@@ -178,7 +178,6 @@ public class Spotter extends MovingAgent {
             int maxX = Environment.SIZE - 1;
 
             finalPosition = new Point(rowHeight % 2 == 0 ? 0 : maxX, rowYOffset + rowHeight - 1);
-            //if (finalPosition.y >= Environment.SIZE) finalPosition.y = Environment.SIZE - 1;
 
             boolean direction = true;
             Point target = new Point(0, rowYOffset);
@@ -277,7 +276,7 @@ public class Spotter extends MovingAgent {
             if (minCostProposal != null) {
                 ACLMessage selectedMessage = minCostProposal.createReply();
                 selectedMessage.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
-                System.out.printf("%s assigned to Mineral at (%d, %d) - quantity %d\n", minCostProposal.getSender().getLocalName(),
+                System.out.printf("%s assigned to Mineral at (%d, %d) - fragments %d\n", minCostProposal.getSender().getLocalName(),
                         (int) mineral.getPosition().getX(), (int) mineral.getPosition().getY(), mineral.getQuantity());
                 responses.add(selectedMessage);
             }
