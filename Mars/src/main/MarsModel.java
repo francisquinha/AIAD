@@ -95,8 +95,9 @@ public class MarsModel extends Repast3Launcher {
                 fireNoMoreMinerals();
         } else if (agent instanceof MovingAgent) {
             movers.remove(agent);
-            if (movers.isEmpty())
+            if (movers.isEmpty()) {
                 stopSimulation();
+            }
         }
     }
 

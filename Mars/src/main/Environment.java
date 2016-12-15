@@ -8,13 +8,13 @@ import java.awt.*;
 public class Environment {
 
     public static final int SIZE = 30;
-    static final int MINERALS = 10;
+    static final int MINERALS = 20;
 
     static final int SPOTTERS = 5;
     static final int PRODUCERS = 5;
-    static final int TRANSPORTERS = 5;
+    static final int TRANSPORTERS = 10;
 
-    public static final int PROB_EXTRACTABLE_MINERAL = 80;
+    public static final int PROB_EXTRACTABLE_MINERAL = 100;
     public static final int MIN_FRAGMENTS_PER_MINERAL = 5;
     public static final int MAX_FRAGMENTS_PER_MINERAL = 15;
 

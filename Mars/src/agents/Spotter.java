@@ -195,12 +195,7 @@ public class Spotter extends MovingAgent {
 
         @Override
         public void action() {
-            if (getDone()) {
-                if (getPosition().distance(Environment.SHIP_POSITION) <= 0) {
-                    removeBehaviour(this);
-                    model.removeAgent(Spotter.this);
-                }
-            }
+            removeBehaviourOnDone(this);
             moveMovementPlan();
         }
     }

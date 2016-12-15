@@ -44,13 +44,9 @@ public class Transporter extends MovingAgent {
 
         @Override
         public void action() {
-            if (getDone()) {
-                if (getPosition().distance(Environment.SHIP_POSITION) <= 0) {
-                    removeBehaviour(this);
-                    model.removeAgent(Transporter.this);
-                }
-            }
-            if (Math.abs(Environment.SHIP_POSITION.distance(getPosition())) <= 1)
+            removeBehaviourOnDone(this);
+
+            if (Math.abs(Environment.SHIP_POSITION.distance(getPosition())) <= Environment.MINING_DISTANCE)
                 load = 0;
 
             Mineral nextMineral = MineralsPlan.peek();
@@ -58,7 +54,7 @@ public class Transporter extends MovingAgent {
 
             if (nextMineral != null) {
                 Point mineralPosition = nextMineral.getPosition();
-                if (Math.abs(position.distance(mineralPosition)) <= 1) {
+                if (Math.abs(position.distance(mineralPosition)) <= Environment.MINING_DISTANCE) {
                     MineralsPlan.poll();
                     int collectible = Math.min(capacity - load, nextMineral.fragments.get());
                     nextMineral.take(collectible);

@@ -51,12 +51,7 @@ public class Producer extends MovingAgent {
         @Override
         public void action() {
 
-            if (getDone()) {
-                if (getPosition().distance(Environment.SHIP_POSITION) <= 0) {
-                    removeBehaviour(this);
-                    model.removeAgent(Producer.this);
-                } else moveMovementPlan();
-            }
+            removeBehaviourOnDone(this);
 
             Mineral remainingMineral = remainingMineralPlan.poll();
             if (remainingMineral != null) {
@@ -72,10 +67,8 @@ public class Producer extends MovingAgent {
             }
 
             Mineral nextMineral = mineralPlan.peek();
-            if (nextMineral == null)
-                return;
 
-            if (Math.abs(getPosition().distance(nextMineral.getPosition())) <= Environment.MINING_DISTANCE) {
+            if (nextMineral != null && Math.abs(getPosition().distance(nextMineral.getPosition())) <= Environment.MINING_DISTANCE) {
                 if (extractTime <= 0)
                     extractTime = nextMineral.getQuantity();
                 else {
@@ -94,9 +87,8 @@ public class Producer extends MovingAgent {
                     }
                     extractTime--;
                 }
-            } else {
-                moveMovementPlan();
             }
+            else moveMovementPlan();
         }
 
     }

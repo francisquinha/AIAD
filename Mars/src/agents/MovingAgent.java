@@ -2,6 +2,7 @@ package agents;
 
 import main.Environment;
 import main.MarsModel;
+import sajas.core.behaviours.Behaviour;
 import uchicago.src.sim.gui.OvalNetworkItem;
 
 import java.awt.*;
@@ -16,18 +17,25 @@ public class MovingAgent extends MarsAgent {
     private final Queue<Point> movementPlan;
     private final Point lastPlannedPosition;
     private boolean done;
+    private int steps;
+    private int lazy;
 
     MovingAgent(Color color, MarsModel model) {
         super(color, model, new OvalNetworkItem(Environment.SHIP_POSITION.x, Environment.SHIP_POSITION.y));
         movementPlan = new LinkedList<>();
         lastPlannedPosition = getPosition();
         done = false;
+        steps = 0;
+        lazy = 0;
     }
 
     void moveMovementPlan() {
         Point nextMove = movementPlan.poll();
-        if (nextMove != null)
+        if (nextMove != null) {
             translate(nextMove);
+            steps++;
+        }
+        else lazy++;
     }
 
     void scheduleRetreat() {
@@ -37,6 +45,16 @@ public class MovingAgent extends MarsAgent {
 
     boolean getDone() {
         return done;
+    }
+
+    void removeBehaviourOnDone(Behaviour behaviour) {
+        if (getDone()) {
+            if (getPosition().distance(Environment.SHIP_POSITION) <= 0) {
+                System.out.printf("%s done - %d steps - %d lazy\n", getLocalName(), steps, lazy);
+                removeBehaviour(behaviour);
+                model.removeAgent(this);
+            }
+        }
     }
 
     int getPlanCost() {
@@ -49,6 +67,10 @@ public class MovingAgent extends MarsAgent {
 
     void addMovementPlan(Point target, int maxDistance) {
         movementPlan.addAll(getPlanToPosition(lastPlannedPosition, target, maxDistance));
+    }
+
+    void incLazy() {
+        lazy++;
     }
 
 }
