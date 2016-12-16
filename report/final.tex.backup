@@ -244,14 +244,11 @@ Os elementos do grupo utilizam Sistemas Operativos (SO) e Ambientes de Desenvolv
 	\item Marina Camilo - Windows7 - Eclipse Neon;
 \end{itemize}
 
-\newpage
 \section{Estrutura da aplicação}
 
 A aplicação está dividida em 2 packages: \textbf{main} e \textbf{agents}.
 
 \subsection{main}
-Nesta \emph{package} encontram-se as classes gerais da simulação como o modelo e as variáveis de ambiente.
-
 \subsubsection{Environment}
 Aqui estão definidas um conjunto de variáveis estáticas que definem o ambiente de simulação.
 \subsubsection{MarsModel}
@@ -259,20 +256,9 @@ O modelo da simulação. Inclui uma matriz bi-dimensional que representa o espa�
 \subsubsection{MarsNode}
 Representa um nó no modelo. Inclui uma referência ao agente que representa.
 \subsubsection{Simulation}
-O ponto de entrada da simulação.
+O ponto de partida da simulação.
 
-\newpage
 \subsection{agents}
-Nesta \emph{package} encontram-se as classes dos agentes a Figura~\ref{agents-uml} é demonstra a estrutura das mesmas.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.4\textwidth]{agents-uml}
-	\caption{UML dos agentes}
-	\label{agents-uml}
-\end{figure}
-
-\FloatBarrier
 \subsubsection{MarsAgent}
 Define a base de cada agente da simulação. Inclui métodos reutilizáveis como \textbf{move} e \textbf{translate} que permitem mover o agente.
 \subsubsection{MovingAgent}
@@ -325,11 +311,11 @@ Para examinar a qualidade da nossa implementação, desenhamos algumas experiên
 
 Estas primeiras experiências têm o objetivo de determinar a qualidade geral da implementação, nomeadamente investigando a sua complexidade temporal. Uma vez que há vários parâmetros no nosso modelo, para determinar a sua complexidade, é necessário fixa-los e variar apenas um deles de cada vez. Os parâmetros que consideramos significativos são:
 \begin{itemize}
-	\item \emph{size} - tamanho do lado do quadrado que representa a área a explorar;
-	\item \emph{minerals} - número de minérios que serão gerados na área;
-	\item \emph{spotters} - número de \spotters que serão disponibilizados;
-	\item \emph{producers} - número de \producers que serão disponibilizados;
-	\item \emph{transporters} - número de \transporters que serão disponibilizados.
+	\item \size - tamanho do lado do quadrado que representa a área a explorar;
+	\item \minerals - número de minérios que serão gerados na área;
+	\item \spotters - número de \spotters que serão disponibilizados;
+	\item \producers - número de \producers que serão disponibilizados;
+	\item \transporters - número de \transporters que serão disponibilizados.
 \end{itemize}
 
 Outros parâmetros, tal como a probabilidade de um dado minério ser extraível, também são relevantes. No entanto, não nos parecem tão importantes como os mencionados acima. De facto, em todas as experiências, decidimos que os minérios seriam sempre extraíveis, por forma a facilitar a análise dos resultados. 
@@ -378,69 +364,6 @@ Os resultados desta segunda experiência podem ser observados no gráfico da Fig
 
 \subsection{Percentagem de utilização dos agentes}
 
-Começamos por variar o número de \spotters, mantendo constantes o tamanho a 30, os minérios a 20, os \producers a 5 e os \transporters a 5. Os resultados obtidos estão disponíveis na tabela~\ref{spotters-steps-lazy}.
-
-\begin{table}[h]
-	\begin{center}
-	\begin{tabular}{ | c | c | c | c | }
-    \hline
-    \spotters & passos & inatividade & total \\ \hline
-    1 & 958 & 0 & 958 \\ \hline
-    2 & 478 & 219 & 697 \\ \hline
-    3 & 345 & 442 & 787 \\ \hline
-    5 & 224 & 650 & 874 \\ \hline
-    10 & 130 & 709 & 839 \\
-    \hline
-	\end{tabular}
-	\caption{Média de passos e inatividade dos \spotters consoante o seu número}
-	\label{spotters-steps-lazy}
-	\end{center}
-\end{table}
-
-É curioso observar que o número médio total de passos mais inatividade apenas baixa de 1 para 2 \spotters, a partir daí vai subindo e baixa muito ligeiramente de 5 para 10 \spotters. Mas isso deve-se essencialmente à inatividade, dado que quando os \spotters terminam a exploração de toda a área, ficam à espera que os restantes agentes terminem as suas tarefas. De qualquer forma, não é útil utilizar um número muito elevado de \spotters, porque a partir do momento em que são detetados os primeiros minérios, os restantes agentes começam a estar ocupados e a rápida deteção de minérios não se traduz em maior velocidade do modelo como um todo. Para esta configuração específica o número ideal de \spotters parece ser 2, dado que apresenta o total mais baixo.
-
-Variando o número de \producers e mantendo constantes o tamanho a 30, os minérios a 20, os \spotters a 5 e os \transporters a 5, obtivemos os resultados que se apresentam na tabela~\ref{producers-steps-lazy}.
-
-\begin{table}[h]
-	\begin{center}
-	\begin{tabular}{ | c | c | c | c | }
-    \hline
-    \producers & passos & inatividade & total \\ \hline
-    1 & 320 & 651 & 971 \\ \hline
-    2 & 186 & 1294 & 1480 \\ \hline
-    3 & 101 & 1661 & 1762 \\ \hline
-    5 & 58 & 2262 & 2320 \\ \hline
-    10 & 27 & 3680 & 3707 \\
-    \hline
-	\end{tabular}
-	\caption{Média de passos e inatividade dos \producers consoante o seu número}
-	\label{producers-steps-lazy}
-	\end{center}
-\end{table}
-
-Além dos dados apresentados, nesta experiência observamos que, com 10 \producers, alguns que permanecem completamente inutilizados. Isto indica claramente que para tamanho 30 e 20 minérios não faz sentido ter tantos \producers. Outra observação interessante, é que o total de passos mais inatividade aumenta consistentemente com o número de \producers, apesar de o número de passos baixar. Tudo indica que isto acontece devido às negociações entre os \spotters e os \producers para escolher aquele que irá realizar a extração. De facto, essas negociações são especialmente relevantes neste cenário, note-se que de 1 para 2 \producers a inatividade quase duplica.
-
-Finalmente, fizemos variar o número de \transporters, mantendo constantes o tamanho a 30, os minérios a 20, os \spotters a 5 e os \producers a 5, obtivemos os resultados que se apresentam na tabela~\ref{transporters-steps-lazy}.
-
-\begin{table}[h]
-	\begin{center}
-	\begin{tabular}{ | c | c | c | c | }
-    \hline
-    \producers & passos & inatividade & total \\ \hline
-    1 & 920 & 1160 & 2080 \\ \hline
-    2 & 395 & 1161 & 2056 \\ \hline
-    3 & 245 & 1929 & 2175 \\ \hline
-    5 & 174 & 2311 & 2485 \\ \hline
-    10 & 85 & 3770 & 3855 \\
-    \hline
-	\end{tabular}
-	\caption{Média de passos e inatividade dos \transporters consoante o seu número}
-	\label{transporters-steps-lazy}
-	\end{center}
-\end{table}
-
-Mais uma vez, 10 \transporters é claramente demais, pois alguns não chegaram a realizar nenhuma tarefa. No entanto, ao contrário do que aconteceu com os \producers, neste caso o total não aumenta sempre, tendo reduzido ligeiramente entre 1 e 2 \transporters. Claro que se a área a explorar fosse maior e tivéssemos mais minérios, este efeito seria certamente mais notório, indicando que faz sentido ir aumentando o número de \transporters, embora de forma conservadora. Mais uma vez, as negociações têm um peso grande, impedindo melhorias significativas quando há mais \transporters.
-
 %%%%%%%%%%%%%%
 % CONCLUSOES %
 %%%%%%%%%%%%%%
@@ -473,8 +396,6 @@ Alguns possíveis melhoramentos ao nosso projeto são:
 
 \section{Bibliografia}
 
-\todoimprove[inline]{fazer os links aparecerem no texto}
-
 \begin{itemize}
 	\item \href{https://paginas.fe.up.pt/~eol/AIAD/1617/trabalhos.html#T05}{Enunciado do trabalho}
 	\item \href{https://paginas.fe.up.pt/~eol/AIAD/aiad1617.html}{Slides das aulas teóricas}
@@ -485,7 +406,6 @@ Alguns possíveis melhoramentos ao nosso projeto são:
 \end{itemize}
 
 \section{Software}
-\todoimprove[inline]{fazer os links aparecerem no texto}
 
 \begin{itemize}
 	\item \href{http://jade.tilab.com}{\jade}
@@ -520,7 +440,7 @@ Ao correr, vai ser apresentado a consola do \repast. Começando a simulação se
 	\label{simulacao}
 \end{figure}
 
-A simulação pode correr com diferentes tamanhos, números de minérios, \spotters, \producers, \transporters e a capacidade dos \transporters. Desta forma, também a  percentagem do mineral e o número de fragmentos encontrados num mineral podem ser alterados.
+A simulação pode correr com diferentes tamanhos, números de minerais, \spotters, \producers, \transporters e a capacidade dos \transporters. Desta forma, também a  percentagem do mineral e o número de fragmentos encontrados num mineral podem ser alterados.
 Assim, para alterar os parâmetros da simulação descritos acima é necessário aceder a classe \java \texttt{main.Environment}:
 
 \begin{figure}[h]
