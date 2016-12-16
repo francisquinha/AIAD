@@ -180,9 +180,9 @@ Neste caso, ficou o \producer 2 afeto ao minério do \spotter 1 e o \producer 1 
 
 \FloatBarrier
 \subsection{Afetação de \transporters}
-Após a extração do minério é necessário transportá-lo para a nave-mãe. O \producer que acabou de extrair o minério tem que selecionar um ou mais \transporters, do mesmo modo que o \spotter seleciona um \producer. 
+Após a extração do minério é necessário transportá-lo para a nave-mãe. 
+O \producer que acabou de extrair o minério tem que selecionar um \transporter, do mesmo modo que o \spotter seleciona um \producer. 
 Cada \transporter comunica o valor do esforço e o minério que consegue transportar possibilitando o \producer de escalonar os diferentes agentes.
-Este processo segue também o processo \textbf{fipa-contractnet} (Figura~\ref{fipa-contract-net}) suportado pelas interfaces ContractNetInitiator e ContractNetResponder implementados nos \producers e \transporters, respetivamente.
 
 \begin{figure}[h]
 	\centering
