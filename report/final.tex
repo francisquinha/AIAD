@@ -39,6 +39,8 @@
 \newcommand{\Transporter}{\emph{Transporter}\xspace}
 \newcommand{\transporter}{\emph{transporter}\xspace}
 \newcommand{\transporters}{\emph{transporters}\xspace}
+\newcommand{\size}{\emph{size}\xspace}
+\newcommand{\minerals}{\emph{minerals}\xspace}
 
 \begin{titlepage}
 	\begin{center}
@@ -251,7 +253,9 @@ Os elementos do grupo utilizam Sistemas Operativos (SO) e Ambientes de Desenvolv
 %%%%%%%%%%%%%%%%
 \chapter{Experiências}
 
-\todonew[inline]{capítulo novo, mas falamos de experiências no relatório intercalar}
+Para examinar a qualidade da nossa implementação, desenhamos algumas experiências, que são apresentadas em seguida. Tivemos alguma dificuldade em realizar estas experiências, porque não fomos capazes de as automatizar completamente, devido forma como correm as simulações do \repast.
+
+
 \todochange[inline]{esta foi a parte que mais falou de experiências no relatório intercalar}
 
 Para podermos ver resultados mais rapidamente, inicialmente serão implementadas apenas as funcionalidades mais básicas de cada tipo de agente. Como tal, a primeira fase de avaliação preocupar-se-á essencialmente em garantir que cada agente faz aquilo que é suposto.
@@ -262,7 +266,38 @@ Com as métricas obtidas após a segunda fase de implementação, analisaremos d
 
 \section{Objetivos de cada experiência}
 
+\subsection{Complexidade da implementação}
+
+Estas primeiras experiências têm o objetivo de determinar a qualidade geral da implementação, nomeadamente investigando a sua complexidade temporal. Uma vez que há vários parâmetros no nosso modelo, para determinar a sua complexidade, é necessário fixa-los e variar apenas um deles de cada vez. Os parâmetros que consideramos significativos são:
+\begin{itemize}
+	\item \size - tamanho do lado do quadrado que representa a área a explorar;
+	\item \minerals - número de minérios que serão gerados na área;
+	\item \spotters - número de \spotters que serão disponibilizados;
+	\item \producers - número de \producers que serão disponibilizados;
+	\item \transporters - número de \transporters que serão disponibilizados.
+\end{itemize}
+
+Outros parâmetros, tal como a probabilidade de um dado minério ser extraível, também são relevantes. No entanto, não nos parecem tão importantes como os mencionados acima. Em relação àqueles que destacamos, para que as experiências não se prolongassem demasiado, no que toca a complexidade, estudamos apenas \size e \minerals, determinando o número de \emph{ticks} que o modelo demora a correr, conforme varia um, e apenas um, destes parâmetros.
+
+\subsection{Percentagem de utilização dos agentes}
+
+Se, por um lado, parece claro que seja útil ter mais agentes, especialmente quando \size e \minerals são elevados. Por outro lado, num contexto de simulação de acordo com a realidade, é óbvio que ter mais agentes é mais dispendioso. Sendo assim, consideramos relevante determinar, para \size e \minerals fixos, qual o número ideal de cada tipo de agente. Para isso, fizemos variar \spotters, \producers e \transporters cada um por sua vez, avaliando o número total de passos dados por cada agente, assim como o número de \emph{ticks} em que cada um deles está inativo.
+
+\subsection{Comparação de diferentes técnicas}
+
+Como não chegamos a implementar diferentes técnicas para resolver o problema, não realizamos experiências que permitissem compará-las. No entanto, decidimos ainda assim expor aqui a forma como o faríamos.
+
+A primeira forma de comparação, seria comparar o número de \emph{ticks} que cada técnica usa fixados os vários parâmetros. A experiência mais rápida, seria considerada melhor nestas experiências.
+
+Outra forma de comparação, seria considerar a quantidade total de passos que os vários agentes dão para completar a exploração em cada técnica. Neste caso, seria melhor a técnica que utilizasse menos passos.
+
 \section{Resultados}
+
+\subsection{Complexidade da implementação}
+
+Começamos por variar \size mantendo fixos os restantes parâmetros, nomeadamente, utilizamos 1 minério e 5 agentes de cada tipo. Com o aumento do tamanho do quadrado a explorar, os \spotters são os últimos agentes a terminar a sua tarefa. Isto porque têm que percorrer toda a área, enquanto que os restantes agentes apenas têm que se deslocar até ao minério, assim que este for encontrado. 
+
+\subsection{Percentagem de utilização dos agentes}
 
 \chapter{Conclusões}
 
