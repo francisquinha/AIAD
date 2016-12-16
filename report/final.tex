@@ -90,9 +90,7 @@ De forma a facilitar a procura, todos os agentes podem localizar fontes de miné
 
 \section{Objetivos do trabalho}
 
-Um dos objetivos deste trabalho é implementar os agentes de forma a que a simulação da exploração seja tão eficiente quanto possível. Para tal devem ser estudadas várias alternativas de implementação, de forma a determinar qual a melhor abordagem. 
-
-No caso dos agentes do tipo \spotter, podem ser utilizados diferentes algoritmos de distribuição do espaço a explorar entre eles, para que cubram toda a região mais rapidamente. Em relação aos \producers e \transporters, podem ser instalados diferentes protocolos de negociação que garantam que o melhor agente é escolhido para a tarefa.
+Um dos objetivos deste trabalho é implementar os agentes de forma a que a simulação da exploração seja tão eficiente quanto possível. 
 
 O nosso principal objetivo é utilizar este projeto como forma de melhor interiorizar os conceitos dos Sistemas Multi-Agente, nomeadamente ganhando uma maior familiaridade com as plataformas que permitem implementar e simular estes sistemas.
 
@@ -107,24 +105,16 @@ O nosso principal objetivo é utilizar este projeto como forma de melhor interio
 \todoreview[inline]{arquitetura, comportamento, estratégias}
 \todonew[inline]{processos de raciocínio - novo no relatório final}
 
-Tal como descrito acima, o nosso sistema tem três tipos de agentes. De seguida descrevem-se mais detalhadamente estes agentes e a forma como decidimos implementá-los.
+Tal como descrito acima, o nosso sistema tem três tipos de agentes. De seguida descrevem-se mais detalhadamente estes agentes e a forma como os implementámos.
 
 \subsection{\Spotter}
-A nossa intenção é que cada \spotter tenha a sua região conexa do espaço para explorar. Uma vez definida essa região, a estratégia do \Spotter é simples, inspeciona cada célula consecutivamente, determinando se contém minério extraível e guardando registo desta informação. Sempre que encontra minério extraível, entra em contacto com todos os \producers para negociar e decidir qual deles será chamado para extrair o minério.
-
-Numa segunda fase, depois de introduzirmos as restrições no sistema, os \spotters receberão notificações dos restantes agentes quando estes últimos detetarem minérios. O \spotter a quem estiver atribuída essa célula ficará com a responsabilidade de a inspecionar e determinar se o minério pode ser explorado. Em princípio, o mesmo acontecerá na primeira movimentação dos \spotters para as suas regiões. Isto é, eles detetaram minério e espalharão essa informação, mas apenas inspecionam a sua região.
-
-Mais tarde, pretendemos explorar diferentes formas de dividir o espaço entre os \spotters, para determinar qual a melhor forma. Entre outras coisas, para que os \producers iniciam a sua atividade mais cedo, pode ser melhor que na movimentação inicial para as suas regiões os \spotters inspecionem minério encontrado, mesmo que não esteja nas suas regiões.
+Cada \spotter tem a sua região conexa do espaço para explorar. Uma vez definida essa região, a estratégia do \Spotter é simples, encaminha-se para o inicio da região e inspeciona cada célula consecutivamente, determinando se contém minério extraível ou não e guarda registo desta informação. Sempre que encontra minério extraível, entra em contacto com todos os \producers para negociar e decidir qual deles será chamado para extrair o minério.
 
 \subsection{\Producer}
-Os \producers entram em ação assim que é encontrado minério extraível por um \spotter. Nesse momento cada um deles terá que determinar o esforço necessário para se deslocar ao local e extrair o minério. Esse esforço corresponde à distância (em passos) a que o \producer se encontra do local, mais o tempo (em passos) que ele demorará a terminar a sua tarefa atual, caso esteja a extrair minério, mais o tempo que demorarão todas as outras tarefas com as quais já se tenha comprometido. Para esse efeito, cada \producer deve guardar uma fila contendo informação sobre as suas extrações, em particular o tempo que cada uma delas demora, incluindo a deslocação da sua posição anterior até ao local da extração.
-
-Numa primeira fase de implementação, assumiremos princípios muito simples relativamente à extração, nomeadamente que requer sempre o mesmo número de passos. Mais tarde, a quantidade e/ou profundidade do minério poderão ser levadas em conta para determinar o tempo de extração.
+Os \producers entram em ação assim que é encontrado minério extraível por um \spotter. Nesse momento cada um deles terá que determinar o custo necessário para se deslocar ao local e extrair o minério. Esse esforço corresponde à distância (em passos) a que o \producer se encontra do local no final de completar todas as tarefas em mãos, mais o tempo (em passos) que ele demorará a terminar a sua tarefa atual, caso esteja a extrair minério, mais o tempo que demorarão todas as outras tarefas com as quais já se tenha comprometido. Para esse efeito, cada \producer deve guardar uma fila contendo informação sobre as suas extrações, em particular o tempo que cada uma delas demora, incluindo a deslocação da sua posição anterior até ao local da extração.
 
 \subsection{\Transporter}
-Os \transporters iniciam a sua atividade quando são contactados para transportar minério. À semelhança do que acontece com os \producers, nesse momento terão de calcular o esforço que necessitam para se deslocarem ao local. Inicialmente, dado que se assume capacidade ilimitada e transporte do minério para a base imediatamente, o esforço corresponde apenas à soma das distâncias que o \transporter terá que percorrer para se deslocar entre os locais para os quais foi convocado e a base. 
-
-Quando for considerada a limitação de carga, o \transporter poderá ter vários comportamentos diferentes que serão estudados quanto à sua eficiência. Ele poderá regressar à base apenas quando atinge a carga máxima, ou então regressar sempre que não estiver ocupado com transportes. Quando informar os \producers do esforço que necessita para chegar até um local terá que considerar quais as viagens à base que fará e também qual o espaço que terá disponível quando lá se deslocar. Tudo isso será considerado pelo \producer ao escolher o seu \transporter. Se o tempo permitir, consideraremos ainda a possibilidade de vários \transporters serem alocados à mesma tarefa, caso a quantidade de minério assim o exija ou essa pareça ser a ação mais eficiente.
+Os \transporters iniciam a sua atividade quando são contactados para transportar minério. À semelhança do que acontece com os \producers, nesse momento terão de calcular o esforço que necessitam para se deslocarem ao local tendo em conta a sua capacidade final. Quando informarem os \producers do esforço que necessita para chegar até um local terá que considerar qual a capacidade que terá disponível quando lá se deslocar. O \producer escolhe os primeiros \transporters que totalizam a capacidade disponível da carga que se pretende transportar, regressando à base apenas quando atingem a carga máxima. 
 
 \section{Protocolos de interação}
 
@@ -382,5 +372,25 @@ Alguns possíveis melhoramentos ao nosso projeto são:
 
 \todonew[inline]{manual do utilizador (sucinto)}
 
+Após a criação de um projeto \java com o código entregue e adicionadas as bibliotecas de \sajas, \jade e \repast, é necessário correr o programa com a \texttt{Main class: main.Simulation}.
+
+Ao correr, vai ser apresentado a consola do \repast. Começando a simulação será apresentada uma janela onde decorrerá a simulação idêntica a esta:
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{simulacao}
+	\caption{Exemplo de uma simulação}
+	\label{simulacao}
+\end{figure}
+
+A simulação pode correr com diferentes tamanhos, números de minerais, \spotters, \producers, \transporters e a capacidade dos \transporters. Desta forma, também a  percentagem do mineral e o número de fragmentos encontrados num mineral podem ser alterados.
+Assim, para alterar os parâmetros da simulação descritos acima é necessário aceder a classe \java \texttt{main.Environment}:
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{javaEnvironment}
+	\caption{Valores da Simulação}
+	\label{javaEnvironment}
+\end{figure}
 
 \end{document}
