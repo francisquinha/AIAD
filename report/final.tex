@@ -246,6 +246,65 @@ Os elementos do grupo utilizam Sistemas Operativos (SO) e Ambientes de Desenvolv
 
 \section{Estrutura da aplicação}
 
+A aplicação está dividida em 2 packages: \textbf{main} e \textbf{agents}.
+
+\subsection{main}
+\subsubsection{Environment}
+Aqui estão definidas um conjunto de variáveis estáticas que definem o ambiente de simulação.
+\subsubsection{MarsModel}
+O modelo da simulação. Inclui uma matriz bi-dimensional que representa o espaço físico e cada célula contém uma lista de agentes naquela posição.
+\subsubsection{MarsNode}
+Representa um nó no modelo. Inclui uma referência ao agente que representa.
+\subsubsection{Simulation}
+O ponto de partida da simulação.
+
+\newpage
+\subsection{agents}
+
+Na Figura~\ref{agents-uml} é possível ver a estrutura de classes que representam os agentes.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.4\textwidth]{agents-uml}
+	\caption{UML dos agentes}
+	\label{agents-uml}
+\end{figure}
+
+\FloatBarrier
+\subsubsection{MarsAgent}
+Define a base de cada agente da simulação. Inclui métodos reutilizáveis como \textbf{move} e \textbf{translate} que permitem mover o agente.
+\subsubsection{MovingAgent}
+Define a base para cada agente que planeia os seus movimentos. Permite acumular movimentos que são executados sequencialmente.
+\subsubsection{Mineral}
+Representa um mineral. Não define qualquer \emph{behaviour}.
+\subsubsection{Spotter}
+Representa um \spotter no modelo. Implementa 6 \emph{behaviours}:
+\begin{itemize}
+ \item RequestAreaBehaviour - Inicia o protocolo \textbf{fipa-propose} com os restantes \spotters.
+ \item AnswerAreaRequestBehaviour - Responde às propostas iniciados pelos restantes \spotters.
+ \item AcknowledgeAreaBehaviour - Recebe as mensagens finais dos \spotters quando os mesmos ficam afetos a uma área e guarda essa mesma informação.
+ \item MoveBehaviour - Executa o plano de movimento do agente.
+ \item ScanBehaviour - Analisa os minerais quando estes estão próximos o suficiente.
+ \item RequestProducerBehaviour - Inicia o protocolo \textbf{fipa-contractnet} com os \producers.
+\end{itemize}
+
+\subsubsection{Producer}
+Representa um \producer no modelo. Implementa 3 \emph{behaviours}:
+\begin{itemize}
+ \item RoutineBehaviour - Executa o plano de movimento do agente.
+ \item AnswerCallBehaviour - Responde às mensagens do protocolo \textbf{fipa-contractnet} provenientes dos \spotters.
+ \item RequestTransporterBehaviour - Inicia o protocolo \textbf{fipa-contractnet} com os \transporters.
+\end{itemize}
+
+
+\subsubsection{Transporter}
+Representa um \transporter no modelo. Implementa 2 \emph{behaviours}:
+\begin{itemize}
+ \item RoutineBehaviour - Executa o plano de movimento do agente.
+ \item AnswerCallBehaviour - Responde às mensagens do protocolo \textbf{fipa-contractnet} provenientes dos \producers.
+\end{itemize}
+
+
 \todonew[inline]{módulos, diagrama de classes...}
 
 \section{Detalhes relevantes da implementação}
