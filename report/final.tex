@@ -244,11 +244,14 @@ Os elementos do grupo utilizam Sistemas Operativos (SO) e Ambientes de Desenvolv
 	\item Marina Camilo - Windows7 - Eclipse Neon;
 \end{itemize}
 
+\newpage
 \section{Estrutura da aplicação}
 
 A aplicação está dividida em 2 packages: \textbf{main} e \textbf{agents}.
 
 \subsection{main}
+Nesta \emph{package} encontram-se as classes gerais da simulação como o modelo e as variáveis de ambiente.
+
 \subsubsection{Environment}
 Aqui estão definidas um conjunto de variáveis estáticas que definem o ambiente de simulação.
 \subsubsection{MarsModel}
@@ -256,12 +259,11 @@ O modelo da simulação. Inclui uma matriz bi-dimensional que representa o espa�
 \subsubsection{MarsNode}
 Representa um nó no modelo. Inclui uma referência ao agente que representa.
 \subsubsection{Simulation}
-O ponto de partida da simulação.
+O ponto de entrada da simulação.
 
 \newpage
 \subsection{agents}
-
-Na Figura~\ref{agents-uml} é possível ver a estrutura de classes que representam os agentes.
+Nesta \emph{package} encontram-se as classes dos agentes a Figura~\ref{agents-uml} é demonstra a estrutura das mesmas.
 
 \begin{figure}[h]
 	\centering
