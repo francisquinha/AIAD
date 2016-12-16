@@ -9,4 +9,6 @@ report/final.log
 report/final.toc
 report/final.synctex.gz
 report/final.out
-
+report/.final.lb
+report/final.fdb_latexmk
+report/final.fls
