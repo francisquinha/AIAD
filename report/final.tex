@@ -33,12 +33,15 @@
 \newcommand{\spotter}{\emph{spotter}\xspace}
 \newcommand{\Spotter}{\emph{Spotter}\xspace}
 \newcommand{\spotters}{\emph{spotters}\xspace}
+\newcommand{\Spotters}{\emph{Spotters}\xspace}
 \newcommand{\Producer}{\emph{Producer}\xspace}
 \newcommand{\producer}{\emph{producer}\xspace}
 \newcommand{\producers}{\emph{producers}\xspace}
+\newcommand{\Producers}{\emph{Producers}\xspace}
 \newcommand{\Transporter}{\emph{Transporter}\xspace}
 \newcommand{\transporter}{\emph{transporter}\xspace}
 \newcommand{\transporters}{\emph{transporters}\xspace}
+\newcommand{\Transporters}{\emph{Transporters}\xspace}
 \newcommand{\size}{\emph{size}\xspace}
 \newcommand{\minerals}{\emph{minerals}\xspace}
 
@@ -238,7 +241,7 @@ Os elementos do grupo utilizam Sistemas Operativos (SO) e Ambientes de Desenvolv
 \begin{itemize}
 	\item Ângela Cardoso - macOS Sierra - IntelliJ IDEA;
 	\item Diogo Ferreira - Linux\todoimprove{não sei exatamente qual} - NetBeans;
-	\item Marina Camilo - Windows\todoimprove{não sei exatamente qual} - Eclipse;
+	\item Marina Camilo - Windows7 - Eclipse Neon;
 \end{itemize}
 
 \section{Estrutura da aplicação}
@@ -299,16 +302,30 @@ Começamos por variar \size mantendo fixos os restantes parâmetros, nomeadament
 
 \subsection{Percentagem de utilização dos agentes}
 
+%%%%%%%%%%%%%%
+% CONCLUSOES %
+%%%%%%%%%%%%%%
 \chapter{Conclusões}
 
 \section{Da análise dos resultados das experiências levadas a cabo}
 
 \section{Do desenvolvimento do trabalho e aplicabilidade de SMA ao cenário proposto}
 
+%%%%%%%%%%%%%%%%%
+% MELHORAMENTOS %
+%%%%%%%%%%%%%%%%%
 \chapter{Melhoramentos}
 
 \todonew[inline]{sugestões para melhoramentos a introduzir no programa}
 
+Alguns possíveis melhoramentos ao nosso projeto são:
+
+\begin{itemize}
+	\item \Spotters decidirem entre si a divisão do espaço a explorar;
+	\item Ao ser escolhido um \producer ou \transporter ter em conta o número de tarefas que estão a realizar de forma a maximizar o esforço dos mesmos;
+	\item Ser possível de alterar o percurso dos agentes. Exemplo: Se ao atribuir a um \transporter uma tarefa e ficar em caminho ir a nave mãe descarregar, ele deveria descarregar e assim teria mais capacidade no final da tarefa;
+	\item Atribuir os \transporters de forma eficiente tendo em conta a capacidade dos mesmos. Exemplo: Se um existe um \transporter que demora mais tempo mas tem capacidade para recolher o minério todo, deve ser selecionado em vez de atribuir pedaços de minério a vários \transporters que no final demorem mais tempo a recolher o minério todo;
+\end{itemize}
 
 %%%%%%%%%%%%
 % RECURSOS %
