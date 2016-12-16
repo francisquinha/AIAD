@@ -1,0 +1,34 @@
+\select@language {portuguese}
+\contentsline {chapter}{\numberline {1}Objetivo}{3}{chapter.1}
+\contentsline {section}{\numberline {1.1}Descri\IeC {\c c}\IeC {\~a}o do cen\IeC {\'a}rio}{3}{section.1.1}
+\contentsline {section}{\numberline {1.2}Objetivos do trabalho}{3}{section.1.2}
+\contentsline {chapter}{\numberline {2}Especifica\IeC {\c c}\IeC {\~a}o}{5}{chapter.2}
+\contentsline {section}{\numberline {2.1}Identifica\IeC {\c c}\IeC {\~a}o e caracteriza\IeC {\c c}\IeC {\~a}o dos agentes}{5}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}\emph {Spotter}\xspace }{5}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}\emph {Producer}\xspace }{6}{subsection.2.1.2}
+\contentsline {subsection}{\numberline {2.1.3}\emph {Transporter}\xspace }{6}{subsection.2.1.3}
+\contentsline {section}{\numberline {2.2}Protocolos de intera\IeC {\c c}\IeC {\~a}o}{6}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Divis\IeC {\~a}o de espa\IeC {\c c}os}{7}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Afeta\IeC {\c c}\IeC {\~a}o de \emph {producers}\xspace }{8}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}Afeta\IeC {\c c}\IeC {\~a}o de \emph {transporters}\xspace }{8}{subsection.2.2.3}
+\contentsline {chapter}{\numberline {3}Desenvolvimento}{10}{chapter.3}
+\contentsline {section}{\numberline {3.1}Plataformas utilizadas}{10}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}\texttt {JADE}\xspace }{10}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}\texttt {Repast 3}\xspace }{11}{subsection.3.1.2}
+\contentsline {subsection}{\numberline {3.1.3}\texttt {SAJaS}\xspace }{11}{subsection.3.1.3}
+\contentsline {subsection}{\numberline {3.1.4}Realce das funcionalidades relevantes para o trabalho}{11}{subsection.3.1.4}
+\contentsline {subsection}{\numberline {3.1.5}Ambiente de desenvolvimento}{11}{subsection.3.1.5}
+\contentsline {section}{\numberline {3.2}Estrutura da aplica\IeC {\c c}\IeC {\~a}o}{12}{section.3.2}
+\contentsline {section}{\numberline {3.3}Detalhes relevantes da implementa\IeC {\c c}\IeC {\~a}o}{12}{section.3.3}
+\contentsline {chapter}{\numberline {4}Experi\IeC {\^e}ncias}{13}{chapter.4}
+\contentsline {section}{\numberline {4.1}Objetivos de cada experi\IeC {\^e}ncia}{13}{section.4.1}
+\contentsline {section}{\numberline {4.2}Resultados}{13}{section.4.2}
+\contentsline {chapter}{\numberline {5}Conclus\IeC {\~o}es}{14}{chapter.5}
+\contentsline {section}{\numberline {5.1}Da an\IeC {\'a}lise dos resultados das experi\IeC {\^e}ncias levadas a cabo}{14}{section.5.1}
+\contentsline {section}{\numberline {5.2}Do desenvolvimento do trabalho e aplicabilidade de SMA ao cen\IeC {\'a}rio proposto}{14}{section.5.2}
+\contentsline {chapter}{\numberline {6}Melhoramentos}{15}{chapter.6}
+\contentsline {chapter}{\numberline {7}Recursos}{16}{chapter.7}
+\contentsline {section}{\numberline {7.1}Bibliografia}{16}{section.7.1}
+\contentsline {section}{\numberline {7.2}Software}{16}{section.7.2}
+\contentsline {section}{\numberline {7.3}Elementos do grupo}{16}{section.7.3}
+\contentsline {chapter}{\numberline {8}Ap\IeC {\^e}ndice}{17}{chapter.8}

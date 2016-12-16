@@ -139,7 +139,7 @@ este o possa depois confirmar com os restantes \emph{spotters} que pode realment
 	\label{space-sharing}
 \end{figure}
 
-Uma vez recebida a sugestão pela nave-mãe o \spotter inicia então o protocolo de negociação \textbf{fipa-propose} (Figura~\ref{fipa-propose}) com os restantes \emph{spotters}. Este protocolo define como propôr algo a outros agentes e
+Uma vez recebida a sugestão pela nave-mãe o \spotter inicia então o protocolo de negociação \textbf{fipa-propose} (Figura~\ref{fipa-propose}) com os restantes \emph{spotters}. Este protocolo define como propor algo a outros agentes e
 tratar das suas respostas.
 
 \begin{figure}[h]
@@ -149,12 +149,6 @@ tratar das suas respostas.
 	\label{fipa-propose}
 \end{figure}
 
-Após a receção de todas as respostas é enviada uma última mensagem de volta a informar que a área ficou então afeta ao \spotter que iniciou a proposta. Esta última fase é complementar ao protocolo.
-O protocolo \textbf{fipa-propose} é suportado pelas interfaces \emph{ProposeInitiator} e \emph{ProposeResponder} que um \spotter implementa através de \emph{behaviours} e pelas classes internas 
-\emph{RequestAreaBehaviour} e \emph{AnswerCallBehaviour}, respetivamente.
-Finalmente, a receção da última mensagem de notificação é feita também através de um \emph{behaviour} na classe interna \emph{AcknowledgeAreaBehaviour}. A mensagem tem a performativa \textbf{inform} e
-no seu conteúdo uma string no formato \textbf{offset-height} em que \emph{offset} indica a coordenada no eixo Y em que a área começa e \emph{height} a altura da mesma. Os receptores desta mensagem
-guardam então internamente num mapa esta afetação para possíveis futuras propostas.
 
 \FloatBarrier
 \subsection{Afetação de \producers}
