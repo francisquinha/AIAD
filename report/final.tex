@@ -258,15 +258,6 @@ Os elementos do grupo utilizam Sistemas Operativos (SO) e Ambientes de Desenvolv
 
 Para examinar a qualidade da nossa implementação, desenhamos algumas experiências, que são apresentadas em seguida. Tivemos alguma dificuldade em realizar estas experiências, porque não fomos capazes de as automatizar completamente, devido forma como correm as simulações do \repast.
 
-
-\todochange[inline]{esta foi a parte que mais falou de experiências no relatório intercalar}
-
-Para podermos ver resultados mais rapidamente, inicialmente serão implementadas apenas as funcionalidades mais básicas de cada tipo de agente. Como tal, a primeira fase de avaliação preocupar-se-á essencialmente em garantir que cada agente faz aquilo que é suposto.
-
-Numa segunda fase, introduziremos as restrições pretendidas para a simulação, nomeadamente a capacidade limitada dos \transporters e o facto de todos os agentes poderem detetar minério nas suas deambulações. Uma vez realizadas estas alterações aos agentes básicos, a avaliação geral levará em conta o tempo que a simulação demora a correr e o número de passos efetuados por todos os agentes. Usando estas métricas, dados vários tamanhos para o espaço inicial a explorar, iremos determinar a complexidade do nosso sistema. Para podermos melhorar cada componente individual, calcularemos também métricas mais finas, como o tempo de espera médio e máximo, quando é invocado um \producer ou um \transporter, ou o tempo de exploração do terreno pelos \spotters consoante o seu número.
-
-Com as métricas obtidas após a segunda fase de implementação, analisaremos diferentes algoritmos de forma a tornar mais eficiente esta demanda. Nomeadamente, avaliaremos qual a alocação mais eficiente de agentes, se o mapa fica corretamente dividido entre os \spotters e se o tempo de simulação foi o mínimo para o caso em questão.
-
 \section{Objetivos de cada experiência}
 
 \subsection{Complexidade da implementação}
@@ -280,7 +271,9 @@ Estas primeiras experiências têm o objetivo de determinar a qualidade geral da
 	\item \transporters - número de \transporters que serão disponibilizados.
 \end{itemize}
 
-Outros parâmetros, tal como a probabilidade de um dado minério ser extraível, também são relevantes. No entanto, não nos parecem tão importantes como os mencionados acima. Em relação àqueles que destacamos, para que as experiências não se prolongassem demasiado, no que toca a complexidade, estudamos apenas \size e \minerals, determinando o número de \emph{ticks} que o modelo demora a correr, conforme varia um, e apenas um, destes parâmetros.
+Outros parâmetros, tal como a probabilidade de um dado minério ser extraível, também são relevantes. No entanto, não nos parecem tão importantes como os mencionados acima. De facto, em todas as experiências, decidimos que os minérios seriam sempre extraíveis, por forma a facilitar a análise dos resultados. 
+
+Em relação aos parâmetros que destacamos, para que as experiências não se prolongassem demasiado, no que toca a complexidade, estudamos apenas \size e \minerals, determinando o número de \emph{ticks} que o modelo demora a correr, conforme varia um, e apenas um, destes parâmetros.
 
 \subsection{Percentagem de utilização dos agentes}
 
@@ -294,11 +287,33 @@ A primeira forma de comparação, seria comparar o número de \emph{ticks} que c
 
 Outra forma de comparação, seria considerar a quantidade total de passos que os vários agentes dão para completar a exploração em cada técnica. Neste caso, seria melhor a técnica que utilizasse menos passos.
 
+Finalmente, também consideramos que seria adequada para este efeito a determinação do tempo decorrido entre deteção, extração e transporte de um minério. Neste caso, seria melhor a técnica que fosse mais rápida.
+
 \section{Resultados}
 
 \subsection{Complexidade da implementação}
 
 Começamos por variar \size mantendo fixos os restantes parâmetros, nomeadamente, utilizamos 1 minério e 5 agentes de cada tipo. Com o aumento do tamanho do quadrado a explorar, os \spotters são os últimos agentes a terminar a sua tarefa. Isto porque têm que percorrer toda a área, enquanto que os restantes agentes apenas têm que se deslocar até ao minério, assim que este for encontrado. 
+
+\begin{figure}[h]
+	\centering
+    \includegraphics[width=0.8\textwidth]{ticks-size}
+	\caption{Variação do tempo de exploração em função do tamanho do quadrado a explorar}
+	\label{ticks-size}
+\end{figure}
+
+Os resultados obtidos podem ser observados no gráfico da Figura~\ref{ticks-size}, que sugere complexidade quadrática do nosso modelo em função do tamanho. Ora, isto faz imenso sentido uma vez que os \spotters têm que percorrer todo o tabuleiro e a sua área é igual ao quadrado do tamanho do lado.
+
+Quando variamos o número de minérios, mantendo o tamanho constante a 30 e 5 agentes de cada tipo, deixam de ser os \spotters os últimos a terminar a exploração e passam a ser os \transporters. Isto é razoável, se pensarmos que com mais minérios para extrair, os \producers terão de continuar a extração mesmo depois de todos os \spotters terminarem de percorrer toda a área, pois terão acumulado os vários minérios a extrair nas suas filas. Já os \transporters, nunca podem terminar antes dos \producers, dado que terão de transportar o minério apenas depois de este ser extraído.
+
+\begin{figure}[h]
+	\centering
+    \includegraphics[width=0.8\textwidth]{ticks-minerals}
+	\caption{Variação do tempo de exploração em função do número total de minérios}
+	\label{ticks-minerals}
+\end{figure}
+
+Os resultados desta segunda experiência podem ser observados no gráfico da Figura~\ref{ticks-minerals}, que sugere complexidade linear do nosso modelo em função do número de minérios. Faz sentido que assim seja, dado que para extrair e transportar um mineral é gasto no máximo o tempo de ida e volta até lá mais o tempo de extração, que é igual à quantidade de minério, que por sua vez, apesar de não ser sempre igual, varia sempre entre os mesmos valores que mantivemos ao longo das experiências.
 
 \subsection{Percentagem de utilização dos agentes}
 
