@@ -9,7 +9,7 @@
 \usepackage{xspace}
 
 \usepackage{geometry}
-\geometry{a4paper, total={150mm,225mm}, left=30mm, top=30mm}
+\geometry{a4paper, total={160mm,240mm}, left=25mm, top=25mm}
 \pagenumbering{arabic}
 
 \usepackage[dvipsnames]{xcolor}
@@ -102,13 +102,10 @@ O nosso principal objetivo é utilizar este projeto como forma de melhor interio
 
 \section{Identificação e caracterização dos agentes}
 
-\todoreview[inline]{arquitetura, comportamento, estratégias}
-\todonew[inline]{processos de raciocínio - novo no relatório final}
-
 Tal como descrito acima, o nosso sistema tem três tipos de agentes. De seguida descrevem-se mais detalhadamente estes agentes e a forma como os implementámos.
 
 \subsection{\Spotter}
-Cada \spotter tem a sua região conexa do espaço para explorar. Uma vez definida essa região, a estratégia do \Spotter é simples, encaminha-se para o inicio da região e inspeciona cada célula consecutivamente, determinando se contém minério extraível ou não e guarda registo desta informação. Sempre que encontra minério extraível, entra em contacto com todos os \producers para negociar e decidir qual deles será chamado para extrair o minério.
+Cada \spotter tem a sua região conexa do espaço para explorar. Uma vez definida essa região, a estratégia do \spotter é simples, encaminha-se para o inicio da região e inspeciona cada célula consecutivamente, determinando se contém minério extraível ou não e guarda registo desta informação. Sempre que encontra minério extraível, entra em contacto com todos os \producers para negociar e decidir qual deles será chamado para extrair o minério.
 
 \subsection{\Producer}
 Os \producers entram em ação assim que é encontrado minério extraível por um \spotter. Nesse momento cada um deles terá que determinar o custo necessário para se deslocar ao local e extrair o minério. Esse esforço corresponde à distância (em passos) a que o \producer se encontra do local no final de completar todas as tarefas em mãos, mais o tempo (em passos) que ele demorará a terminar a sua tarefa atual, caso esteja a extrair minério, mais o tempo que demorarão todas as outras tarefas com as quais já se tenha comprometido. Para esse efeito, cada \producer deve guardar uma fila contendo informação sobre as suas extrações, em particular o tempo que cada uma delas demora, incluindo a deslocação da sua posição anterior até ao local da extração.
@@ -118,14 +115,10 @@ Os \transporters iniciam a sua atividade quando são contactados para transporta
 
 \section{Protocolos de interação}
 
-Existem 3 fases que se destacam no decorrer da simulação: repartição do espaço entre os \emph{spotters} existentes, requerimento de um \emph{producer} no momento de descoberta de um minério e, finalmente,
-o escalonamento dos \emph{transporters} para a recolha dos fragmentos resultantes de um minério.
-
-\todonew[inline]{incluir diagramas de interação UML, se aplicável}
+Existem 3 fases que se destacam no decorrer da simulação: repartição do espaço entre os \spotters existentes, requerimento de um \producer no momento de descoberta de um minério e, finalmente, o escalonamento dos \transporters para a recolha dos fragmentos resultantes de um minério.
 
 \subsection{Divisão de espaços}
-No inicio da simulação a nave-mãe divide o espaço disponível em linhas de acordo com o número de \emph{spotters} existentes e entrega cada um dos dados dos sub-espaços a um \spotter distinto de modo a que
-este o possa depois confirmar com os restantes \emph{spotters} que pode realmente ficar responsável pela área. A Figura~\ref{space-sharing} demonstra como a nave-mãe faz esta divisão.
+No inicio da simulação a nave-mãe divide o espaço disponível em linhas de acordo com o número de \spotters existentes e entrega cada um dos dados dos subespaços a um \spotter distinto de modo a que este o possa depois confirmar com os restantes \spotters que pode realmente ficar responsável pela área. A Figura~\ref{space-sharing} demonstra como a nave-mãe faz esta divisão.
 
 \begin{figure}[h]
 	\centering
@@ -134,7 +127,7 @@ este o possa depois confirmar com os restantes \emph{spotters} que pode realment
 	\label{space-sharing}
 \end{figure}
 
-Uma vez recebida a sugestão pela nave-mãe o \spotter inicia então o protocolo de negociação \textbf{fipa-propose} (Figura~\ref{fipa-propose}) com os restantes \emph{spotters}. Este protocolo define como propôr algo a outros agentes e
+Uma vez recebida a sugestão pela nave-mãe o \spotter inicia então o protocolo de negociação \textbf{fipa-propose} (Figura~\ref{fipa-propose}) com os restantes \spotters. Este protocolo define como propor algo a outros agentes e
 tratar das suas respostas.
 
 \begin{figure}[h]
@@ -151,14 +144,13 @@ Finalmente, a receção da última mensagem de notificação é feita também at
 no seu conteúdo uma string no formato \textbf{offset-height} em que \emph{offset} indica a coordenada no eixo Y em que a área começa e \emph{height} a altura da mesma. Os receptores desta mensagem
 guardam então internamente num mapa esta afetação para possíveis futuras propostas.
 
-
 \FloatBarrier
 \subsection{Afetação de \producers}
 Uma vez encontrado minério, o \spotter primeiro verifica se é exploravél e, se o for, é necessário chamar um \producer para o extrair. O \spotter envia então a posição do minério a todos os \producers. 
 Estes respondem com o valor do esforço de que necessitarão para se deslocar até ao local. O \spotter escolhe o \producer com o menor esforço e comunica com ele, pedindo para confirmar a afetação. 
 Caso seja recusado, porque o \producer foi afeto a outro minério entretanto, o \spotter repete o processo desde o início. O esforço é calculado pela distância da última posição planeada do \producer
 ao minério recém descoberto.
-Toda esta comunição segue o protocolo \textbf{fipa-contractnet} (Figura~ suportado pelas interfaces ContractNetInitiator e ContractNetResponder que os \spotters e \producers implementam, respetivamente.
+Toda esta comunição segue o protocolo \textbf{fipa-contractnet} (Figura~\ref{fipa-contract-net}) suportado pelas interfaces ContractNetInitiator e ContractNetResponder que os \spotters e \producers implementam, respetivamente.
 
 \begin{figure}[h]
 	\centering
@@ -182,7 +174,7 @@ Neste caso, ficou o \producer 2 afeto ao minério do \spotter 1 e o \producer 1 
 \subsection{Afetação de \transporters}
 Após a extração do minério é necessário transportá-lo para a nave-mãe. O \producer que acabou de extrair o minério tem que selecionar um ou mais \transporters, do mesmo modo que o \spotter seleciona um \producer. 
 Cada \transporter comunica o valor do esforço e o minério que consegue transportar possibilitando o \producer de escalonar os diferentes agentes.
-Este processo segue também o processo \textbf{fipa-contractnet} (Figura~\ref{fipa-contract-net}) suportado pelas interfaces ContractNetInitiator e ContractNetResponder implementados nos \producers e \transporters, respetivamente.
+Este processo segue também o processo \textbf{fipa-contractnet} (Figura~\ref{fipa-contract-net}) suportado pelas interfaces \emph{ContractNetInitiator} e \emph{ContractNetResponder} implementados nos \producers e \transporters, respetivamente.
 
 \begin{figure}[h]
 	\centering
@@ -199,11 +191,7 @@ A Figura~\ref{transporter-scheduling} exemplifica o processo de escolha de \tran
 %%%%%%%%%%%%%%%%%%%
 \chapter{Desenvolvimento}
 
-\todonew[inline]{capítulo novo mas as secções não são completamente novas}
-
 \section{Plataformas utilizadas}
-
-\todoimprove[inline]{brevíssima descrição o que é - é capaz de ser melhor reduzir isto}
 
 \subsection{\jade}
 O \jade, \emph{Java Agent DEvelopment Framework}, é um software que permite desenvolver sistemas baseados em agentes. Os agentes são distribuídos por \emph{containers} que podem estar em máquinas diferentes, cada um utiliza uma \emph{thread}. 
@@ -244,12 +232,11 @@ Os elementos do grupo utilizam Sistemas Operativos (SO) e Ambientes de Desenvolv
 	\item Marina Camilo - Windows7 - Eclipse Neon;
 \end{itemize}
 
-\newpage
 \section{Estrutura da aplicação}
 
 A aplicação está dividida em 2 packages: \textbf{main} e \textbf{agents}.
 
-\subsection{main}
+\subsection{Package main}
 Nesta \emph{package} encontram-se as classes gerais da simulação como o modelo e as variáveis de ambiente.
 
 \subsubsection{Environment}
@@ -261,8 +248,7 @@ Representa um nó no modelo. Inclui uma referência ao agente que representa.
 \subsubsection{Simulation}
 O ponto de entrada da simulação.
 
-\newpage
-\subsection{agents}
+\subsection{Package agents}
 Nesta \emph{package} encontram-se as classes dos agentes a Figura~\ref{agents-uml} é demonstra a estrutura das mesmas.
 
 \begin{figure}[h]
@@ -298,18 +284,12 @@ Representa um \producer no modelo. Implementa 3 \emph{behaviours}:
  \item RequestTransporterBehaviour - Inicia o protocolo \textbf{fipa-contractnet} com os \transporters.
 \end{itemize}
 
-
 \subsubsection{Transporter}
 Representa um \transporter no modelo. Implementa 2 \emph{behaviours}:
 \begin{itemize}
  \item RoutineBehaviour - Executa o plano de movimento do agente.
  \item AnswerCallBehaviour - Responde às mensagens do protocolo \textbf{fipa-contractnet} provenientes dos \producers.
 \end{itemize}
-
-
-\todonew[inline]{módulos, diagrama de classes...}
-
-\section{Detalhes relevantes da implementação}
 
 
 %%%%%%%%%%%%%%%%
@@ -327,9 +307,9 @@ Estas primeiras experiências têm o objetivo de determinar a qualidade geral da
 \begin{itemize}
 	\item \emph{size} - tamanho do lado do quadrado que representa a área a explorar;
 	\item \emph{minerals} - número de minérios que serão gerados na área;
-	\item \emph{spotters} - número de \spotters que serão disponibilizados;
-	\item \emph{producers} - número de \producers que serão disponibilizados;
-	\item \emph{transporters} - número de \transporters que serão disponibilizados.
+	\item \spotters - número de \spotters que serão disponibilizados;
+	\item \producers - número de \producers que serão disponibilizados;
+	\item \transporters - número de \transporters que serão disponibilizados.
 \end{itemize}
 
 Outros parâmetros, tal como a probabilidade de um dado minério ser extraível, também são relevantes. No entanto, não nos parecem tão importantes como os mencionados acima. De facto, em todas as experiências, decidimos que os minérios seriam sempre extraíveis, por forma a facilitar a análise dos resultados. 
@@ -350,12 +330,6 @@ Outra forma de comparação, seria considerar a quantidade total de passos que o
 
 Finalmente, também consideramos que seria adequada para este efeito a determinação do tempo decorrido entre deteção, extração e transporte de um minério. Neste caso, seria melhor a técnica que fosse mais rápida.
 
-\section{Resultados}
-
-\subsection{Complexidade da implementação}
-
-Começamos por variar \size mantendo fixos os restantes parâmetros, nomeadamente, utilizamos 1 minério e 5 agentes de cada tipo. Com o aumento do tamanho do quadrado a explorar, os \spotters são os últimos agentes a terminar a sua tarefa. Isto porque têm que percorrer toda a área, enquanto que os restantes agentes apenas têm que se deslocar até ao minério, assim que este for encontrado. 
-
 \begin{figure}[h]
 	\centering
     \includegraphics[width=0.8\textwidth]{ticks-size}
@@ -363,7 +337,15 @@ Começamos por variar \size mantendo fixos os restantes parâmetros, nomeadament
 	\label{ticks-size}
 \end{figure}
 
+\section{Resultados}
+
+\subsection{Complexidade da implementação}
+
+Começamos por variar \size mantendo fixos os restantes parâmetros, nomeadamente, utilizamos 1 minério e 5 agentes de cada tipo. Com o aumento do tamanho do quadrado a explorar, os \spotters são os últimos agentes a terminar a sua tarefa. Isto porque têm que percorrer toda a área, enquanto que os restantes agentes apenas têm que se deslocar até ao minério, assim que este for encontrado. 
+
 Os resultados obtidos podem ser observados no gráfico da Figura~\ref{ticks-size}, que sugere complexidade quadrática do nosso modelo em função do tamanho. Ora, isto faz imenso sentido uma vez que os \spotters têm que percorrer todo o tabuleiro e a sua área é igual ao quadrado do tamanho do lado.
+
+\FloatBarrier
 
 Quando variamos o número de minérios, mantendo o tamanho constante a 30 e 5 agentes de cada tipo, deixam de ser os \spotters os últimos a terminar a exploração e passam a ser os \transporters. Isto é razoável, se pensarmos que com mais minérios para extrair, os \producers terão de continuar a extração mesmo depois de todos os \spotters terminarem de percorrer toda a área, pois terão acumulado os vários minérios a extrair nas suas filas. Já os \transporters, nunca podem terminar antes dos \producers, dado que terão de transportar o minério apenas depois de este ser extraído.
 
@@ -375,6 +357,8 @@ Quando variamos o número de minérios, mantendo o tamanho constante a 30 e 5 ag
 \end{figure}
 
 Os resultados desta segunda experiência podem ser observados no gráfico da Figura~\ref{ticks-minerals}, que sugere complexidade linear do nosso modelo em função do número de minérios. Faz sentido que assim seja, dado que para extrair e transportar um mineral é gasto no máximo o tempo de ida e volta até lá mais o tempo de extração, que é igual à quantidade de minério, que por sua vez, apesar de não ser sempre igual, varia sempre entre os mesmos valores que mantivemos ao longo das experiências.
+
+\FloatBarrier
 
 \subsection{Percentagem de utilização dos agentes}
 
@@ -448,23 +432,32 @@ Mais uma vez, 10 \transporters é claramente demais, pois alguns não chegaram a
 
 \section{Análise dos resultados das experiências}
 
+Em relação às experiências realizadas para determinar a complexidade temporal do nosso modelo, tudo indica que é quadrática, dado que é essa a complexidade relativa ao tamanho do lado da área a explorar e, em relação ao número de minérios a complexidade é linear.
+
+Quanto ao número de \spotters, dado que não há necessidade de eles terminarem as suas tarefas muito cedo, o melhor é ir aumentando a sua quantidade com o tamanho da área a explorar, mas sem aumentar em demasia. Já no que diz respeito aos \producers e \transporters, o efeito das negociações é demasiado elevado, fazendo com que em muitos casos um só agente de cada um destes tipos se porte melhor. De qualquer forma, isso parece-nos um efeito das plataformas utilizadas, numa situação real, a troca de mensagens deveria ser mais rápida do que as deslocações. Além disso, as deslocações trariam maiores consumos de bateria, o que levaria a que os agentes ficassem incapacitados mais vezes. Nesse sentido, seria melhor usar mais agentes, distribuindo as deslocações entre eles.
+
 \section{Desenvolvimento do trabalho}
+
+Este trabalho permitiu-nos interiorizar de forma muito prática vários aspetos dos Sistemas Multi-Agente. Nomeadamente, as negociações e a cooperação entre os vários agentes para atingir um objetivo comum. Assim como um modelo baseado em diferentes comportamentos para os diferentes agentes. Nestes aspetos o tema, além de interessante, parece-nos especialmente adequado para este tipo de sistemas.
+
+Também conseguimos compreender melhor as várias plataformas que utilizamos, com os seus pontos fortes e limitações. É especialmente interessante poder interagir com o \jade e o \repast simultaneamente, através do \sajas, dado que se complementam muito bem
 
 %%%%%%%%%%%%%%%%%
 % MELHORAMENTOS %
 %%%%%%%%%%%%%%%%%
 \chapter{Melhoramentos}
 
-\todonew[inline]{sugestões para melhoramentos a introduzir no programa}
+Apesar de termos implementado as principais características pretendidas para os diversos agentes e de termos um sistema completamente funcional, consideramos que há imensas pontos que podem ser melhorados. Ficamos particularmente curiosos para poder experimentar com diferentes alternativas nos comportamentos dos agentes. 
 
-Alguns possíveis melhoramentos ao nosso projeto são:
+Gostaríamos de fazer os \spotters decidirem a divisão do espaço entre si, podendo efetuar diferentes tipos divisões, para determinar as mais adequadas. 
 
-\begin{itemize}
-	\item \Spotters decidirem entre si a divisão do espaço a explorar;
-	\item Ao ser escolhido um \producer ou \transporter ter em conta o número de tarefas que estão a realizar de forma a maximizar o esforço dos mesmos;
-	\item Ser possível de alterar o percurso dos agentes. Exemplo: Se ao atribuir a um \transporter uma tarefa e ficar em caminho ir a nave mãe descarregar, ele deveria descarregar e assim teria mais capacidade no final da tarefa;
-	\item Atribuir os \transporters de forma eficiente tendo em conta a capacidade dos mesmos. Exemplo: Se um existe um \transporter que demora mais tempo mas tem capacidade para recolher o minério todo, deve ser selecionado em vez de atribuir pedaços de minério a vários \transporters que no final demorem mais tempo a recolher o minério todo;
-\end{itemize}
+Em relação aos \producers e \transporters, devem ser estudadas diferentes formas de decidir qual o agente selecionado para cada tarefa. Nomeadamente, poderíamos ter em conta o número de tarefas que cada agente realiza, de forma a maximizar o seu esforço.
+
+Também seria interessante os \producers e \transporters poderem redefinir a ordem das suas tarefas consoante a proximidade entre elas. Isso certamente se traduziria numa exploração mais eficiente.
+
+No caso específico dos \transporters, que apenas vão descarregar quando atingem a carga máxima ou quando calham de passar na base, uma possível alternativa seria aproveitarem os períodos de inatividade para descarregar. Também poderiam ser selecionados para as tarefas dando prioridade à sua capacidade de carga, em vez de apenas preferir o agente que apresenta menor custo. Isto porque mesmo que seja mais lento, se um único \transporter recolher todo o minério, possivelmente será mais rápido do que vários \transporters a recolherem porções do minério.
+
+Uma vez implementados estes e outros comportamentos alternativos para os vários agentes, também seria interessante considerar mais limitações, como por exemplo tendo em conta uma bateria limitada, que fosse mais rapidamente esgotada com o movimento ou com a extração de minério. Isto obrigaria a tempos de inatividade para repor a carga junto da base, forçando outros agentes a entrarem em ação.
 
 %%%%%%%%%%%%
 % RECURSOS %
@@ -473,28 +466,25 @@ Alguns possíveis melhoramentos ao nosso projeto são:
 
 \section{Bibliografia}
 
-\todoimprove[inline]{fazer os links aparecerem no texto}
-
 \begin{itemize}
-	\item \href{https://paginas.fe.up.pt/~eol/AIAD/1617/trabalhos.html#T05}{Enunciado do trabalho}
-	\item \href{https://paginas.fe.up.pt/~eol/AIAD/aiad1617.html}{Slides das aulas teóricas}
-	\item \href{https://paginas.fe.up.pt/~eol/AIAD/aulas/jade_en.pdf}{Slides sobre \jade}
-	\item \href{https://paginas.fe.up.pt/~eol/AIAD/aulas/REPAST_intro_hlc.pdf}{Slides sobre \repast}
-	\item \href{https://web.fe.up.pt/~hlc/doku.php?id=sajas}{Página do \sajas}
-	\item \href{https://web.fe.up.pt/~hlc/doku.php?id=massim2dev}{Página da ferramenta \massim}
+	\item Enunciado do trabalho - \href{https://paginas.fe.up.pt/~eol/AIAD/1617/trabalhos.html#T05}{https://paginas.fe.up.pt/~eol/AIAD/1617/trabalhos.html}
+	\item Slides das aulas teóricas - \href{https://paginas.fe.up.pt/~eol/AIAD/aiad1617.html}{https://paginas.fe.up.pt/~eol/AIAD/aiad1617.html}
+	\item Slides sobre \jade - \href{https://paginas.fe.up.pt/~eol/AIAD/aulas/jade_en.pdf}{https://paginas.fe.up.pt/~eol/AIAD/aulas/jade\_en.pdf}
+	\item Slides sobre \repast - \href{https://paginas.fe.up.pt/~eol/AIAD/aulas/REPAST_intro_hlc.pdf}{https://paginas.fe.up.pt/~eol/AIAD/aulas/REPAST\_intro\_hlc.pdf}
+	\item Página do \sajas - \href{https://web.fe.up.pt/~hlc/doku.php?id=sajas}{https://web.fe.up.pt/~hlc/doku.php?id=sajas}
+	\item Página da ferramenta \massim - \href{https://web.fe.up.pt/~hlc/doku.php?id=massim2dev}{https://web.fe.up.pt/~hlc/doku.php?id=massim2dev}
 \end{itemize}
 
 \section{Software}
-\todoimprove[inline]{fazer os links aparecerem no texto}
 
 \begin{itemize}
-	\item \href{http://jade.tilab.com}{\jade}
-	\item \href{http://repast.sourceforge.net/repast_3/index.html}{\repast}
-	\item \href{https://web.fe.up.pt/~hlc/doku.php?id=sajas}{\sajas}
+	\item \jade - \href{http://jade.tilab.com}{http://jade.tilab.com}
+	\item \repast - \href{http://repast.sourceforge.net/repast_3/index.html}{http://repast.sourceforge.net/repast\_3/index.html}
+	\item \sajas - \href{https://web.fe.up.pt/~hlc/doku.php?id=sajas}{https://web.fe.up.pt/~hlc/doku.php?id=sajas}
 \end{itemize}
 
 \section{Elementos do grupo}
-\todochange[inline]{indicar percentagem aproximada de trabalho efetivo de cada elementos do grupo}
+
 \begin{itemize}
 	\item Ângela Cardoso - \%
 	\item Diogo Ferreira - \%
@@ -507,11 +497,9 @@ Alguns possíveis melhoramentos ao nosso projeto são:
 %%%%%%%%%%%%
 \chapter{Apêndice}
 
-\todonew[inline]{manual do utilizador (sucinto)}
-
 Após a criação de um projeto \java com o código entregue e adicionadas as bibliotecas de \sajas, \jade e \repast, é necessário correr o programa com a \texttt{Main class: main.Simulation}.
 
-Ao correr, vai ser apresentado a consola do \repast. Começando a simulação será apresentada uma janela onde decorrerá a simulação idêntica a esta:
+Ao correr, vai ser apresentada a consola do \repast. Começando a simulação será apresentada uma janela onde decorrerá a simulação idêntica à da Figura~\ref{simulacao}.
 
 \begin{figure}[h]
 	\centering
@@ -520,8 +508,17 @@ Ao correr, vai ser apresentado a consola do \repast. Começando a simulação se
 	\label{simulacao}
 \end{figure}
 
-A simulação pode correr com diferentes tamanhos, números de minérios, \spotters, \producers, \transporters e a capacidade dos \transporters. Desta forma, também a  percentagem do mineral e o número de fragmentos encontrados num mineral podem ser alterados.
-Assim, para alterar os parâmetros da simulação descritos acima é necessário aceder a classe \java \texttt{main.Environment}:
+As diferentes cores e formas representam diferentes elementos da simulação:
+\begin{itemize}
+	\item os quadrados são elementos estáticos, como os minérios e a nave, que é o quadrado branco no centro;
+	\item os círculos são os agentes móveis;
+	\item a vermelho temos os \spotters;
+	\item a azul temos os \producers;
+	\item a verde temos os \transporters;
+	\item os minérios têm diferentes cores consoante o seu estado, inicialmente são rosa claro, uma vez encontrados pelos \spotters, ficam amarelos se forem extraíveis e cinzentos caso contrário, depois de extraídos ficam magenta até que os \transporters os levem para a base.
+\end{itemize}
+
+A simulação pode correr com diferentes tamanhos, números de minérios, \spotters, \producers, \transporters e a capacidade dos \transporters. Desta forma, também a  percentagem dos minérios que são extraíveis e o número de fragmentos encontrados num mineral podem ser alterados. Para alterar os parâmetros da simulação descritos acima é necessário aceder a classe \java \texttt{main.Environment} que mostramos na Figura~\ref{javaEnvironment}.
 
 \begin{figure}[h]
 	\centering
